@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seilruter Hellas 2026</title>
-  <meta name="description" content="7 seilruter gjennom det greske øyriket. April-mai 2026. Utforsk, sammenlign og stem.">
+  <meta name="description" content="Seilruter, forberedelser og planlegging for Hellas 2026. Utforsk, sammenlign og stem.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
       <div class="entry-eyebrow">EN SEILTUR I HELLAS</div>
       <h1 class="entry-title">Hvor skal vi<br><em>seile?</em></h1>
       <div class="entry-divider"></div>
-      <p class="entry-intro">7 ruter gjennom det greske øyriket. 14 dager. April&ndash;mai 2026. Utforsk rutene, se detaljene, og stem på din favoritt.</p>
+      <p class="entry-intro">8 ruter gjennom det greske øyriket. 14 dager. April&ndash;mai 2026. Utforsk rutene, se detaljene, og stem på din favoritt.</p>
       <div class="name-field">
         <label for="nameInput">HVEM ER DU?</label>
         <input type="text" id="nameInput" placeholder="Fornavn" autocomplete="given-name" spellcheck="false" />
@@ -28,6 +28,7 @@
         <span>Se rutene</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <a href="#" id="prepShortcut" class="entry-prep-link">Eller se forberedelser til turen &rarr;</a>
       <div class="entry-footnote">18. april &ndash; 2. mai 2026</div>
     </div>
   </div>
@@ -42,7 +43,11 @@
         </div>
         <div class="top-right">
           <span class="top-voter" id="voterLabel"></span>
-          <div class="top-tabs">
+          <div class="section-toggle" id="sectionToggle">
+            <button class="section-btn active" data-section="explore">Utforsk</button>
+            <button class="section-btn" data-section="prep">Forberedelser</button>
+          </div>
+          <div class="top-tabs" id="exploreTabs">
             <button class="tab-btn active" data-tab="routes">Ruter</button>
             <button class="tab-btn" data-tab="stops">Stopp</button>
             <button class="tab-btn" data-tab="vote">Stem</button>
@@ -51,7 +56,8 @@
       </div>
     </header>
 
-    <div class="main-layout">
+    <!-- Explore section (routes, stops, vote + map) -->
+    <div class="main-layout" id="exploreSection">
       <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
 
@@ -96,6 +102,29 @@
       </div>
     </div>
 
+    <!-- Forberedelser section -->
+    <section id="prepSection" class="prep-section hidden">
+      <div class="prep-scroll" id="prepScroll">
+
+        <!-- Landing -->
+        <div id="prepLanding">
+          <div class="prep-hero">
+            <div class="prep-eyebrow">FORBEREDELSER</div>
+            <h2 class="prep-title">Klar for<br><em>seilas?</em></h2>
+            <p class="prep-subtitle">Alt du trenger å vite før to uker på seilbåt i Hellas</p>
+          </div>
+          <div class="prep-nav-cards" id="prepNavCards"></div>
+        </div>
+
+        <!-- Sub-sections (rendered by JS) -->
+        <div id="prepBoatLife" class="prep-sub hidden"></div>
+        <div id="prepSeasickness" class="prep-sub hidden"></div>
+        <div id="prepPacking" class="prep-sub hidden"></div>
+        <div id="prepPersonal" class="prep-sub hidden"></div>
+
+      </div>
+    </section>
+
     <!-- Map FAB — bare mobil -->
     <button class="map-fab" id="mapFab" aria-label="Vis kart">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -118,6 +147,9 @@
   <script src="routes-data.js"></script>
   <script src="islands.js"></script>
   <script src="images.js"></script>
+  <script src="prep-content.js"></script>
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -13,6 +13,8 @@
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
   let activeRouteId = null;
   let currentTab = 'routes';
+  let currentSection = 'explore'; // 'explore' | 'prep'
+  let currentPrepView = 'landing'; // 'landing' | 'boat-life' | 'seasickness' | 'packing' | 'personal'
   let currentStopFilter = 'alle';
   let voteSelection = null;
 
@@ -115,11 +117,35 @@
     renderStopsPanel();
     renderVotePanel();
     fetchTally();
+    initSectionToggle();
+    initPrepSection();
+
+    // Check for existing auth session
+    Auth.getSession().catch(() => {});
 
     // Wire mobile FAB
     if (isMobile) {
       initMobileMap();
     }
+  });
+
+  // Prep shortcut from entry screen (skip name requirement for public content)
+  document.getElementById('prepShortcut').addEventListener('click', (e) => {
+    e.preventDefault();
+    voterName = nameInput.value.trim() || 'Gjest';
+    localStorage.setItem('seilruter-name', voterName);
+    document.getElementById('voterLabel').textContent = voterName;
+    showScreen('app');
+    renderRoutesList();
+    renderStopsPanel();
+    renderVotePanel();
+    fetchTally();
+    initSectionToggle();
+    initPrepSection();
+    Auth.getSession().catch(() => {});
+    if (isMobile) initMobileMap();
+    // Go directly to prep
+    switchSection('prep');
   });
 
   // ---- Tabs ----
@@ -734,6 +760,592 @@
         </div>
       `).join('')}
     `;
+  }
+
+  // ============================================
+  // SECTION TOGGLE (Utforsk / Forberedelser)
+  // ============================================
+  function initSectionToggle() {
+    document.querySelectorAll('.section-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchSection(btn.dataset.section));
+    });
+  }
+
+  function switchSection(section) {
+    currentSection = section;
+    const exploreEl = document.getElementById('exploreSection');
+    const prepEl = document.getElementById('prepSection');
+    const exploreTabs = document.getElementById('exploreTabs');
+    const fab = document.getElementById('mapFab');
+
+    // Update toggle buttons
+    document.querySelectorAll('.section-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.section === section)
+    );
+
+    if (section === 'explore') {
+      exploreEl.classList.remove('hidden');
+      prepEl.classList.add('hidden');
+      if (exploreTabs) exploreTabs.style.display = '';
+      if (fab) fab.style.display = '';
+    } else {
+      exploreEl.classList.add('hidden');
+      prepEl.classList.remove('hidden');
+      if (exploreTabs) exploreTabs.style.display = 'none';
+      if (fab) fab.style.display = 'none';
+      showPrepLanding();
+    }
+  }
+
+  // ============================================
+  // FORBEREDELSER (PREPARATION)
+  // ============================================
+  let prepInitialized = false;
+
+  function initPrepSection() {
+    if (prepInitialized) return;
+    prepInitialized = true;
+    renderPrepNavCards();
+  }
+
+  function renderPrepNavCards() {
+    const container = document.getElementById('prepNavCards');
+    const cards = [
+      { id: 'boat-life', icon: '⛵', title: 'Livet om bord', desc: 'Hva du kan forvente av to uker på seilbåt med en gruppe' },
+      { id: 'seasickness', icon: '💊', title: 'Sjøsyke', desc: 'Medisiner, forebygging og tips fra erfarne seilere' },
+      { id: 'packing', icon: '🎒', title: 'Pakkeliste', desc: 'Foreslått pakkeliste for Hellas i slutten av mai' },
+      { id: 'personal', icon: '🔒', title: 'Min side', desc: 'Din personlige pakkeliste, notater og nedtelling' },
+    ];
+
+    container.innerHTML = cards.map((c, i) => `
+      <div class="prep-card" data-prep="${c.id}" style="animation-delay:${0.08 * i}s">
+        <div class="prep-card-icon">${c.icon}</div>
+        <div class="prep-card-body">
+          <div class="prep-card-title">${c.title}</div>
+          <div class="prep-card-desc">${c.desc}</div>
+        </div>
+        <svg class="prep-card-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.prep-card').forEach(card => {
+      card.addEventListener('click', () => showPrepSub(card.dataset.prep));
+    });
+  }
+
+  function showPrepLanding() {
+    currentPrepView = 'landing';
+    document.getElementById('prepLanding').classList.remove('hidden');
+    document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
+    document.getElementById('prepScroll').scrollTop = 0;
+  }
+
+  function showPrepSub(view) {
+    currentPrepView = view;
+    document.getElementById('prepLanding').classList.add('hidden');
+    document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
+
+    const content = window.PREP_CONTENT || {};
+
+    switch (view) {
+      case 'boat-life': renderPrepArticle('prepBoatLife', content.boatLife); break;
+      case 'seasickness': renderSeasickness('prepSeasickness', content.seasickness); break;
+      case 'packing': renderPublicPacking('prepPacking', content.packingList); break;
+      case 'personal': renderPersonalArea('prepPersonal'); break;
+    }
+
+    document.getElementById('prepScroll').scrollTop = 0;
+  }
+
+  function prepBackBtn() {
+    return `<button class="prep-back" onclick="document.querySelector('[data-section=prep]').click()">
+      &larr; Forberedelser
+    </button>`;
+  }
+
+  function renderPrepArticle(containerId, data) {
+    if (!data) return;
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+    el.innerHTML = `
+      <button class="prep-back">&larr; Forberedelser</button>
+      <div class="prep-article-header">
+        <span class="prep-article-icon">${data.icon || ''}</span>
+        <h2 class="prep-article-title">${data.title}</h2>
+        <p class="prep-article-subtitle">${data.subtitle}</p>
+      </div>
+      <div class="prep-article-body">
+        ${data.sections.map((s, i) => `
+          <div class="prep-article-section" style="animation-delay:${0.06 * i}s">
+            <h3>${s.heading}</h3>
+            <div class="prep-article-text">${s.body}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+  }
+
+  function renderSeasickness(containerId, data) {
+    if (!data) return;
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+
+    el.innerHTML = `
+      <button class="prep-back">&larr; Forberedelser</button>
+      <div class="prep-article-header">
+        <span class="prep-article-icon">${data.icon || ''}</span>
+        <h2 class="prep-article-title">${data.title}</h2>
+        <p class="prep-article-subtitle">${data.subtitle}</p>
+      </div>
+      <div class="prep-article-body">
+        ${data.sections.map((s, i) => `
+          <div class="prep-article-section" style="animation-delay:${0.06 * i}s">
+            <h3>${s.heading}</h3>
+            <div class="prep-article-text">${s.body}</div>
+            ${s.medications ? `
+              <div class="med-cards">
+                ${s.medications.map(m => `
+                  <div class="med-card">
+                    <div class="med-card-header">
+                      <strong>${m.name}</strong>
+                      <span class="med-rating">${m.rating}</span>
+                    </div>
+                    <div class="med-dosage">${m.dosage}</div>
+                    <div class="med-notes">${m.notes}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+  }
+
+  function renderPublicPacking(containerId, data) {
+    if (!data) return;
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+
+    el.innerHTML = `
+      <button class="prep-back">&larr; Forberedelser</button>
+      <div class="prep-article-header">
+        <span class="prep-article-icon">${data.icon || ''}</span>
+        <h2 class="prep-article-title">${data.title}</h2>
+        <p class="prep-article-subtitle">${data.subtitle}</p>
+      </div>
+
+      <div class="packing-golden-rule">
+        <div class="golden-rule-icon">💡</div>
+        <div class="golden-rule-text">${data.goldenRule}</div>
+      </div>
+
+      <div class="packing-categories">
+        ${data.categories.map((cat, ci) => `
+          <div class="packing-category" style="animation-delay:${0.06 * ci}s">
+            <div class="packing-cat-header" data-toggle="cat-${cat.id}">
+              <span class="packing-cat-icon">${cat.icon}</span>
+              <span class="packing-cat-name">${cat.name}</span>
+              <span class="packing-cat-count">${cat.items.length}</span>
+              <svg class="packing-cat-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="packing-cat-items" id="cat-${cat.id}">
+              ${cat.items.map(item => `
+                <label class="packing-item ${item.essential ? 'essential' : 'optional'}">
+                  <input type="checkbox" disabled />
+                  <span class="packing-item-text">${item.text}</span>
+                  ${item.essential ? '<span class="packing-essential-badge">Essensielt</span>' : ''}
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="packing-not-bring">
+        <h3>Ikke ta med</h3>
+        <ul>
+          ${data.notBring.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+
+    el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+
+    // Category collapse/expand
+    el.querySelectorAll('.packing-cat-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const items = document.getElementById(header.dataset.toggle);
+        const isOpen = !items.classList.contains('collapsed');
+        items.classList.toggle('collapsed', isOpen);
+        header.classList.toggle('collapsed', isOpen);
+      });
+    });
+  }
+
+  function renderPersonalArea(containerId) {
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+
+    // Calculate days until trip
+    const tripStart = new Date('2026-04-18');
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const daysLeft = Math.max(0, Math.ceil((tripStart - today) / (1000 * 60 * 60 * 24)));
+
+    if (Auth.isLoggedIn()) {
+      renderPersonalDashboard(el, daysLeft);
+    } else {
+      renderAuthForm(el, daysLeft);
+    }
+  }
+
+  function renderAuthForm(el, daysLeft) {
+    let isRegister = false;
+
+    function render() {
+      el.innerHTML = `
+        <button class="prep-back">&larr; Forberedelser</button>
+        <div class="personal-hero">
+          <div class="personal-countdown-big">${daysLeft}</div>
+          <div class="personal-countdown-label">dager til avgang</div>
+        </div>
+
+        <div class="auth-form-wrap">
+          <h3 class="auth-title">${isRegister ? 'Opprett konto' : 'Logg inn'}</h3>
+          <p class="auth-subtitle">For å bruke din personlige pakkeliste, notater og nedtelling</p>
+          <form id="authForm" class="auth-form">
+            ${isRegister ? '<input type="text" id="authName" class="auth-input" placeholder="Navn" required />' : ''}
+            <input type="email" id="authEmail" class="auth-input" placeholder="E-post" required />
+            <input type="password" id="authPassword" class="auth-input" placeholder="Passord" required minlength="8" />
+            <div class="auth-error hidden" id="authError"></div>
+            <button type="submit" class="auth-submit">${isRegister ? 'Registrer deg' : 'Logg inn'}</button>
+          </form>
+          <button class="auth-toggle" id="authToggle">
+            ${isRegister ? 'Har du allerede konto? Logg inn' : 'Har du ikke konto? Registrer deg'}
+          </button>
+        </div>
+      `;
+
+      el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+
+      el.querySelector('#authToggle').addEventListener('click', () => {
+        isRegister = !isRegister;
+        render();
+      });
+
+      el.querySelector('#authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errorEl = el.querySelector('#authError');
+        const submitBtn = el.querySelector('.auth-submit');
+        const email = el.querySelector('#authEmail').value.trim();
+        const password = el.querySelector('#authPassword').value;
+        const name = isRegister ? (el.querySelector('#authName')?.value.trim() || '') : '';
+
+        errorEl.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Venter...';
+
+        try {
+          if (isRegister) {
+            await Auth.signUp(email, password, name);
+          } else {
+            await Auth.signIn(email, password);
+          }
+          // Success — render dashboard
+          renderPersonalDashboard(el, daysLeft);
+        } catch (err) {
+          errorEl.textContent = err.message;
+          errorEl.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.textContent = isRegister ? 'Registrer deg' : 'Logg inn';
+        }
+      });
+    }
+
+    render();
+  }
+
+  function renderPersonalDashboard(el, daysLeft) {
+    const user = Auth.getUser();
+    const name = user?.name || user?.email?.split('@')[0] || 'Seiler';
+
+    el.innerHTML = `
+      <button class="prep-back">&larr; Forberedelser</button>
+      <div class="personal-hero">
+        <div class="personal-greeting">Hei, ${name}!</div>
+        <div class="personal-countdown-big">${daysLeft}</div>
+        <div class="personal-countdown-label">dager til avgang</div>
+      </div>
+
+      <div class="personal-sections">
+        <!-- Countdown calendar -->
+        <div class="personal-card">
+          <div class="personal-card-header">
+            <h3>📅 Nedtelling</h3>
+          </div>
+          <div class="countdown-grid" id="countdownGrid"></div>
+        </div>
+
+        <!-- Personal packing list -->
+        <div class="personal-card">
+          <div class="personal-card-header">
+            <h3>🎒 Min pakkeliste</h3>
+            <span class="packing-progress" id="packingProgress"></span>
+          </div>
+          <div id="personalPackingList"></div>
+        </div>
+
+        <!-- Notes -->
+        <div class="personal-card">
+          <div class="personal-card-header">
+            <h3>📝 Mine notater</h3>
+            <span class="notes-saved hidden" id="notesSaved">Lagret</span>
+          </div>
+          <textarea class="notes-textarea" id="notesArea" placeholder="Tanker, ønsker, ting å huske for turen..."></textarea>
+        </div>
+      </div>
+
+      <button class="auth-logout" id="logoutBtn">Logg ut</button>
+    `;
+
+    el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+    el.querySelector('#logoutBtn').addEventListener('click', async () => {
+      await Auth.signOut();
+      renderAuthForm(el, daysLeft);
+    });
+
+    initCountdownGrid(daysLeft);
+    initPersonalPacking();
+    initNotes();
+  }
+
+  // ---- Countdown Calendar ----
+  function initCountdownGrid(daysLeft) {
+    const grid = document.getElementById('countdownGrid');
+    if (!grid) return;
+
+    const tripStart = new Date('2026-04-18');
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tornDays = JSON.parse(localStorage.getItem('sr-torn-days') || '[]');
+
+    // Show last 28 days before trip (or fewer if trip is closer)
+    const showDays = Math.min(daysLeft, 42);
+    let html = '';
+
+    for (let i = showDays; i >= 1; i--) {
+      const date = new Date(tripStart);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      const isPast = date < today;
+      const isToday = date.getTime() === today.getTime();
+      const isTorn = tornDays.includes(dateStr) || isPast;
+
+      html += `
+        <div class="countdown-day ${isTorn ? 'torn' : ''} ${isToday ? 'today' : ''}"
+             data-date="${dateStr}" ${isToday && !isTorn ? 'data-tearable="true"' : ''}>
+          <div class="countdown-day-num">${date.getDate()}</div>
+          <div class="countdown-day-left">${i}</div>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = html;
+
+    // Tear off today
+    grid.querySelectorAll('[data-tearable="true"]').forEach(day => {
+      day.addEventListener('click', () => {
+        const dateStr = day.dataset.date;
+        day.classList.add('tearing');
+        setTimeout(() => {
+          day.classList.remove('tearing');
+          day.classList.add('torn');
+          day.removeAttribute('data-tearable');
+          const torn = JSON.parse(localStorage.getItem('sr-torn-days') || '[]');
+          if (!torn.includes(dateStr)) {
+            torn.push(dateStr);
+            localStorage.setItem('sr-torn-days', JSON.stringify(torn));
+          }
+          // Also sync to server if authenticated
+          if (Auth.isLoggedIn()) {
+            Auth.authFetch('/api/countdown', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ day_date: dateStr }),
+            }).catch(() => {});
+          }
+        }, 600);
+      });
+    });
+  }
+
+  // ---- Personal Packing List ----
+  function initPersonalPacking() {
+    const container = document.getElementById('personalPackingList');
+    if (!container) return;
+
+    // Load from localStorage or initialize from template
+    let items = JSON.parse(localStorage.getItem('sr-packing-items') || 'null');
+    if (!items) {
+      // Initialize from PREP_CONTENT template
+      const content = window.PREP_CONTENT || {};
+      const packList = content.packingList || {};
+      items = [];
+      (packList.categories || []).forEach(cat => {
+        cat.items.forEach((item, idx) => {
+          items.push({
+            id: cat.id + '-' + idx,
+            text: item.text,
+            category: cat.name,
+            categoryIcon: cat.icon,
+            checked: false,
+            isCustom: false,
+          });
+        });
+      });
+      localStorage.setItem('sr-packing-items', JSON.stringify(items));
+    }
+
+    renderPersonalPackingList(container, items);
+  }
+
+  function renderPersonalPackingList(container, items) {
+    // Group by category
+    const groups = {};
+    items.forEach(item => {
+      const key = item.category || 'Annet';
+      if (!groups[key]) groups[key] = { icon: item.categoryIcon || '📦', items: [] };
+      groups[key].items.push(item);
+    });
+
+    const total = items.length;
+    const checked = items.filter(i => i.checked).length;
+    const progressEl = document.getElementById('packingProgress');
+    if (progressEl) progressEl.textContent = checked + '/' + total + ' pakket';
+
+    container.innerHTML = Object.entries(groups).map(([catName, group]) => {
+      const catChecked = group.items.filter(i => i.checked).length;
+      const catTotal = group.items.length;
+      return `
+        <div class="pp-category">
+          <div class="pp-cat-header" data-pp-toggle="${catName}">
+            <span>${group.icon} ${catName}</span>
+            <span class="pp-cat-progress">${catChecked}/${catTotal}</span>
+          </div>
+          <div class="pp-cat-items" id="pp-${catName}">
+            ${group.items.map(item => `
+              <label class="pp-item ${item.checked ? 'checked' : ''}">
+                <input type="checkbox" ${item.checked ? 'checked' : ''} data-item-id="${item.id}" />
+                <span class="pp-item-text">${item.text}</span>
+                ${item.isCustom ? '<button class="pp-item-delete" data-delete-id="' + item.id + '">✕</button>' : ''}
+              </label>
+            `).join('')}
+            <div class="pp-add-row">
+              <input type="text" class="pp-add-input" placeholder="Legg til..." data-cat="${catName}" data-cat-icon="${group.icon}" />
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Wire events
+    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.itemId;
+        const item = items.find(i => i.id === id);
+        if (item) {
+          item.checked = cb.checked;
+          cb.closest('.pp-item').classList.toggle('checked', cb.checked);
+          savePackingItems(items);
+          renderPersonalPackingList(container, items);
+        }
+      });
+    });
+
+    container.querySelectorAll('.pp-item-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        items = items.filter(i => i.id !== btn.dataset.deleteId);
+        savePackingItems(items);
+        renderPersonalPackingList(container, items);
+      });
+    });
+
+    container.querySelectorAll('.pp-add-input').forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && input.value.trim()) {
+          e.preventDefault();
+          const newItem = {
+            id: 'custom-' + Date.now(),
+            text: input.value.trim(),
+            category: input.dataset.cat,
+            categoryIcon: input.dataset.catIcon,
+            checked: false,
+            isCustom: true,
+          };
+          items.push(newItem);
+          savePackingItems(items);
+          renderPersonalPackingList(container, items);
+        }
+      });
+    });
+
+    container.querySelectorAll('.pp-cat-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const target = document.getElementById('pp-' + header.dataset.ppToggle);
+        if (target) {
+          target.classList.toggle('collapsed');
+          header.classList.toggle('collapsed');
+        }
+      });
+    });
+  }
+
+  function savePackingItems(items) {
+    localStorage.setItem('sr-packing-items', JSON.stringify(items));
+    // Sync to server if authenticated
+    if (Auth.isLoggedIn()) {
+      Auth.authFetch('/api/packing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items }),
+      }).catch(() => {});
+    }
+  }
+
+  // ---- Notes ----
+  let notesSaveTimeout = null;
+
+  function initNotes() {
+    const textarea = document.getElementById('notesArea');
+    if (!textarea) return;
+
+    // Load from localStorage
+    textarea.value = localStorage.getItem('sr-notes') || '';
+
+    textarea.addEventListener('input', () => {
+      clearTimeout(notesSaveTimeout);
+      notesSaveTimeout = setTimeout(() => {
+        localStorage.setItem('sr-notes', textarea.value);
+        const saved = document.getElementById('notesSaved');
+        if (saved) {
+          saved.classList.remove('hidden');
+          setTimeout(() => saved.classList.add('hidden'), 2000);
+        }
+        // Sync to server
+        if (Auth.isLoggedIn()) {
+          Auth.authFetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: textarea.value }),
+          }).catch(() => {});
+        }
+      }, 2000);
+    });
   }
 
   // ============================================
