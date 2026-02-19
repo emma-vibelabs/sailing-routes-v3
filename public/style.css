@@ -1231,42 +1231,135 @@ body {
 }
 
 /* ============================================
-   MOBILE
+   MOBILE — Content-First with Map Toggle
    ============================================ */
 @media (max-width: 768px) {
+  /* Layout: sidebar tar hele skjermen, kart er overlay */
   .main-layout {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .sidebar {
     width: 100%;
-    height: 45dvh;
+    height: calc(100dvh - var(--header-h));
     border-right: none;
-    border-top: 1px solid var(--border-light);
+    order: 1;
   }
 
   .map-container {
-    height: 55dvh;
+    display: none; /* Skjult by default på mobil */
   }
 
+  /* Header: kompakt */
   .top-title { display: none; }
   .top-voter { display: none; }
+  .top-bar-inner { padding: 0 0.75rem; }
 
-  .weather-widget {
+  /* Tab-knapper: litt større touch targets */
+  .tab-btn {
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  /* FAB — "Kart"-knapp */
+  .map-fab {
+    display: flex;
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 900;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1.1rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 28px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .map-fab:active {
+    transform: scale(0.95);
+  }
+
+  .map-fab svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Map overlay — fullskjerm */
+  .map-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--bg);
+    flex-direction: column;
+  }
+
+  .map-overlay.open {
+    display: flex;
+  }
+
+  .map-overlay .map-overlay-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    background: rgba(247,245,242,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    flex-shrink: 0;
+  }
+
+  .map-overlay-close {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .map-overlay .map-container {
+    display: block;
+    flex: 1;
+    height: auto;
+  }
+
+  .map-overlay .weather-widget {
     bottom: 0.75rem;
-    font-size: 0.7rem;
-    padding: 0.4rem 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.45rem 0.8rem;
     gap: 0.5rem;
   }
 
-  .map-legend {
-    display: none;
+  .map-overlay .map-legend {
+    display: block;
+    bottom: 3.5rem;
+    right: 0.75rem;
+    font-size: 0.68rem;
+    padding: 0.5rem 0.7rem;
   }
 
+  /* Kart-kort over sidebar */
+  .route-card-hero { height: 120px; }
+
+  /* Stopp-grid: 2 kolonner på mobil */
   .stops-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Stats og vær: tilpass */
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1274,17 +1367,57 @@ body {
   .weather-cards {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* Touch targets: min 44px */
+  .btn-detail, .btn-vote {
+    padding: 0.6rem;
+    font-size: 0.82rem;
+    min-height: 44px;
+  }
+
+  .vote-card {
+    padding: 0.85rem;
+    min-height: 48px;
+  }
+
+  .region-pill {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .detail-back {
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .itinerary-row {
+    padding: 0.65rem 0;
+    min-height: 48px;
+  }
+
+  /* Vote button: sticky bottom */
+  .detail-vote-btn {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-radius: 0;
+    margin: 1rem -1rem 0;
+    width: calc(100% + 2rem);
+    padding: 1rem;
+    font-size: 0.92rem;
+  }
+}
+
+/* Skjul FAB + overlay på desktop */
+@media (min-width: 769px) {
+  .map-fab { display: none; }
+  .map-overlay { display: none !important; }
 }
 
 @media (max-width: 480px) {
-  .sidebar {
-    height: 50dvh;
-  }
-
-  .map-container {
-    height: 50dvh;
-  }
-
   .entry-title {
     font-size: 2.4rem;
   }
@@ -1292,4 +1425,10 @@ body {
   .tab-panel {
     padding: 0.75rem;
   }
+
+  .stops-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .route-card-hero { height: 100px; }
 }

@@ -16,6 +16,18 @@
   let currentStopFilter = 'alle';
   let voteSelection = null;
 
+  // ---- Mobile state ----
+  let isMobile = window.innerWidth <= 768;
+  let mapOverlayOpen = false;
+
+  window.addEventListener('resize', () => {
+    const wasMobile = isMobile;
+    isMobile = window.innerWidth <= 768;
+    if (wasMobile !== isMobile && map) {
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+  });
+
   // ---- Elements ----
   const screens = {
     entry: document.getElementById('entry'),
@@ -103,6 +115,11 @@
     renderStopsPanel();
     renderVotePanel();
     fetchTally();
+
+    // Wire mobile FAB
+    if (isMobile) {
+      initMobileMap();
+    }
   });
 
   // ---- Tabs ----
@@ -217,6 +234,14 @@
     document.querySelectorAll('.route-card').forEach(card => {
       card.classList.toggle('selected', card.dataset.routeId === routeId);
     });
+
+    // On mobile: update FAB to show route name
+    if (isMobile && !mapOverlayOpen) {
+      const fab = document.getElementById('mapFab');
+      if (fab && route) {
+        fab.querySelector('span').textContent = route.name;
+      }
+    }
   }
 
   function resetMapView() {
@@ -230,6 +255,11 @@
     });
     map.setView([37.5, 25.0], 7, { animate: true, duration: 0.6 });
     document.getElementById('activeRouteName').textContent = '';
+
+    if (isMobile) {
+      const fab = document.getElementById('mapFab');
+      if (fab) fab.querySelector('span').textContent = 'Kart';
+    }
   }
 
   function renderLegend() {
@@ -699,6 +729,43 @@
         </div>
       `).join('')}
     `;
+  }
+
+  // ============================================
+  // MOBILE MAP OVERLAY
+  // ============================================
+  function initMobileMap() {
+    const fab = document.getElementById('mapFab');
+    const overlay = document.getElementById('mapOverlay');
+    const closeBtn = document.getElementById('mapOverlayClose');
+
+    if (!fab || !overlay) return;
+
+    // Move map-container into overlay
+    const mapContainer = document.querySelector('.map-container');
+    overlay.appendChild(mapContainer);
+    mapContainer.style.display = 'block';
+
+    fab.addEventListener('click', () => {
+      overlay.classList.add('open');
+      mapOverlayOpen = true;
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        if (map) map.invalidateSize();
+        // If a route is selected, zoom to it
+        if (activeRouteId && routeLayers[activeRouteId]) {
+          map.fitBounds(routeLayers[activeRouteId].polyline.getBounds(), {
+            padding: [50, 50], maxZoom: 10, animate: true, duration: 0.4
+          });
+        }
+      }, 50);
+    });
+
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('open');
+      mapOverlayOpen = false;
+      document.body.style.overflow = '';
+    });
   }
 
 })();
