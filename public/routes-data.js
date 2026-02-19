@@ -929,6 +929,7 @@ window.ROUTES_DATA = [
         lng: 25.0620,
         nm: 22,
         hours: 4.0,
+        waypoints: [[37.71, 24.72], [37.68, 24.78], [37.65, 24.90]],
         highlight: "Kunstnarlandsby, marmorverkstadar, duvehus",
         isRest: false,
         image: "Tinos"
@@ -1013,6 +1014,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 24,
         hours: 4.4,
+        waypoints: [[37.64, 23.97], [37.65, 23.86], [37.71, 23.75], [37.82, 23.72]],
         highlight: "Siste etappe langs Attika-kysten til Athen",
         isRest: false,
         image: "Alimos Marina"
@@ -1265,6 +1267,7 @@ window.ROUTES_DATA = [
         lng: 24.0250,
         nm: 24,
         hours: 4.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97]],
         highlight: "Poseidon-tempelet i solnedgang, ankring for natta",
         isRest: false,
         image: "Cape Sounion"
@@ -1289,6 +1292,7 @@ window.ROUTES_DATA = [
         lng: 24.5600,
         nm: 62,
         hours: 11.3,
+        waypoints: [[38.05, 24.45], [38.13, 24.60], [38.40, 24.65], [38.65, 24.58]],
         highlight: "Vill oey med Skyros-ponni, Rupert Brooke sitt gravsted",
         isRest: false,
         image: "Skyros"
@@ -1397,7 +1401,8 @@ window.ROUTES_DATA = [
         lng: 24.2300,
         nm: 38,
         hours: 6.9,
-        highlight: "Tilbake soerover, kjent farvatn",
+        waypoints: [[38.50, 24.20], [38.30, 24.35], [38.15, 24.55], [38.13, 24.60], [38.05, 24.45]],
+        highlight: "Tilbake soerover langs Evias austkyst",
         isRest: false,
         image: "Evia Soer"
       },
@@ -1619,6 +1624,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 24,
         hours: 4.4,
+        waypoints: [[37.64, 23.97], [37.65, 23.86], [37.71, 23.75], [37.82, 23.72]],
         highlight: "Siste seildag langs Attika-kysten tilbake til Athen",
         isRest: false,
         image: "Alimos Marina"

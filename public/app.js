@@ -168,7 +168,12 @@
   }
 
   function drawRoute(route) {
-    const coords = route.stops.map(s => [s.lat, s.lng]);
+    const coords = [];
+    route.stops.forEach(s => {
+      // Insert intermediate waypoints (routing around land) before this stop
+      if (s.waypoints) s.waypoints.forEach(wp => coords.push(wp));
+      coords.push([s.lat, s.lng]);
+    });
     const polyline = L.polyline(coords, {
       color: route.color,
       weight: 3,
