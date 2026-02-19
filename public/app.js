@@ -27,8 +27,15 @@
 
   // ---- Helpers ----
   function unsplash(id, w, h) {
-    if (!id) return `https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=${w||400}&h=${h||300}&fit=crop`;
-    return `https://images.unsplash.com/photo-${id}?w=${w||400}&h=${h||300}&fit=crop`;
+    // First check if id is a destination name in IMAGE_URLS
+    const urls = window.IMAGE_URLS || {};
+    const baseUrl = urls[id] || urls['greek-island'];
+    if (baseUrl) return baseUrl + '?w=' + (w||400) + '&h=' + (h||300) + '&fit=crop&auto=format';
+    // Fallback for long-format IDs (contain hyphen and digits)
+    if (id && id.includes('-') && /\d/.test(id)) {
+      return 'https://images.unsplash.com/photo-' + id + '?w=' + (w||400) + '&h=' + (h||300) + '&fit=crop&auto=format';
+    }
+    return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=' + (w||400) + '&h=' + (h||300) + '&fit=crop&auto=format';
   }
 
   // Robust slug: strip " — …", " (…)", "(retur)", "(hviledag)" etc, then slugify

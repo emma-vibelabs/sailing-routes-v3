@@ -24,7 +24,7 @@ window.ROUTES_DATA = [
     startPort: "Alimos Marina",
     endPort: "Alimos Marina",
     bestFor: "Nybegynnere, kultur, historie",
-    heroImage: "GkBz48Re6BQ",
+    heroImage: "Hydra",
     weather: {
       airDay: "18-23\u00b0C",
       airNight: "12-15\u00b0C",
@@ -43,7 +43,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang fra Athen",
         isRest: false,
-        image: "nN1LqD3i7EU"
+        image: "Alimos Marina"
       },
       {
         day: 1,
@@ -55,7 +55,7 @@ window.ROUTES_DATA = [
         hours: 3.1,
         highlight: "Afaia-tempelet, pistasjenotter, sjarmerande hamn",
         isRest: false,
-        image: "gFbCpEBHy0c"
+        image: "Aegina"
       },
       {
         day: 2,
@@ -67,7 +67,7 @@ window.ROUTES_DATA = [
         hours: 3.1,
         highlight: "Smal kanal mellom Poros og Peloponnese, klokkertaarn",
         isRest: false,
-        image: "RTx8o-kL4JA"
+        image: "Poros"
       },
       {
         day: 3,
@@ -79,7 +79,7 @@ window.ROUTES_DATA = [
         hours: 2.2,
         highlight: "Bilfri oey, eselpakking, kunstgallerier",
         isRest: false,
-        image: "DaNcSHon4bY"
+        image: "Hydra"
       },
       {
         day: 4,
@@ -91,7 +91,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Utforsk Hydra til fots, svoemming i Vlychos-bukta",
         isRest: true,
-        image: "SxRAhK_DKOQ"
+        image: "Hydra"
       },
       {
         day: 5,
@@ -103,7 +103,7 @@ window.ROUTES_DATA = [
         hours: 3.3,
         highlight: "Historisk sjoefartsmuseum, dufta av furu",
         isRest: false,
-        image: "T3mKJXfdims"
+        image: "Spetses"
       },
       {
         day: 6,
@@ -115,7 +115,7 @@ window.ROUTES_DATA = [
         hours: 0.9,
         highlight: "Beskyttet bukt, fantastiske sjoemat-restaurantar",
         isRest: false,
-        image: "YI_9SivVt_s"
+        image: "Porto Heli"
       },
       {
         day: 7,
@@ -127,7 +127,7 @@ window.ROUTES_DATA = [
         hours: 7.6,
         highlight: "Middelalderby i fjellet, magisk om kvelden",
         isRest: false,
-        image: "bqe0J0b26gU"
+        image: "Monemvasia"
       },
       {
         day: 8,
@@ -139,7 +139,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Utforsk festningsbyen, vinsmaking, solnedgang fraa murene",
         isRest: true,
-        image: "jSgWc2GCPKA"
+        image: "Monemvasia"
       },
       {
         day: 9,
@@ -151,7 +151,7 @@ window.ROUTES_DATA = [
         hours: 2.5,
         highlight: "Simos-stranda \u2014 Hellas' vakraste strand",
         isRest: false,
-        image: "OqtafYT5kTw"
+        image: "Elafonisos"
       },
       {
         day: 10,
@@ -163,7 +163,7 @@ window.ROUTES_DATA = [
         hours: 2.5,
         highlight: "Avsides oey, venetiansk borg, rolig atmosfaere",
         isRest: false,
-        image: "x0bLsqHq1kM"
+        image: "Kythira"
       },
       {
         day: 11,
@@ -175,7 +175,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Tilbake nordover, siste kveld i den magiske festningsbyen",
         isRest: false,
-        image: "bqe0J0b26gU"
+        image: "Monemvasia"
       },
       {
         day: 12,
@@ -187,7 +187,7 @@ window.ROUTES_DATA = [
         hours: 7.6,
         highlight: "Lang seildag nordover, stopp for lunsj undervegs",
         isRest: false,
-        image: "T3mKJXfdims"
+        image: "Spetses"
       },
       {
         day: 13,
@@ -199,7 +199,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Siste seildag gjennom den smale kanalen",
         isRest: false,
-        image: "RTx8o-kL4JA"
+        image: "Poros"
       },
       {
         day: 14,
@@ -211,7 +211,7 @@ window.ROUTES_DATA = [
         hours: 6.0,
         highlight: "Tilbake til Athen, levering av baat",
         isRest: false,
-        image: "nN1LqD3i7EU"
+        image: "Alimos Marina"
       }
     ]
   },
@@ -234,7 +234,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Lavrion",
     bestFor: "Middels erfarne, fotografi, mat",
-    heroImage: "hwLAI5lRhdM",
+    heroImage: "Milos",
     weather: {
       airDay: "20-26\u00b0C",
       airNight: "14-18\u00b0C",
@@ -253,7 +253,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang fra soeroest-Attika",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -265,7 +265,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Kea-loeva, hyggelig hamn, naer Athen men roleg",
         isRest: false,
-        image: "3Z70SDuYs5g"
+        image: "Kea"
       },
       {
         day: 2,
@@ -277,7 +277,7 @@ window.ROUTES_DATA = [
         hours: 2.4,
         highlight: "Varme kjelder ved sjoen, avslappa atmosfaere",
         isRest: false,
-        image: "vVIwtmqsIuk"
+        image: "Kythnos"
       },
       {
         day: 3,
@@ -289,7 +289,7 @@ window.ROUTES_DATA = [
         hours: 3.6,
         highlight: "Kvit Chora paa toppen, gammal gruveoey, fin strand",
         isRest: false,
-        image: "dBiNz8RI4jA"
+        image: "Serifos"
       },
       {
         day: 4,
@@ -301,7 +301,7 @@ window.ROUTES_DATA = [
         hours: 2.7,
         highlight: "Mathovudstaden i Kykladane, keramikk, Chryssopigi-klosteret",
         isRest: false,
-        image: "ZLN7s1kYXXE"
+        image: "Sifnos"
       },
       {
         day: 5,
@@ -313,7 +313,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Vandring til Kastro, matlagingskurs, keramikkverkstad",
         isRest: true,
-        image: "4gKHjKG7ty4"
+        image: "Sifnos"
       },
       {
         day: 6,
@@ -325,7 +325,7 @@ window.ROUTES_DATA = [
         hours: 4.7,
         highlight: "Vulkansk oey, Sarakiniko maaneroverflate, fargerike fiskarhus",
         isRest: false,
-        image: "4xpJIbO6q8A"
+        image: "Milos"
       },
       {
         day: 7,
@@ -337,7 +337,7 @@ window.ROUTES_DATA = [
         hours: 1.1,
         highlight: "Sjoerovargrotene, snorkling i krystallklart vatn",
         isRest: false,
-        image: "6ArTTluciuA"
+        image: "Milos"
       },
       {
         day: 8,
@@ -349,7 +349,7 @@ window.ROUTES_DATA = [
         hours: 5.8,
         highlight: "Dramatiske klipper, Chora med utsikt, den skjulte perla",
         isRest: false,
-        image: "kSpFOGfzhAs"
+        image: "Folegandros"
       },
       {
         day: 9,
@@ -361,7 +361,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Vandring til Panagia-kyrkja paa klippen, solnedgang fraa Chora",
         isRest: true,
-        image: "TVllFyGaIBA"
+        image: "Folegandros"
       },
       {
         day: 10,
@@ -373,7 +373,7 @@ window.ROUTES_DATA = [
         hours: 4.2,
         highlight: "Mylopotas strand, livleg natteliv, vakker Chora",
         isRest: false,
-        image: "f77Bh3inUpE"
+        image: "Ios"
       },
       {
         day: 11,
@@ -385,7 +385,7 @@ window.ROUTES_DATA = [
         hours: 4.7,
         highlight: "Fargerike fiskarbaat i hamna, gourmetrestaurantar",
         isRest: false,
-        image: "mxYnpKozFKQ"
+        image: "Paros"
       },
       {
         day: 12,
@@ -397,7 +397,7 @@ window.ROUTES_DATA = [
         hours: 1.6,
         highlight: "Portara-tempelet, stoerste oey i Kykladane, groen innland",
         isRest: false,
-        image: "qCrKTET_09o"
+        image: "Naxos"
       },
       {
         day: 13,
@@ -409,7 +409,7 @@ window.ROUTES_DATA = [
         hours: 5.5,
         highlight: "Kykladane sin hovudstad, neoklassisk arkitektur, Apollon-teateret",
         isRest: false,
-        image: "KRsNg1JfKJc"
+        image: "Syros"
       },
       {
         day: 14,
@@ -421,7 +421,7 @@ window.ROUTES_DATA = [
         hours: 9.1,
         highlight: "Siste seildag tilbake, moglegheit for stopp ved Kea",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       }
     ]
   },
@@ -444,7 +444,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Lavrion",
     bestFor: "Erfarne seglare, fotografi, heilskapeleg Kykladane-oppleving",
-    heroImage: "JEhB_bpnMqM",
+    heroImage: "Santorini",
     weather: {
       airDay: "22-28\u00b0C",
       airNight: "16-20\u00b0C",
@@ -463,7 +463,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang fra Lavrion, soeroest-Attika",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -475,7 +475,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Foerste natt, avslappa overgang fraa fastlandet",
         isRest: false,
-        image: "3Z70SDuYs5g"
+        image: "Kea"
       },
       {
         day: 2,
@@ -487,7 +487,7 @@ window.ROUTES_DATA = [
         hours: 2.4,
         highlight: "Varme kjelder, dobbeltstranda Kolona",
         isRest: false,
-        image: "vVIwtmqsIuk"
+        image: "Kythnos"
       },
       {
         day: 3,
@@ -499,7 +499,7 @@ window.ROUTES_DATA = [
         hours: 3.6,
         highlight: "Kvit Chora, roleg gruveoey, fin ankerplass",
         isRest: false,
-        image: "dBiNz8RI4jA"
+        image: "Serifos"
       },
       {
         day: 4,
@@ -511,7 +511,7 @@ window.ROUTES_DATA = [
         hours: 2.7,
         highlight: "Matparadiset i Kykladane",
         isRest: false,
-        image: "ZLN7s1kYXXE"
+        image: "Sifnos"
       },
       {
         day: 5,
@@ -523,7 +523,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Sarakiniko, Kleftiko, fargerike Klima-fiskarhus",
         isRest: false,
-        image: "4xpJIbO6q8A"
+        image: "Milos"
       },
       {
         day: 6,
@@ -535,7 +535,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Dramatisk Chora, Panagia-kyrkja",
         isRest: false,
-        image: "kSpFOGfzhAs"
+        image: "Folegandros"
       },
       {
         day: 7,
@@ -547,7 +547,7 @@ window.ROUTES_DATA = [
         hours: 5.5,
         highlight: "Caldera-utsikt, vulkanske klipper, vinturar",
         isRest: false,
-        image: "pBSHUCNx1hM"
+        image: "Santorini"
       },
       {
         day: 8,
@@ -559,7 +559,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Oia solnedgang, Fira, vinsmaking paa Santo Wines",
         isRest: true,
-        image: "JEhB_bpnMqM"
+        image: "Santorini"
       },
       {
         day: 9,
@@ -571,7 +571,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Mylopotas strand, Homers grav",
         isRest: false,
-        image: "f77Bh3inUpE"
+        image: "Ios"
       },
       {
         day: 10,
@@ -583,7 +583,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Portara, gamal bydel, lengste sandstrender i Kykladane",
         isRest: false,
-        image: "qCrKTET_09o"
+        image: "Naxos"
       },
       {
         day: 11,
@@ -595,7 +595,7 @@ window.ROUTES_DATA = [
         hours: 1.6,
         highlight: "Panagia Ekatontapyliani, gamlebyen, Naoussa",
         isRest: false,
-        image: "mxYnpKozFKQ"
+        image: "Paros"
       },
       {
         day: 12,
@@ -607,7 +607,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Vindmoellene, Little Venice, kosmopolitisk atmosfaere",
         isRest: false,
-        image: "UDqnAFohxJo"
+        image: "Mykonos"
       },
       {
         day: 13,
@@ -619,7 +619,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Neoklassisk perle, Kykladane sin hovudstad",
         isRest: false,
-        image: "KRsNg1JfKJc"
+        image: "Syros"
       },
       {
         day: 14,
@@ -631,7 +631,7 @@ window.ROUTES_DATA = [
         hours: 9.1,
         highlight: "Lang siste seildag nordvestover til Attika",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       }
     ]
   },
@@ -654,7 +654,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Lavrion",
     bestFor: "Rolege oeyar, snorkling, autentisk Hellas",
-    heroImage: "JYGnB9gTCls",
+    heroImage: "Amorgos",
     weather: {
       airDay: "21-27\u00b0C",
       airNight: "15-19\u00b0C",
@@ -673,7 +673,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang fra Lavrion",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -685,7 +685,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Foerste stopp, roleg overgang",
         isRest: false,
-        image: "3Z70SDuYs5g"
+        image: "Kea"
       },
       {
         day: 2,
@@ -697,7 +697,7 @@ window.ROUTES_DATA = [
         hours: 2.4,
         highlight: "Varme kjelder, Kolona dobbeltbeach",
         isRest: false,
-        image: "vVIwtmqsIuk"
+        image: "Kythnos"
       },
       {
         day: 3,
@@ -709,7 +709,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Neoklassisk hovudstad, proviantering",
         isRest: false,
-        image: "KRsNg1JfKJc"
+        image: "Syros"
       },
       {
         day: 4,
@@ -721,7 +721,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Vindmoellene, Little Venice",
         isRest: false,
-        image: "UDqnAFohxJo"
+        image: "Mykonos"
       },
       {
         day: 5,
@@ -733,7 +733,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Portara, base for dei smaa oeyane",
         isRest: false,
-        image: "qCrKTET_09o"
+        image: "Naxos"
       },
       {
         day: 6,
@@ -745,7 +745,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Turkis vatn, naturlege sjoepoolar, bilfri",
         isRest: false,
-        image: "QU-zhliIV8Q"
+        image: "Koufonisia"
       },
       {
         day: 7,
@@ -757,7 +757,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Pori-stranda, kajakktur rundt oeyane, sjoemat ved hamna",
         isRest: true,
-        image: "0ZPSX_mQ3xI"
+        image: "Koufonisia"
       },
       {
         day: 8,
@@ -769,7 +769,7 @@ window.ROUTES_DATA = [
         hours: 1.1,
         highlight: "Minste busette oey, ekte gresk kvardagsliv",
         isRest: false,
-        image: "HlNcigvUi4Q"
+        image: "Schinoussa"
       },
       {
         day: 9,
@@ -781,7 +781,7 @@ window.ROUTES_DATA = [
         hours: 3.5,
         highlight: "Hozoviotissa-klosteret i fjellveggen, Le Grand Bleu-oey",
         isRest: false,
-        image: "mJaD10XeD7w"
+        image: "Amorgos"
       },
       {
         day: 10,
@@ -793,7 +793,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Vandring til klosteret, Agia Anna strand, Chora",
         isRest: true,
-        image: "KIGSmBSXlYY"
+        image: "Amorgos"
       },
       {
         day: 11,
@@ -805,7 +805,7 @@ window.ROUTES_DATA = [
         hours: 5.8,
         highlight: "Mylopotas, Chora med utsikt",
         isRest: false,
-        image: "f77Bh3inUpE"
+        image: "Ios"
       },
       {
         day: 12,
@@ -817,7 +817,7 @@ window.ROUTES_DATA = [
         hours: 4.7,
         highlight: "Siste oeybesok, proviantering",
         isRest: false,
-        image: "mxYnpKozFKQ"
+        image: "Paros"
       },
       {
         day: 13,
@@ -829,7 +829,7 @@ window.ROUTES_DATA = [
         hours: 7.6,
         highlight: "Lang seildag vestover, kvit Chora i solnedgang",
         isRest: false,
-        image: "dBiNz8RI4jA"
+        image: "Serifos"
       },
       {
         day: 14,
@@ -841,7 +841,7 @@ window.ROUTES_DATA = [
         hours: 7.6,
         highlight: "Siste seildag heim via Kea-kanalen",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       }
     ]
   },
@@ -864,7 +864,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Lavrion",
     bestFor: "Kulturinteresserte, vandring, arkeologi, kortare tur",
-    heroImage: "E3WXg0NjCeM",
+    heroImage: "Delos",
     weather: {
       airDay: "19-25\u00b0C",
       airNight: "13-17\u00b0C",
@@ -883,7 +883,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang fra Lavrion",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -895,7 +895,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Kea-loeva, vandring til Ioulida",
         isRest: false,
-        image: "3Z70SDuYs5g"
+        image: "Kea"
       },
       {
         day: 2,
@@ -907,7 +907,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Beskytta vik paa vestsida, fargerik landsby",
         isRest: false,
-        image: "5VLDRnmFaEs"
+        image: "Andros"
       },
       {
         day: 3,
@@ -919,7 +919,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Vandring langs dei kjende Andros-stiane, vasstrav, Chora med museum",
         isRest: true,
-        image: "tT89ixqdkKA"
+        image: "Andros"
       },
       {
         day: 4,
@@ -931,7 +931,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Kunstnarlandsby, marmorverkstadar, duvehus",
         isRest: false,
-        image: "1KjqBwSDeK0"
+        image: "Tinos"
       },
       {
         day: 5,
@@ -943,7 +943,7 @@ window.ROUTES_DATA = [
         hours: 3.6,
         highlight: "Vindmoellene, Little Venice, shopping",
         isRest: false,
-        image: "UDqnAFohxJo"
+        image: "Mykonos"
       },
       {
         day: 6,
@@ -955,7 +955,7 @@ window.ROUTES_DATA = [
         hours: 0.9,
         highlight: "UNESCO-arkeologisk stad, Apollon sin heilage oey, overnatting forbode i land",
         isRest: false,
-        image: "E3WXg0NjCeM"
+        image: "Delos"
       },
       {
         day: 7,
@@ -967,7 +967,7 @@ window.ROUTES_DATA = [
         hours: 3.3,
         highlight: "Neoklassisk perle, Apollon-teateret, loukoumia",
         isRest: false,
-        image: "KRsNg1JfKJc"
+        image: "Syros"
       },
       {
         day: 8,
@@ -979,7 +979,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Vandring til Ano Syros, Vaporia-kvarteret, gresk opera",
         isRest: true,
-        image: "HdY3kMGSBvQ"
+        image: "Syros"
       },
       {
         day: 9,
@@ -991,7 +991,7 @@ window.ROUTES_DATA = [
         hours: 5.1,
         highlight: "Varme kjelder, siste roleg kveld",
         isRest: false,
-        image: "vVIwtmqsIuk"
+        image: "Kythnos"
       },
       {
         day: 10,
@@ -1003,7 +1003,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Poseidon-tempelet i solnedgang, ankring under klippene",
         isRest: false,
-        image: "SB05hDaCnEE"
+        image: "Cape Sounion"
       },
       {
         day: 11,
@@ -1015,7 +1015,7 @@ window.ROUTES_DATA = [
         hours: 0.9,
         highlight: "Kort siste etappe, levering av baat",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       }
     ]
   },
@@ -1038,7 +1038,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Rhodes Marina",
     bestFor: "Erfarne seglare, eventyr, variert kultur",
-    heroImage: "ZQ1urTqfBtY",
+    heroImage: "Symi",
     weather: {
       airDay: "24-30\u00b0C",
       airNight: "18-22\u00b0C",
@@ -1057,7 +1057,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang mot soeroest",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -1069,7 +1069,7 @@ window.ROUTES_DATA = [
         hours: 2.9,
         highlight: "Foerste stopp, siste ro foer eventyret",
         isRest: false,
-        image: "3Z70SDuYs5g"
+        image: "Kea"
       },
       {
         day: 2,
@@ -1081,7 +1081,7 @@ window.ROUTES_DATA = [
         hours: 6.9,
         highlight: "Hovudstad, proviantering for lange etappar",
         isRest: false,
-        image: "KRsNg1JfKJc"
+        image: "Syros"
       },
       {
         day: 3,
@@ -1093,7 +1093,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Siste Kyklad-oey foer Dodekanesene",
         isRest: false,
-        image: "UDqnAFohxJo"
+        image: "Mykonos"
       },
       {
         day: 4,
@@ -1105,7 +1105,7 @@ window.ROUTES_DATA = [
         hours: 12.4,
         highlight: "Johannes' openbarings-oey, UNESCO-klosteret, lang seildag",
         isRest: false,
-        image: "9VFkRtDKrGM"
+        image: "Patmos"
       },
       {
         day: 5,
@@ -1117,7 +1117,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Apokalypsegrotta, St. Johannes-klosteret, Chora",
         isRest: true,
-        image: "cNDGZ2sQ3Bo"
+        image: "Patmos"
       },
       {
         day: 6,
@@ -1129,7 +1129,7 @@ window.ROUTES_DATA = [
         hours: 2.0,
         highlight: "Miniatyroey med turkis bukter, avslappa tempo",
         isRest: false,
-        image: "QKrLdko1ehc"
+        image: "Lipsi"
       },
       {
         day: 7,
@@ -1141,7 +1141,7 @@ window.ROUTES_DATA = [
         hours: 2.0,
         highlight: "Art deco-arkitektur fraa Italia-tida, stor naturhamn",
         isRest: false,
-        image: "K2u71wv2eI4"
+        image: "Leros"
       },
       {
         day: 8,
@@ -1153,7 +1153,7 @@ window.ROUTES_DATA = [
         hours: 2.5,
         highlight: "Svampdykkaroey, klatremekka, livleg hamn",
         isRest: false,
-        image: "5lRxNLHfZOY"
+        image: "Kalymnos"
       },
       {
         day: 9,
@@ -1165,7 +1165,7 @@ window.ROUTES_DATA = [
         hours: 1.1,
         highlight: "Hippokrates' platantre, Asklepion, lang sandstrand",
         isRest: false,
-        image: "rn_HaBEYGcY"
+        image: "Kos"
       },
       {
         day: 10,
@@ -1177,7 +1177,7 @@ window.ROUTES_DATA = [
         hours: 4.0,
         highlight: "Aktiv vulkan du kan gaa ned i, uoppdaga perle",
         isRest: false,
-        image: "v-VFgYS1YUQ"
+        image: "Nisyros"
       },
       {
         day: 11,
@@ -1189,7 +1189,7 @@ window.ROUTES_DATA = [
         hours: 6.5,
         highlight: "Hellas' vakraste hamn \u2014 fargerike neoklassiske hus",
         isRest: false,
-        image: "ZQ1urTqfBtY"
+        image: "Symi"
       },
       {
         day: 12,
@@ -1201,7 +1201,7 @@ window.ROUTES_DATA = [
         hours: 4.7,
         highlight: "Middelalder gamlebyen, Riddarborga, Kolossus' stad",
         isRest: false,
-        image: "WkfDrhxDMC8"
+        image: "Rhodes"
       },
       {
         day: 13,
@@ -1213,7 +1213,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Utforsk gamleby, Lindos-akropolisen, strand, avslutning",
         isRest: true,
-        image: "8kMbalz-mm4"
+        image: "Rhodes"
       }
     ]
   },
@@ -1236,7 +1236,7 @@ window.ROUTES_DATA = [
     startPort: "Lavrion",
     endPort: "Lavrion",
     bestFor: "Natur, dyreliv, snorkling, roleg tempo",
-    heroImage: "0QG_JWzv9rI",
+    heroImage: "Skopelos",
     weather: {
       airDay: "20-27\u00b0C",
       airNight: "14-18\u00b0C",
@@ -1255,7 +1255,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Avgang nordover",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       },
       {
         day: 1,
@@ -1267,7 +1267,7 @@ window.ROUTES_DATA = [
         hours: 0.9,
         highlight: "Poseidon-tempelet, ankring for natta",
         isRest: false,
-        image: "SB05hDaCnEE"
+        image: "Cape Sounion"
       },
       {
         day: 2,
@@ -1279,7 +1279,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Venetiansk borg, roleg kystby",
         isRest: false,
-        image: "pfX-GsJMtDY"
+        image: "Evia Soer"
       },
       {
         day: 3,
@@ -1291,7 +1291,7 @@ window.ROUTES_DATA = [
         hours: 11.3,
         highlight: "Vill oey med Skyros-ponni, Rupert Brooke sitt gravsted",
         isRest: false,
-        image: "2xU7rYxsTiM"
+        image: "Skyros"
       },
       {
         day: 4,
@@ -1303,7 +1303,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Chora paa klippen, Skyros-ponniar, folkekunstmuseum",
         isRest: true,
-        image: "Ai2TRdvI6gM"
+        image: "Skyros"
       },
       {
         day: 5,
@@ -1315,7 +1315,7 @@ window.ROUTES_DATA = [
         hours: 13.1,
         highlight: "Port for Nasjonalparken, gamal bydel, dykking",
         isRest: false,
-        image: "i1VQZsU86ok"
+        image: "Alonissos"
       },
       {
         day: 6,
@@ -1327,7 +1327,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Europas stoerste marine verneomraade, munkesel, delfinar",
         isRest: true,
-        image: "lV0wKspGmWI"
+        image: "Alonissos"
       },
       {
         day: 7,
@@ -1339,7 +1339,7 @@ window.ROUTES_DATA = [
         hours: 1.6,
         highlight: "Mamma Mia-oey, 360 kyrkjer, plommediaer",
         isRest: false,
-        image: "pv2ZlDfstXc"
+        image: "Skopelos"
       },
       {
         day: 8,
@@ -1351,7 +1351,7 @@ window.ROUTES_DATA = [
         hours: 2.5,
         highlight: "60+ strender inkl. Koukounaries, livleg by",
         isRest: false,
-        image: "IzmdWT2lW5Q"
+        image: "Skiathos"
       },
       {
         day: 9,
@@ -1363,7 +1363,7 @@ window.ROUTES_DATA = [
         hours: 0,
         highlight: "Lalaria strand (baat), Kastro ruinar, vannsport",
         isRest: true,
-        image: "x4J_92kJBoY"
+        image: "Skiathos"
       },
       {
         day: 10,
@@ -1375,7 +1375,7 @@ window.ROUTES_DATA = [
         hours: 2.5,
         highlight: "Agios Ioannis-kyrkja (Mamma Mia-brurevika)",
         isRest: false,
-        image: "pv2ZlDfstXc"
+        image: "Skopelos"
       },
       {
         day: 11,
@@ -1387,7 +1387,7 @@ window.ROUTES_DATA = [
         hours: 7.6,
         highlight: "Roleg kystby paa Evia, proviantering",
         isRest: false,
-        image: "PsSdvg7GNVI"
+        image: "Kymi"
       },
       {
         day: 12,
@@ -1399,7 +1399,7 @@ window.ROUTES_DATA = [
         hours: 6.9,
         highlight: "Tilbake soerover, kjent farvatn",
         isRest: false,
-        image: "pfX-GsJMtDY"
+        image: "Evia Soer"
       },
       {
         day: 13,
@@ -1411,7 +1411,7 @@ window.ROUTES_DATA = [
         hours: 4.4,
         highlight: "Siste etappe heim, levering av baat",
         isRest: false,
-        image: "QAwciFlS1g4"
+        image: "Lavrion"
       }
     ]
   }

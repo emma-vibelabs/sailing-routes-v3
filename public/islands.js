@@ -33,7 +33,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Ta trikken til Akropolis og tilbake — perfekt siste kveld før avgang",
     localSpecialty: "Freddo espresso — gresk iskaffe som du finner på hvert hjørne",
-    image: "3TyMjJeWjcE"
+    image: "Alimos Marina"
   },
 
   "lavrion": {
@@ -61,7 +61,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk de antikke sølvgruvene i Thorikos — Europas eldste kjente teater ligger like ved",
     localSpecialty: "Lokal honning fra Attika-regionen, parfymert med timian",
-    image: "XpYBMwAl4XY"
+    image: "Lavrion"
   },
 
   "cape-sounion": {
@@ -89,7 +89,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Ankre i bukta og svøm i solnedgangen mens Poseidons tempel lyser gyllen over deg",
     localSpecialty: "Attisk honning med valnøtter — serveres på tavernaen i bukta",
-    image: "tDGYMn2KFOE"
+    image: "Cape Sounion"
   },
 
   // ═══════════════════════════════════════════
@@ -122,7 +122,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Kjøp en pose ristede pistasjenøtter rett fra produsenten på havna og besøk Aphaia-tempelet i solnedgangen",
     localSpecialty: "Pistasjis — laget med ekte Aegina-pistasj, grønnere og smaksrikere enn noe du har prøvd",
-    image: "7MH4ped6_Mo"
+    image: "Aegina"
   },
 
   "poros": {
@@ -150,7 +150,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå opp til klokketårnet ved solnedgang og se utover sundet mens Peloponnes gløder orange",
     localSpecialty: "Sitronlikør laget av frukt fra Lemonodasos-lunden",
-    image: "TGz_8uTYz1s"
+    image: "Poros"
   },
 
   "hydra": {
@@ -179,7 +179,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå kystveien vestover til Kaminia-bukta — en stille fiskerhavn med to tavernaer rett på vannet",
     localSpecialty: "Amygdalota — mandelkaker med rosevann, bakt på øya",
-    image: "LRegYGBkpnk"
+    image: "Hydra"
   },
 
   "spetses": {
@@ -207,7 +207,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Lei en hestevogn rundt øya — 25 km kystlinje med furuskoger som stuper ned i krystallblått vann",
     localSpecialty: "Psarosoupa — tyktflytende fiskesuppe med sitron og egg, en lokal spesialitet",
-    image: "3wPJxh-piRg"
+    image: "Spetses"
   },
 
   "porto-heli": {
@@ -235,7 +235,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Snorkle over de sunkne ruinene av Halieis — murene fra den antikke byen ligger på 1-3 meters dyp",
     localSpecialty: "Argolida-appelsiner — de beste i Hellas, brukt i lokale desserter og juice",
-    image: "7v_eI_C3kgY"
+    image: "Porto Heli"
   },
 
   "monemvasia": {
@@ -263,7 +263,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå opp til den øvre festningen ved solnedgang — utsikten over Lakoniske gulfen er overveldende",
     localSpecialty: "Malvasia-vin — søt dessertvin med 800 års ubrutt tradisjon",
-    image: "U_nlKd_OxKk"
+    image: "Monemvasia"
   },
 
   "elafonisos": {
@@ -291,7 +291,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Ankre mellom de to Simos-buktene og gå over sanddynene ved solnedgang",
     localSpecialty: "Villsamlet kapris fra øya — spises som mezedes med ouzo",
-    image: "K2s_YE031CA"
+    image: "Elafonisos"
   },
 
   "kythira": {
@@ -319,7 +319,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Mylopotamos-fossefallet og den skjulte grotten bak vannet — helt magisk",
     localSpecialty: "Kythira timian-honning — mange kaller den Grekenlands aller beste",
-    image: "oqStl2L5oxI"
+    image: "Kythira"
   },
 
   // ═══════════════════════════════════════════
@@ -351,7 +351,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå den antikke stien fra Korissia til Ioulida (1 time) og besøk Kea-løven — 2600 år gammel og fortsatt majestetisk",
     localSpecialty: "Paspalas — tradisjonsrik grise-charcuterie som kun lages på Kea",
-    image: "vJVCHm0cB_o"
+    image: "Kea"
   },
 
   "kythnos": {
@@ -379,7 +379,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Bad i de varme kildene i Loutra ved solnedgang — naturlig oppvarmet sjøvann i steinbasseng",
     localSpecialty: "Kythniansk sfela — lokalt produsert myk hvitost, spist fersk med honning",
-    image: "6u_FuST7QuU"
+    image: "Kythnos"
   },
 
   "serifos": {
@@ -407,7 +407,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå opp de 300 trinnene til Chora på kveldstid — utsikten over Kykladene i solnedgang er uforglemmelig",
     localSpecialty: "Marathopita — pai fylt med villsamlet fennikel og lokal ost",
-    image: "ATgfRqpFfFI"
+    image: "Serifos"
   },
 
   "sifnos": {
@@ -436,7 +436,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Spis revithada — kikertstuing langkokt over natten i leirovn — den er Sifnos' signaturrett",
     localSpecialty: "Revithada — kikertstuing langkokt over natten i tradisjonell leirovn, kun på søndager i mange tavernaer",
-    image: "RCAhiGJsUUE"
+    image: "Sifnos"
   },
 
   "milos": {
@@ -465,7 +465,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Seil til Kleftiko-grottene tidlig morgen — snorkle gjennom turkise huler og naturlige buer før dagsbåtene kommer",
     localSpecialty: "Pitarakia — små paier med fersk lokal ost og mynte, stekt i olivenolje",
-    image: "LiPFMfxdjEY"
+    image: "Milos"
   },
 
   "folegandros": {
@@ -493,7 +493,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå opp den bratte stien til Panagia-kirken ved solnedgang — 200 meter over havet, opplyst i mørket",
     localSpecialty: "Matsata — hjemmelaget pasta med kje eller kanin i tomatsaus, Folegandros' signaturrett",
-    image: "KlBpIMCfS68"
+    image: "Folegandros"
   },
 
   // ═══════════════════════════════════════════
@@ -526,7 +526,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Spis middag på en av de små tavernaene i Naoussa havn mens fiskebåtene dukker inn i skumringen",
     localSpecialty: "Gouna — soltørket makrell, Paros' signaturdish, servert grillet med sitron",
-    image: "ROn57CBgyMo"
+    image: "Paros"
   },
 
   "naxos": {
@@ -555,7 +555,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå ut til Portara ved solnedgang — den enorme marmorporten rammer inn den perfekte Egeerhavet-solnedgangen",
     localSpecialty: "Kitron-likør — destillert av citron-bladene, finnes i tre varianter (grønn, klar, gul)",
-    image: "zXJE2gJRbvM"
+    image: "Naxos"
   },
 
   "ios": {
@@ -583,7 +583,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå den antikke stien til Homers grav på nordspissen — ensom vandring med panoramautsikt over Sikinos og Santorini",
     localSpecialty: "Skordostoumpi — lokal hvitløk-dipp med mandler, servert til brød",
-    image: "z1GsHKJxbQs"
+    image: "Ios"
   },
 
   "santorini": {
@@ -612,7 +612,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Estate Argyros for vinsmakings — Assyrtiko fra vulkanjord med utsikt over Egeerhavet",
     localSpecialty: "Fava — gul linsepur fra lokalt dyrkede linser, Santorinis nasjonalrett",
-    image: "KLbUohEjb04"
+    image: "Santorini"
   },
 
   "mykonos": {
@@ -641,7 +641,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Ta morgenbåten til Delos — Apollons fødested med Løvenes terrasse og antikke mosaikker — tilbake til lunsj",
     localSpecialty: "Louza — lufttørket svinekjøtt krydret med pepper og allehånde, Mykonos' svar på prosciutto",
-    image: "wJK9eTiEZHY"
+    image: "Mykonos"
   },
 
   "syros": {
@@ -669,7 +669,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Spis loukoumi fra en av de tradisjonelle butikkene i Ermoupoli og besøk det lille Apollon-teateret — en Mini-La Scala",
     localSpecialty: "Loukoumi — gresk lokum med rosevann, Syros' mest kjente eksportvare",
-    image: "c6j6FiJcdNI"
+    image: "Syros"
   },
 
   // ═══════════════════════════════════════════
@@ -701,7 +701,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå kystveien østover fra Chora langs alle buktene — hver sving avslører en ny strand vakrere enn den forrige",
     localSpecialty: "Dagfersk hummer servert enkel med sitron — Koufonisias stolthet",
-    image: "BDcCjRMBHzQ"
+    image: "Koufonisia"
   },
 
   "schinoussa": {
@@ -729,7 +729,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå til Tsigouri-stranden — 15 minutter fra Chora, turkist vann og sannsynligvis helt tom",
     localSpecialty: "Geitekjøtt tilberedt med lokale urter — geitene vandrer fritt over øya",
-    image: "3PeSjpLVq1c"
+    image: "Schinoussa"
   },
 
   "amorgos": {
@@ -757,7 +757,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Hozoviotissa-klosteret — 300 trinn opp klippen, munkene serverer raki og loukoumi på toppen",
     localSpecialty: "Psimeni raki — raki infusert med honning og krydder, servert av munkene i Hozoviotissa",
-    image: "dDsrl7Hz4vA"
+    image: "Amorgos"
   },
 
   // ═══════════════════════════════════════════
@@ -789,7 +789,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå turstien fra Andros by til Achla-stranden via Pythara-fossefallet — Kykladenes beste dagsvandring",
     localSpecialty: "Fourtalia — omelett med lokal pølse og poteter, Andros' hverdagsrett",
-    image: "iJp4zFpVSiM"
+    image: "Andros"
   },
 
   "tinos": {
@@ -818,7 +818,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Pyrgos marmorlandsby — se skulptørene jobbe og besøk Chalepas-museet",
     localSpecialty: "Louza — lufttørket svinekjøtt krydret med allehånde, og lokal Tinos-ost (volaki, kopanisti)",
-    image: "0Bs3et8FYyg"
+    image: "Tinos"
   },
 
   "delos": {
@@ -845,7 +845,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå opp til toppen av Mount Kynthos (113m) for 360-graders utsikt over Kykladene — det var her Apollon ble født",
     localSpecialty: "Ta med proviant fra Mykonos — det finnes ingen restauranter på øya",
-    image: "6rqE76hMecU"
+    image: "Delos"
   },
 
   // ═══════════════════════════════════════════
@@ -877,7 +877,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Apokalypse-grotten tidlig morgen — sprekken i fjellet der Guds stemme angivelig talte er fortsatt synlig",
     localSpecialty: "Pougia — søte buketter med mandler og sukker, Patmos' tradisjonelle gave",
-    image: "bj2AV7dX1NM"
+    image: "Patmos"
   },
 
   "lipsi": {
@@ -905,7 +905,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå til Lienous-stranden — en dobbel turkis bukt 20 minutter fra havnen, perfekt for å forstå hvorfor Odyssevs ble værende",
     localSpecialty: "Lokal muscat-vin — søt dessertvin produsert i svært begrenset mengde",
-    image: "rqOTzJDm8Og"
+    image: "Lipsi"
   },
 
   "leros": {
@@ -933,7 +933,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå gjennom Lakki og opplev 1930-tallets italienske art deco — kino, markedshall og boligkvartaler i fascistisk monumental stil",
     localSpecialty: "Pitaroudia — kikertkaker med mynte og løk, stekt i olivenolje",
-    image: "v9Jz3s9XDEQ"
+    image: "Leros"
   },
 
   "kalymnos": {
@@ -961,7 +961,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk den fjordlignende Vathy-bukta med seilbåten — omgitt av stupbratte klipper og olivenlunder",
     localSpecialty: "Mermizeli — lokal honningkake med sesamfrø, tradisjonelt servert til svampdykkerne",
-    image: "4JFycQPJdqA"
+    image: "Kalymnos"
   },
 
   "kos": {
@@ -989,7 +989,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Asklepieion ved soloppgang — terrassene med utsikt over Tyrkia i morgenlyset, nesten alene",
     localSpecialty: "Koukouvagia-brød — «ugle-brød» formet som en fugl, bakt til påske men tilgjengelig hele sommeren",
-    image: "P7P4lVsN5co"
+    image: "Kos"
   },
 
   "nisyros": {
@@ -1017,7 +1017,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå ned i Stefanos-krateret — svovelgass bobler opp fra sprekker i den varme bakken under føttene",
     localSpecialty: "Soumada — mandeldrikk servert kald, Nisyros' erfriskende signatur",
-    image: "GIuGe_03Lhw"
+    image: "Nisyros"
   },
 
   "symi": {
@@ -1046,7 +1046,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Seil inn i Gialos havn ved solnedgang — pastellhusene gløder gylne og det er et av Grekenlands mest ikoniske syn",
     localSpecialty: "Symi-reker — bittesmå, søte reker kun fra disse farvannene, grillet eller i pasta",
-    image: "kTkm7G7CFIY"
+    image: "Symi"
   },
 
   "rhodes": {
@@ -1075,7 +1075,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå Riddergatens lengde i gamlebyen — middelalderens best bevarte gate i Europa, steinlagt med korsfarersymboler",
     localSpecialty: "Melekouni — energibar fra sesam og honning, tradisjonelt servert i bryllup",
-    image: "OwqLxCvoVpI"
+    image: "Rhodes"
   },
 
   // ═══════════════════════════════════════════
@@ -1107,7 +1107,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Seil til Lalaria-stranden om morgenen — hvite rullesteiner, turkist vann og en naturlig steinbue, helt magisk",
     localSpecialty: "Tyropita Skiathou — lokal ostepai med geiteost foldet i spiralform",
-    image: "6CE8g_TMMIE"
+    image: "Skiathos"
   },
 
   "skopelos": {
@@ -1136,7 +1136,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Gå de 110 trinnene opp til Agios Ioannis Kastri-kapellet — utsikten er like bra som i filmen",
     localSpecialty: "Skopelos plommepai — kotopita med lokale svisker og kanel, søt-salt magi",
-    image: "4kl8rrTFhc4"
+    image: "Skopelos"
   },
 
   "alonissos": {
@@ -1164,7 +1164,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Ta en båttur inn i marinparken — sjansen for å se munkeseler er reell, og de ubebodde øyene er urørte",
     localSpecialty: "Villsamlet sjøfennikel (kritamo) marinert i olje og eddik — vokser på klippene",
-    image: "V0cjhv7CGXY"
+    image: "Alonissos"
   },
 
   "skyros": {
@@ -1192,7 +1192,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Besøk Skyros-ponniene på den søndre delen av øya — de halvville hestene lever mellom steinene",
     localSpecialty: "Skyros lobster pasta — hummer kokt med pasta i tomatsaus, øyas stolthet",
-    image: "T2BFiJxkn20"
+    image: "Skyros"
   },
 
   // ═══════════════════════════════════════════
@@ -1224,7 +1224,7 @@ window.ISLANDS_DATA = {
     ],
     mustDo: "Se tidevannsstrømmen snu i Euripos-sundet fra Chalkis-broen — et naturfenomen som forbauset Aristoteles",
     localSpecialty: "Figs of Evia — PDO-beskyttet fikenvariant, tørket og servert med honning og valnøtter",
-    image: "IMhXaWwi9ug"
+    image: "South Evia"
   }
 
 };
