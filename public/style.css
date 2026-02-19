@@ -1248,42 +1248,6 @@ body {
   color: var(--text-light);
 }
 
-/* ============================================
-   SECTION TOGGLE (Utforsk / Forberedelser)
-   ============================================ */
-.section-toggle {
-  display: flex;
-  background: var(--border-light);
-  border-radius: 8px;
-  padding: 3px;
-  gap: 2px;
-  margin-right: 0.75rem;
-}
-
-.section-btn {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 0.3rem 0.65rem;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-
-.section-btn.active {
-  background: var(--bg-card);
-  color: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.section-btn:hover:not(.active) {
-  color: var(--text);
-}
-
 .entry-prep-link {
   display: inline-block;
   margin-top: 0.75rem;
@@ -1790,6 +1754,129 @@ body {
   font-size: 0.75rem;
   color: var(--text-muted);
   line-height: 1.4;
+}
+
+/* ============================================
+   PREP AUTH CTA (Min side landing)
+   ============================================ */
+.prep-auth-cta {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, rgba(45, 74, 94, 0.05), rgba(45, 138, 110, 0.05));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.5rem;
+}
+
+.prep-cta-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.prep-auth-cta h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.prep-cta-features {
+  list-style: none;
+  text-align: left;
+  max-width: 260px;
+  margin: 0 auto 1.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 2;
+}
+
+.prep-cta-features li::before {
+  content: '✓ ';
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.prep-cta-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.prep-cta-register {
+  padding: 0.65rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.prep-cta-register:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.prep-cta-login {
+  padding: 0.65rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.prep-cta-login:hover {
+  border-color: var(--accent);
+}
+
+/* User card (logged in) */
+.prep-user-card {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow);
+}
+
+.prep-user-greeting {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.prep-user-countdown {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.prep-user-go {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.prep-user-go:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 /* ============================================
@@ -2350,10 +2437,10 @@ body {
   .prep-hero { padding-top: 1rem; margin-bottom: 1.5rem; }
   .prep-nav-cards { grid-template-columns: 1fr; gap: 0.75rem; }
   .prep-card { padding: 1rem; }
-  .section-toggle { margin-right: 0.5rem; }
-  .section-btn { font-size: 0.68rem; padding: 0.25rem 0.5rem; }
   .prep-article-section { margin-bottom: 1.5rem; }
   .packing-item { min-height: 44px; padding: 0.55rem 0; }
+  .prep-auth-cta { padding: 1.5rem 1rem; }
+  .prep-cta-buttons { flex-direction: column; gap: 0.5rem; }
 }
 
 @media (max-width: 480px) {

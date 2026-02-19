@@ -3,7 +3,7 @@
    Basert på research av 25+ kilder
    ============================================ */
 
-const PREP_CONTENT = {
+var PREP_CONTENT = {
 
   // ---- LIVET OM BORD ----
   boatLife: {

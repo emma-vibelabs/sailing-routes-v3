@@ -13,7 +13,6 @@
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
   let activeRouteId = null;
   let currentTab = 'routes';
-  let currentSection = 'explore'; // 'explore' | 'prep'
   let currentPrepView = 'landing'; // 'landing' | 'boat-life' | 'seasickness' | 'packing' | 'personal'
   let currentStopFilter = 'alle';
   let voteSelection = null;
@@ -115,9 +114,7 @@
     showScreen('app');
     renderRoutesList();
     renderStopsPanel();
-    renderVotePanel();
     fetchTally();
-    initSectionToggle();
     initPrepSection();
 
     // Check for existing auth session
@@ -138,33 +135,51 @@
     showScreen('app');
     renderRoutesList();
     renderStopsPanel();
-    renderVotePanel();
     fetchTally();
-    initSectionToggle();
     initPrepSection();
     Auth.getSession().catch(() => {});
     if (isMobile) initMobileMap();
-    // Go directly to prep
-    switchSection('prep');
+    // Go directly to Min side
+    document.querySelector('[data-tab="minside"]').click();
   });
 
-  // ---- Tabs ----
+  // ---- Tabs (Ruter / Stopp / Min side) ----
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
       currentTab = tab;
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
 
-      // Reset sub-views
-      if (tab === 'routes') {
-        document.getElementById('routeDetail').style.display = 'none';
-        document.getElementById('routesList').style.display = '';
-      }
-      if (tab === 'stops') {
-        document.getElementById('stopDetail').style.display = 'none';
-        document.getElementById('stopsGrid').style.display = '';
-        document.querySelector('.stops-header').style.display = '';
+      const exploreEl = document.getElementById('exploreSection');
+      const prepEl = document.getElementById('prepSection');
+      const fab = document.getElementById('mapFab');
+
+      if (tab === 'minside') {
+        // Show Min side (prep section), hide explore + map
+        exploreEl.classList.add('hidden');
+        prepEl.classList.remove('hidden');
+        if (fab) fab.style.display = 'none';
+        if (!prepInitialized) initPrepSection();
+        showPrepLanding();
+      } else {
+        // Show explore (routes/stops + map), hide prep
+        exploreEl.classList.remove('hidden');
+        prepEl.classList.add('hidden');
+        if (fab) fab.style.display = '';
+        document.querySelectorAll('.tab-panel').forEach(p =>
+          p.classList.toggle('active', p.id === 'panel-' + tab)
+        );
+
+        // Reset sub-views
+        if (tab === 'routes') {
+          document.getElementById('routeDetail').style.display = 'none';
+          document.getElementById('routesList').style.display = '';
+        }
+        if (tab === 'stops') {
+          document.getElementById('stopDetail').style.display = 'none';
+          document.getElementById('stopsGrid').style.display = '';
+          document.querySelector('.stops-header').style.display = '';
+        }
       }
     });
   });
@@ -719,6 +734,18 @@
       });
       const data = await res.json();
       if (data.success) {
+        // Inline feedback on vote buttons
+        document.querySelectorAll('.btn-vote[data-route="' + routeId + '"]').forEach(btn => {
+          btn.textContent = '✓ Stemt!';
+          btn.style.opacity = '0.7';
+          btn.style.pointerEvents = 'none';
+        });
+        const detailBtn = document.querySelector('.detail-vote-btn[data-route="' + routeId + '"]');
+        if (detailBtn) {
+          detailBtn.textContent = '✓ Stemt!';
+          detailBtn.style.opacity = '0.7';
+          detailBtn.style.pointerEvents = 'none';
+        }
         renderVoteResults(data.tally, data.voters);
       }
     } catch (err) {
@@ -763,38 +790,10 @@
   }
 
   // ============================================
-  // SECTION TOGGLE (Utforsk / Forberedelser)
+  // TAB SWITCHING HELPERS
   // ============================================
-  function initSectionToggle() {
-    document.querySelectorAll('.section-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchSection(btn.dataset.section));
-    });
-  }
-
-  function switchSection(section) {
-    currentSection = section;
-    const exploreEl = document.getElementById('exploreSection');
-    const prepEl = document.getElementById('prepSection');
-    const exploreTabs = document.getElementById('exploreTabs');
-    const fab = document.getElementById('mapFab');
-
-    // Update toggle buttons
-    document.querySelectorAll('.section-btn').forEach(b =>
-      b.classList.toggle('active', b.dataset.section === section)
-    );
-
-    if (section === 'explore') {
-      exploreEl.classList.remove('hidden');
-      prepEl.classList.add('hidden');
-      if (exploreTabs) exploreTabs.style.display = '';
-      if (fab) fab.style.display = '';
-    } else {
-      exploreEl.classList.add('hidden');
-      prepEl.classList.remove('hidden');
-      if (exploreTabs) exploreTabs.style.display = 'none';
-      if (fab) fab.style.display = 'none';
-      showPrepLanding();
-    }
+  function switchToMinside() {
+    document.querySelector('[data-tab="minside"]').click();
   }
 
   // ============================================
@@ -810,14 +809,50 @@
 
   function renderPrepNavCards() {
     const container = document.getElementById('prepNavCards');
+    const isLoggedIn = Auth.isLoggedIn();
+
+    // Auth CTA at top
+    let ctaHtml = '';
+    if (!isLoggedIn) {
+      ctaHtml = `
+        <div class="prep-auth-cta">
+          <div class="prep-cta-icon">⛵</div>
+          <h3>Gjør turen personlig</h3>
+          <ul class="prep-cta-features">
+            <li>Stem på din favorittute</li>
+            <li>Personlig pakkeliste med avkrysning</li>
+            <li>Nedtellingskalender til avgang</li>
+            <li>Private reisenotater</li>
+          </ul>
+          <div class="prep-cta-buttons">
+            <button class="prep-cta-register" id="prepCtaRegister">Opprett konto</button>
+            <button class="prep-cta-login" id="prepCtaLogin">Logg inn</button>
+          </div>
+        </div>
+      `;
+    } else {
+      const user = Auth.getUser();
+      const name = user?.name || user?.email?.split('@')[0] || 'Seiler';
+      const tripStart = new Date('2026-04-18');
+      const today = new Date(); today.setHours(0,0,0,0);
+      const daysLeft = Math.max(0, Math.ceil((tripStart - today) / (1000 * 60 * 60 * 24)));
+      ctaHtml = `
+        <div class="prep-user-card">
+          <div class="prep-user-greeting">Hei, ${name}!</div>
+          <div class="prep-user-countdown">${daysLeft} dager til avgang</div>
+          <button class="prep-user-go" data-prep="personal">Min planlegging &rarr;</button>
+        </div>
+      `;
+    }
+
     const cards = [
-      { id: 'boat-life', icon: '⛵', title: 'Livet om bord', desc: 'Hva du kan forvente av to uker på seilbåt med en gruppe' },
+      { id: 'boat-life', icon: '⛵', title: 'Livet om bord', desc: 'Hva du kan forvente av to uker på seilbåt' },
       { id: 'seasickness', icon: '💊', title: 'Sjøsyke', desc: 'Medisiner, forebygging og tips fra erfarne seilere' },
       { id: 'packing', icon: '🎒', title: 'Pakkeliste', desc: 'Foreslått pakkeliste for Hellas i slutten av mai' },
-      { id: 'personal', icon: '🔒', title: 'Min side', desc: 'Din personlige pakkeliste, notater og nedtelling' },
+      { id: 'personal', icon: '📋', title: 'Min planlegging', desc: 'Pakkeliste, notater, nedtelling og stemming' },
     ];
 
-    container.innerHTML = cards.map((c, i) => `
+    container.innerHTML = ctaHtml + cards.map((c, i) => `
       <div class="prep-card" data-prep="${c.id}" style="animation-delay:${0.08 * i}s">
         <div class="prep-card-icon">${c.icon}</div>
         <div class="prep-card-body">
@@ -828,15 +863,26 @@
       </div>
     `).join('');
 
+    // Wire card clicks
     container.querySelectorAll('.prep-card').forEach(card => {
       card.addEventListener('click', () => showPrepSub(card.dataset.prep));
     });
+
+    // Wire CTA buttons
+    const registerBtn = container.querySelector('#prepCtaRegister');
+    const loginBtn = container.querySelector('#prepCtaLogin');
+    if (registerBtn) registerBtn.addEventListener('click', () => showPrepSub('personal'));
+    if (loginBtn) loginBtn.addEventListener('click', () => showPrepSub('personal'));
+
+    const goBtn = container.querySelector('.prep-user-go');
+    if (goBtn) goBtn.addEventListener('click', () => showPrepSub(goBtn.dataset.prep));
   }
 
   function showPrepLanding() {
     currentPrepView = 'landing';
     document.getElementById('prepLanding').classList.remove('hidden');
     document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
+    renderPrepNavCards(); // Re-render to update auth CTA state
     document.getElementById('prepScroll').scrollTop = 0;
   }
 
@@ -858,8 +904,8 @@
   }
 
   function prepBackBtn() {
-    return `<button class="prep-back" onclick="document.querySelector('[data-section=prep]').click()">
-      &larr; Forberedelser
+    return `<button class="prep-back">
+      &larr; Tilbake
     </button>`;
   }
 
@@ -868,7 +914,7 @@
     const el = document.getElementById(containerId);
     el.classList.remove('hidden');
     el.innerHTML = `
-      <button class="prep-back">&larr; Forberedelser</button>
+      <button class="prep-back">&larr; Tilbake</button>
       <div class="prep-article-header">
         <span class="prep-article-icon">${data.icon || ''}</span>
         <h2 class="prep-article-title">${data.title}</h2>
@@ -892,7 +938,7 @@
     el.classList.remove('hidden');
 
     el.innerHTML = `
-      <button class="prep-back">&larr; Forberedelser</button>
+      <button class="prep-back">&larr; Tilbake</button>
       <div class="prep-article-header">
         <span class="prep-article-icon">${data.icon || ''}</span>
         <h2 class="prep-article-title">${data.title}</h2>
@@ -930,7 +976,7 @@
     el.classList.remove('hidden');
 
     el.innerHTML = `
-      <button class="prep-back">&larr; Forberedelser</button>
+      <button class="prep-back">&larr; Tilbake</button>
       <div class="prep-article-header">
         <span class="prep-article-icon">${data.icon || ''}</span>
         <h2 class="prep-article-title">${data.title}</h2>
@@ -1007,7 +1053,7 @@
 
     function render() {
       el.innerHTML = `
-        <button class="prep-back">&larr; Forberedelser</button>
+        <button class="prep-back">&larr; Tilbake</button>
         <div class="personal-hero">
           <div class="personal-countdown-big">${daysLeft}</div>
           <div class="personal-countdown-label">dager til avgang</div>
@@ -1019,7 +1065,7 @@
           <form id="authForm" class="auth-form">
             ${isRegister ? '<input type="text" id="authName" class="auth-input" placeholder="Navn" required />' : ''}
             <input type="email" id="authEmail" class="auth-input" placeholder="E-post" required />
-            <input type="password" id="authPassword" class="auth-input" placeholder="Passord" required minlength="8" />
+            <input type="password" id="authPassword" class="auth-input" placeholder="Passord (min 8 tegn)" required />
             <div class="auth-error hidden" id="authError"></div>
             <button type="submit" class="auth-submit">${isRegister ? 'Registrer deg' : 'Logg inn'}</button>
           </form>
@@ -1073,7 +1119,7 @@
     const name = user?.name || user?.email?.split('@')[0] || 'Seiler';
 
     el.innerHTML = `
-      <button class="prep-back">&larr; Forberedelser</button>
+      <button class="prep-back">&larr; Tilbake</button>
       <div class="personal-hero">
         <div class="personal-greeting">Hei, ${name}!</div>
         <div class="personal-countdown-big">${daysLeft}</div>
