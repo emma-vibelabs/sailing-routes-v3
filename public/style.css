@@ -176,6 +176,44 @@ body {
   letter-spacing: 0.06em;
 }
 
+/* Language toggle */
+.lang-toggle {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  transition: color var(--transition), background var(--transition);
+}
+
+.lang-btn.active {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lang-btn:hover:not(.active) {
+  color: var(--text-muted);
+}
+
+.lang-sep {
+  color: var(--border);
+  font-size: 0.72rem;
+}
+
 /* ============================================
    MAIN APP LAYOUT
    ============================================ */
@@ -679,6 +717,17 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.itin-chevron {
+  flex-shrink: 0;
+  color: var(--text-light);
+  opacity: 0.5;
+  transition: opacity var(--transition);
+}
+
+.itinerary-row:hover .itin-chevron {
+  opacity: 1;
 }
 
 .itin-highlight {
@@ -2037,73 +2086,600 @@ body {
   transition: opacity 0.3s;
 }
 
-/* Countdown Grid */
-.countdown-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
+/* ============================================
+   CALENDAR
+   ============================================ */
 
-.countdown-day {
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--border-light);
-  border-radius: 6px;
-  cursor: default;
-  transition: all 0.3s ease;
-  position: relative;
+.personal-card-calendar {
+  padding: 0 !important;
   overflow: hidden;
 }
 
-.countdown-day-num {
-  font-size: 0.82rem;
-  font-weight: 500;
+/* Header with month nav */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.2rem 0.5rem;
+}
+
+.cal-month-label {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
   color: var(--text);
 }
 
-.countdown-day-left {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-}
-
-.countdown-day.today {
-  background: var(--accent);
+.cal-nav {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(45, 74, 94, 0.3);
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
 }
 
-.countdown-day.today .countdown-day-num,
-.countdown-day.today .countdown-day-left {
+.cal-nav:hover:not(.cal-nav-disabled) {
+  background: var(--border-light);
+  color: var(--text);
+}
+
+.cal-nav-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* Weekday headers */
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0.5rem 0.8rem 0;
+}
+
+.cal-weekday {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  padding: 0.25rem 0;
+}
+
+/* Day grid */
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  padding: 0.4rem 0.8rem 0.8rem;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  background: transparent;
+}
+
+.cal-day:hover:not(.cal-day-empty) {
+  background: var(--border-light);
+}
+
+.cal-day-empty {
+  cursor: default;
+}
+
+.cal-day-num {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text);
+  position: relative;
+  z-index: 2;
+}
+
+/* Today */
+.cal-day-today {
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(45, 74, 94, 0.25);
+}
+
+.cal-day-today .cal-day-num {
+  color: #fff;
+  font-weight: 500;
+}
+
+.cal-day-today:hover {
+  background: var(--accent-hover);
+}
+
+/* Selected day */
+.cal-day-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Past days — red X cross-off (two thick strokes forming an X) */
+.cal-day-past {
+  opacity: 0.55;
+}
+
+/* Stroke 1: top-left → bottom-right */
+.cal-day-past::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: #c43d3d;
+  opacity: 0.75;
+  transform: translateY(-50%) rotate(calc(35deg + var(--marker-rot, 0deg)));
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Stroke 2: top-right → bottom-left */
+.cal-day-past::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: #c43d3d;
+  opacity: 0.65;
+  transform: translateY(-50%) rotate(calc(-35deg + var(--marker-rot, 0deg)));
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cal-day-past.cal-day-today {
+  opacity: 1;
+}
+
+.cal-day-past.cal-day-today::after,
+.cal-day-past.cal-day-today::before {
+  display: none;
+}
+
+/* Trip days */
+.cal-day-trip {
+  background: rgba(45, 138, 110, 0.08);
+}
+
+.cal-day-trip .cal-day-num {
+  color: var(--c-saronic);
+  font-weight: 500;
+}
+
+/* Important deadline — red circle */
+.cal-day-important .cal-day-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #c43d3d;
+  border-radius: 50%;
+}
+
+/* Overdue — red tint */
+.cal-day-overdue {
+  background: rgba(196, 61, 61, 0.06);
+}
+
+.cal-day-overdue .cal-day-num {
+  border-color: #c43d3d;
+}
+
+/* Task dot */
+.cal-task-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  z-index: 2;
+}
+
+.cal-day-overdue .cal-task-dot {
+  background: #c43d3d;
+}
+
+/* All complete check */
+.cal-done-check {
+  position: absolute;
+  bottom: 2px;
+  font-size: 0.6rem;
+  color: var(--c-saronic);
+  z-index: 2;
+}
+
+.cal-day-done {
+  opacity: 0.6;
+}
+
+/* Month navigation dots */
+.cal-month-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem 1rem;
+}
+
+.cal-month-dot {
+  font-size: 0.68rem;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.cal-month-dot:hover {
+  background: var(--border-light);
+  color: var(--text);
+}
+
+.cal-month-dot-active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 500;
+}
+
+.cal-month-dot-active:hover {
+  background: var(--accent-hover);
   color: #fff;
 }
 
-.countdown-day.today:hover {
-  transform: scale(1.05);
+/* ============================================
+   TASK PANEL (selected day)
+   ============================================ */
+
+.tp-header {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
 }
 
-.countdown-day.torn {
-  background: transparent;
-  border: 1px dashed var(--border);
-  opacity: 0.4;
+.tp-empty {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  padding: 0.5rem 0;
 }
 
-.countdown-day.torn .countdown-day-num {
+.tp-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tp-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.tp-task:last-child {
+  border-bottom: none;
+}
+
+.tp-check {
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.tp-check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tp-checkmark {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.tp-check input:checked + .tp-checkmark {
+  background: var(--c-saronic);
+  border-color: var(--c-saronic);
+}
+
+.tp-check input:checked + .tp-checkmark::after {
+  content: '\2713';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.tp-task-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tp-task-name {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.tp-task-cat {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-light);
+  margin-top: 0.1rem;
+}
+
+.tp-task-done .tp-task-name {
   text-decoration: line-through;
   color: var(--text-light);
 }
 
-@keyframes tearOff {
-  0% { transform: rotate(0) scale(1); opacity: 1; }
-  30% { transform: rotate(-8deg) scale(0.95); }
-  100% { transform: rotate(-20deg) translateY(30px) scale(0.7); opacity: 0; }
+.tp-task-overdue .tp-task-name {
+  color: #c43d3d;
 }
 
-.countdown-day.tearing {
-  animation: tearOff 0.6s ease forwards;
-  pointer-events: none;
+.tp-task-overdue .tp-task-cat {
+  color: #c43d3d;
+}
+
+.tp-remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.2rem;
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+.tp-remove:hover {
+  opacity: 1;
+  color: #c43d3d;
+}
+
+/* ============================================
+   CHECKLIST (full list grouped by category)
+   ============================================ */
+
+.prep-progress-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.prep-pct {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.prep-fraction {
+  color: var(--text-light);
+}
+
+.cl-progress-bar {
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.cl-progress-fill {
+  height: 100%;
+  background: var(--c-saronic);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.cl-group {
+  margin-bottom: 0.75rem;
+}
+
+.cl-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0.3rem;
+}
+
+.cl-group-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cl-group-count {
+  font-size: 0.72rem;
+  color: var(--text-light);
+}
+
+.cl-group-done .cl-group-name {
+  color: var(--text-light);
+  text-decoration: line-through;
+}
+
+.cl-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.cl-check {
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.cl-check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cl-checkmark {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.cl-check input:checked + .cl-checkmark {
+  background: var(--c-saronic);
+  border-color: var(--c-saronic);
+}
+
+.cl-check input:checked + .cl-checkmark::after {
+  content: '\2713';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
+.cl-text {
+  flex: 1;
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.cl-item-done .cl-text {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+.cl-item-overdue .cl-text {
+  color: #c43d3d;
+}
+
+.cl-deadline {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.cl-deadline-overdue {
+  color: #c43d3d;
+  font-weight: 500;
+}
+
+.cl-remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 0.15rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.cl-item:hover .cl-remove {
+  opacity: 0.5;
+}
+
+.cl-remove:hover {
+  opacity: 1 !important;
+  color: #c43d3d;
+}
+
+/* ============================================
+   QUICK ADD (removed tasks)
+   ============================================ */
+
+.personal-card-sub {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-top: 0.1rem;
+}
+
+.qa-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.qa-item:last-child {
+  border-bottom: none;
+}
+
+.qa-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.qa-restore {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  transition: all 0.15s ease;
+}
+
+.qa-restore:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 /* Personal Packing List */

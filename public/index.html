@@ -16,20 +16,25 @@
   <!-- Screen 1: Entry -->
   <div id="entry" class="screen active">
     <div class="entry-container">
-      <div class="entry-eyebrow">EN SEILTUR I HELLAS</div>
-      <h1 class="entry-title">Hvor skal vi<br><em>seile?</em></h1>
+      <div class="entry-eyebrow" data-i18n="entry.eyebrow">EN SEILTUR I HELLAS</div>
+      <h1 class="entry-title" data-i18n="entry.title">Hvor skal vi<br><em>seile?</em></h1>
       <div class="entry-divider"></div>
-      <p class="entry-intro">8 ruter gjennom det greske øyriket. 14 dager. April&ndash;mai 2026. Utforsk rutene, se detaljene, og stem på din favoritt.</p>
+      <p class="entry-intro" data-i18n="entry.intro">8 ruter gjennom det greske øyriket. 14 dager. April&ndash;mai 2026. Utforsk rutene, se detaljene, og stem på din favoritt.</p>
       <div class="name-field">
-        <label for="nameInput">HVEM ER DU?</label>
-        <input type="text" id="nameInput" placeholder="Fornavn" autocomplete="given-name" spellcheck="false" />
+        <label for="nameInput" data-i18n="entry.whoAreYou">HVEM ER DU?</label>
+        <input type="text" id="nameInput" placeholder="Fornavn" data-i18n-placeholder="entry.placeholder" autocomplete="given-name" spellcheck="false" />
       </div>
       <button id="enterBtn" class="primary-btn" disabled>
-        <span>Se rutene</span>
+        <span data-i18n="entry.button">Se rutene</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <a href="#" id="prepShortcut" class="entry-prep-link">Eller se forberedelser til turen &rarr;</a>
-      <div class="entry-footnote">18. april &ndash; 2. mai 2026</div>
+      <a href="#" id="prepShortcut" class="entry-prep-link" data-i18n="entry.prepLink">Eller se forberedelser til turen &rarr;</a>
+      <div class="entry-footnote" data-i18n="entry.footnote">18. april &ndash; 2. mai 2026</div>
+      <div class="lang-toggle" id="langToggle">
+        <button class="lang-btn active" data-lang="no">NO</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
     </div>
   </div>
 
@@ -38,15 +43,15 @@
     <header class="top-bar">
       <div class="top-bar-inner">
         <div class="top-left">
-          <span class="top-title">SEILRUTER HELLAS 2026</span>
+          <span class="top-title" data-i18n="header.title">SEILRUTER HELLAS 2026</span>
           <span class="top-route-name" id="activeRouteName"></span>
         </div>
         <div class="top-right">
           <span class="top-voter" id="voterLabel"></span>
           <div class="top-tabs" id="mainTabs">
-            <button class="tab-btn active" data-tab="routes">Ruter</button>
-            <button class="tab-btn" data-tab="stops">Stopp</button>
-            <button class="tab-btn" data-tab="minside">Min side</button>
+            <button class="tab-btn active" data-tab="routes" data-i18n="tab.routes">Ruter</button>
+            <button class="tab-btn" data-tab="stops" data-i18n="tab.stops">Stopp</button>
+            <button class="tab-btn" data-tab="minside" data-i18n="tab.minside">Min side</button>
           </div>
         </div>
       </div>
@@ -66,7 +71,7 @@
         <!-- Stops Tab -->
         <div class="tab-panel" id="panel-stops">
           <div class="stops-header">
-            <input type="text" id="stopsSearch" class="stops-search" placeholder="Søk i stopp..." />
+            <input type="text" id="stopsSearch" class="stops-search" placeholder="Søk i stopp..." data-i18n-placeholder="stops.search" />
             <div class="region-filters" id="regionFilters"></div>
           </div>
           <div id="stopsGrid" class="stops-grid"></div>
@@ -76,8 +81,8 @@
         <!-- Vote Tab -->
         <div class="tab-panel" id="panel-vote">
           <div class="vote-header">
-            <h2>Velg din favoritt</h2>
-            <p>Hvilken rute vil du seile?</p>
+            <h2 data-i18n="vote.header">Velg din favoritt</h2>
+            <p data-i18n="vote.sub">Hvilken rute vil du seile?</p>
           </div>
           <div id="voteCards" class="vote-cards"></div>
           <div id="voteResults" class="vote-results"></div>
@@ -105,9 +110,9 @@
         <!-- Landing -->
         <div id="prepLanding">
           <div class="prep-hero">
-            <div class="prep-eyebrow">FORBEREDELSER</div>
-            <h2 class="prep-title">Klar for<br><em>seilas?</em></h2>
-            <p class="prep-subtitle">Alt du trenger å vite før to uker på seilbåt i Hellas</p>
+            <div class="prep-eyebrow" data-i18n="prep.eyebrow">FORBEREDELSER</div>
+            <h2 class="prep-title" data-i18n="prep.title">Klar for<br><em>seilas?</em></h2>
+            <p class="prep-subtitle" data-i18n="prep.subtitle">Alt du trenger å vite før to uker på seilbåt i Hellas</p>
           </div>
           <div class="prep-nav-cards" id="prepNavCards"></div>
         </div>
@@ -128,17 +133,18 @@
         <line x1="8" y1="2" x2="8" y2="18"/>
         <line x1="16" y1="6" x2="16" y2="22"/>
       </svg>
-      <span>Kart</span>
+      <span data-i18n="map.button">Kart</span>
     </button>
 
     <!-- Map overlay — fullskjerm på mobil -->
     <div class="map-overlay" id="mapOverlay">
       <div class="map-overlay-header">
-        <button class="map-overlay-close" id="mapOverlayClose">&larr; Tilbake</button>
+        <button class="map-overlay-close" id="mapOverlayClose">&larr; <span data-i18n="map.back">Tilbake</span></button>
       </div>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="routes-data.js"></script>
   <script src="islands.js"></script>
@@ -146,6 +152,7 @@
   <script src="prep-content.js"></script>
   <script src="config.js"></script>
   <script src="auth.js"></script>
+  <script src="calendar.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

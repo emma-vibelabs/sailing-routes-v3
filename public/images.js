@@ -77,7 +77,7 @@ window.IMAGE_URLS = {
 
   // ── Sporades ─────────────────────────────────────────────────────────────
   "South Evia":             "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
-  "Evia Soer":              "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
+  "Evia Sør":               "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
   "Skyros":                 "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
   "Alonissos":              "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",
   "Marine Park":            "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",
