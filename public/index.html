@@ -25,14 +25,24 @@
         <span>8 ruter</span><span>14 dager</span><span>18. apr &rarr; 2. mai</span>
       </div>
       <div class="entry-live-votes" id="entryLiveVotes"></div>
-      <div class="name-field">
-        <label for="nameInput" data-i18n="entry.whoAreYou">HVEM ER DU?</label>
-        <input type="text" id="nameInput" placeholder="Fornavn" data-i18n-placeholder="entry.placeholder" autocomplete="given-name" spellcheck="false" />
+      <div class="entry-value-prop" id="entryValueProp">
+        <ul class="entry-features">
+          <li data-i18n="entry.featureVote">Stem på din favorittute</li>
+          <li data-i18n="entry.featurePacking">Personlig pakkeliste</li>
+          <li data-i18n="entry.featureCountdown">Nedtelling til avgang</li>
+          <li data-i18n="entry.featureNotes">Private reisenotater</li>
+        </ul>
       </div>
-      <button id="enterBtn" class="primary-btn" disabled>
-        <span data-i18n="entry.button">Se rutene</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <div class="entry-logged-in hidden" id="entryLoggedIn">
+        <div class="entry-greeting" id="entryGreeting"></div>
+      </div>
+      <div class="entry-cta-group">
+        <button id="enterBtn" class="primary-btn">
+          <span data-i18n="entry.button">Se rutene</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="entryAuthBtn" class="secondary-btn" data-i18n="entry.createAccount">Opprett konto / Logg inn</button>
+      </div>
       <a href="#" id="prepShortcut" class="entry-prep-link" data-i18n="entry.prepLink">Eller se forberedelser til turen &rarr;</a>
       <div class="entry-footnote" data-i18n="entry.footnote">18. april &ndash; 2. mai 2026</div>
       <div class="lang-toggle" id="langToggle">

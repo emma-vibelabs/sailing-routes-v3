@@ -10,7 +10,6 @@
   var P = I18n.pick; // pick bilingual field
 
   // ---- State ----
-  let voterName = '';
   let selectedRoute = null;
   let map = null;
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
@@ -52,7 +51,6 @@
     app: document.getElementById('app'),
   };
 
-  const nameInput = document.getElementById('nameInput');
   const enterBtn = document.getElementById('enterBtn');
 
   // ---- More Helpers ----
@@ -226,23 +224,14 @@
   })();
 
   // ---- Entry ----
-  const saved = localStorage.getItem('seilruter-name');
-  if (saved) { nameInput.value = saved; enterBtn.disabled = false; }
-
-  nameInput.addEventListener('input', () => {
-    enterBtn.disabled = nameInput.value.trim().length < 1;
-  });
-
-  nameInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !enterBtn.disabled) enterBtn.click();
-  });
-
-  enterBtn.addEventListener('click', () => {
-    voterName = nameInput.value.trim();
-    if (!voterName) return;
-    localStorage.setItem('seilruter-name', voterName);
-    document.getElementById('voterLabel').textContent = voterName;
+  function enterApp(targetSection) {
+    targetSection = targetSection || 'explore';
     if (entryImageInterval) { clearInterval(entryImageInterval); entryImageInterval = null; }
+    // Set voterLabel from auth if logged in
+    const user = Auth.isLoggedIn() ? Auth.getUser() : null;
+    if (user) {
+      document.getElementById('voterLabel').textContent = user.name || user.email?.split('@')[0] || '';
+    }
     showScreen('app');
     renderRoutesList();
     renderStopsPanel();
@@ -250,26 +239,48 @@
     fetchTally();
     initPrepSection();
     if (isMobile) initMobileMap();
-    // Set initial history state
-    history.replaceState({ section: 'explore', subTab: 'routes' }, '', '#explore');
+    switchSection(targetSection);
+    if (targetSection === 'explore') {
+      switchSubTab('routes');
+      history.replaceState({ section: 'explore', subTab: 'routes' }, '', '#explore');
+    } else {
+      history.replaceState({ section: targetSection }, '', '#' + targetSection);
+    }
+  }
+
+  // Auth-aware entry screen
+  function updateEntryForLoggedIn() {
+    const valueProp = document.getElementById('entryValueProp');
+    const authBtn = document.getElementById('entryAuthBtn');
+    const loggedIn = document.getElementById('entryLoggedIn');
+    const greeting = document.getElementById('entryGreeting');
+    if (!valueProp || !loggedIn) return;
+    if (Auth.isLoggedIn()) {
+      const user = Auth.getUser();
+      const name = user?.name || user?.email?.split('@')[0] || t('sailor');
+      valueProp.classList.add('hidden');
+      if (authBtn) authBtn.classList.add('hidden');
+      loggedIn.classList.remove('hidden');
+      greeting.textContent = t('personal.greeting') + ' ' + name + '!';
+    } else {
+      valueProp.classList.remove('hidden');
+      if (authBtn) authBtn.classList.remove('hidden');
+      loggedIn.classList.add('hidden');
+    }
+  }
+  updateEntryForLoggedIn();
+
+  enterBtn.addEventListener('click', () => enterApp('explore'));
+
+  document.getElementById('entryAuthBtn').addEventListener('click', () => {
+    enterApp('plan');
+    setTimeout(() => showPrepSub('personal'), 100);
   });
 
   // Prep shortcut from entry screen
   document.getElementById('prepShortcut').addEventListener('click', (e) => {
     e.preventDefault();
-    voterName = nameInput.value.trim() || t('guest');
-    localStorage.setItem('seilruter-name', voterName);
-    document.getElementById('voterLabel').textContent = voterName;
-    if (entryImageInterval) { clearInterval(entryImageInterval); entryImageInterval = null; }
-    showScreen('app');
-    renderRoutesList();
-    renderStopsPanel();
-    renderVoteList();
-    fetchTally();
-    initPrepSection();
-    if (isMobile) initMobileMap();
-    switchSection('plan');
-    history.replaceState({ section: 'plan', prepView: 'landing' }, '', '#plan');
+    enterApp('plan');
   });
 
   // ============================================
@@ -999,7 +1010,7 @@
     }
 
     const user = Auth.getUser();
-    const voteName = user?.name || user?.email?.split('@')[0] || voterName;
+    const voteName = user?.name || user?.email?.split('@')[0] || t('sailor');
 
     // Optimistic UI — immediately mark as voted
     const btn = document.querySelector(`.vote-row-btn[data-route="${routeId}"]`);
@@ -1027,7 +1038,7 @@
   async function removeVote() {
     if (!Auth.isLoggedIn()) return;
     const user = Auth.getUser();
-    const voteName = user?.name || user?.email?.split('@')[0] || voterName;
+    const voteName = user?.name || user?.email?.split('@')[0] || t('sailor');
 
     try {
       const res = await fetch('/api/vote', {
@@ -1093,12 +1104,6 @@
         <div class="prep-auth-cta">
           <div class="prep-cta-icon">⛵</div>
           <h3>${t('prep.makePersonal')}</h3>
-          <ul class="prep-cta-features">
-            <li>${t('prep.voteFeature')}</li>
-            <li>${t('prep.packingFeature')}</li>
-            <li>${t('prep.countdownFeature')}</li>
-            <li>${t('prep.notesFeature')}</li>
-          </ul>
           <div class="prep-cta-buttons">
             <button class="prep-cta-register" id="prepCtaRegister">${t('auth.register')}</button>
             <button class="prep-cta-login" id="prepCtaLogin">${t('auth.login')}</button>
@@ -1443,6 +1448,19 @@
           <p class="auth-subtitle">${t('auth.subtitle')}</p>
           <form id="authForm" class="auth-form">
             ${isRegister ? `<input type="text" id="authName" class="auth-input" placeholder="${t('auth.name')}" required />` : ''}
+            ${isRegister ? `
+              <div class="role-picker-label">${t('auth.role.label')}</div>
+              <div class="role-picker">
+                <label class="role-option">
+                  <input type="radio" name="authRole" value="passenger" checked />
+                  <span class="role-btn">${t('auth.role.passenger')}</span>
+                </label>
+                <label class="role-option">
+                  <input type="radio" name="authRole" value="skipper" />
+                  <span class="role-btn">${t('auth.role.skipper')}</span>
+                </label>
+              </div>
+            ` : ''}
             <input type="email" id="authEmail" class="auth-input" placeholder="${t('auth.email')}" required />
             <input type="password" id="authPassword" class="auth-input" placeholder="${t('auth.password')}" required />
             <div class="auth-error hidden" id="authError"></div>
@@ -1466,8 +1484,21 @@
         submitBtn.disabled = true;
         submitBtn.textContent = t('auth.waiting');
         try {
-          if (isRegister) await Auth.signUp(email, password, name); else await Auth.signIn(email, password);
+          if (isRegister) {
+            await Auth.signUp(email, password, name);
+            // Save selected role
+            const roleEl = el.querySelector('input[name="authRole"]:checked');
+            const role = roleEl ? roleEl.value : 'passenger';
+            Auth.authFetch('/api/profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ role }),
+            }).catch(() => {}); // Non-fatal
+          } else {
+            await Auth.signIn(email, password);
+          }
           updateUserButton();
+          updateEntryForLoggedIn();
           renderPersonalDashboard(el, daysLeft);
         } catch (err) {
           errorEl.textContent = err.message;
@@ -1483,9 +1514,20 @@
   // ============================================
   // PERSONAL DASHBOARD — KPI grid + cards
   // ============================================
-  function renderPersonalDashboard(el, daysLeft) {
+  async function renderPersonalDashboard(el, daysLeft) {
     const user = Auth.getUser();
     const name = user?.name || user?.email?.split('@')[0] || t('sailor');
+
+    // Fetch user role
+    let userRole = 'passenger';
+    try {
+      const profileRes = await Auth.authFetch('/api/profile');
+      if (profileRes.ok) {
+        const profileData = await profileRes.json();
+        userRole = profileData.role || 'passenger';
+      }
+    } catch (e) { /* default passenger */ }
+
     el.innerHTML = `
       <button class="prep-back">&larr; ${t('prep.back')}</button>
 
@@ -1533,12 +1575,51 @@
           </div>
           <textarea class="notes-textarea" id="notesArea" placeholder="${t('personal.notesPlaceholder')}"></textarea>
         </div>
+        <div class="dash-card">
+          <div class="personal-card-header">
+            <h3>${t('personal.settings')}</h3>
+          </div>
+          <div class="role-picker-label">${t('personal.myRole')}</div>
+          <div class="role-picker" id="settingsRolePicker">
+            <label class="role-option">
+              <input type="radio" name="settingsRole" value="passenger" ${userRole === 'passenger' ? 'checked' : ''} />
+              <span class="role-btn">${t('auth.role.passenger')}</span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="settingsRole" value="skipper" ${userRole === 'skipper' ? 'checked' : ''} />
+              <span class="role-btn">${t('auth.role.skipper')}</span>
+            </label>
+          </div>
+          <p class="role-change-note" id="roleChangeNote"></p>
+        </div>
       </div>
       <button class="auth-logout" id="logoutBtn">${t('auth.logout')}</button>
     `;
     el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
-    el.querySelector('#logoutBtn').addEventListener('click', async () => { await Auth.signOut(); updateUserButton(); renderAuthForm(el, daysLeft); });
-    initCalendar(daysLeft);
+    el.querySelector('#logoutBtn').addEventListener('click', async () => { await Auth.signOut(); updateUserButton(); updateEntryForLoggedIn(); renderAuthForm(el, daysLeft); });
+
+    // Settings role picker — live save
+    el.querySelectorAll('input[name="settingsRole"]').forEach(radio => {
+      radio.addEventListener('change', async () => {
+        const newRole = radio.value;
+        const note = el.querySelector('#roleChangeNote');
+        try {
+          await Auth.authFetch('/api/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role: newRole }),
+          });
+          note.textContent = t('personal.roleSaved');
+          userRole = newRole;
+          initCalendar(daysLeft, newRole);
+          setTimeout(() => { note.textContent = ''; }, 3000);
+        } catch (e) {
+          note.textContent = t('personal.roleError');
+        }
+      });
+    });
+
+    initCalendar(daysLeft, userRole);
     initNotes();
   }
 

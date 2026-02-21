@@ -17,9 +17,12 @@ var I18n = (function () {
     'entry.title':         { no: 'Hvor skal vi<br><em>seile?</em>', en: 'Where shall we<br><em>sail?</em>' },
     'entry.intro':         { no: '8 ruter gjennom det greske øyriket. 14 dager. April\u2013mai 2026. Utforsk rutene, se detaljene, og stem på din favoritt.',
                              en: '8 routes through the Greek islands. 14 days. April\u2013May 2026. Explore the routes, see the details, and vote for your favourite.' },
-    'entry.whoAreYou':     { no: 'HVEM ER DU?', en: 'WHO ARE YOU?' },
-    'entry.placeholder':   { no: 'Fornavn', en: 'First name' },
+    'entry.featureVote':   { no: 'Stem på din favorittute', en: 'Vote for your favourite route' },
+    'entry.featurePacking': { no: 'Personlig pakkeliste', en: 'Personal packing list' },
+    'entry.featureCountdown': { no: 'Nedtelling til avgang', en: 'Countdown to departure' },
+    'entry.featureNotes':  { no: 'Private reisenotater', en: 'Private travel notes' },
     'entry.button':        { no: 'Se rutene', en: 'See the routes' },
+    'entry.createAccount': { no: 'Opprett konto / Logg inn', en: 'Create account / Log in' },
     'entry.prepLink':      { no: 'Eller se forberedelser til turen', en: 'Or see trip preparations' },
     'entry.footnote':      { no: '18. april \u2013 2. mai 2026', en: 'April 18 \u2013 May 2, 2026' },
 
@@ -146,6 +149,9 @@ var I18n = (function () {
     'auth.noAccount':      { no: 'Har du ikke konto? Registrer deg', en: "Don't have an account? Sign up" },
     'auth.subtitle':       { no: 'For å bruke din personlige pakkeliste, notater og nedtelling',
                              en: 'To use your personal packing list, notes and countdown' },
+    'auth.role.label':     { no: 'Jeg reiser som', en: 'I am travelling as' },
+    'auth.role.skipper':   { no: 'Skipper', en: 'Skipper' },
+    'auth.role.passenger': { no: 'Passasjer', en: 'Passenger' },
 
     // Personal dashboard
     'personal.greeting':   { no: 'Hei,', en: 'Hi,' },
@@ -154,6 +160,10 @@ var I18n = (function () {
     'personal.notes':      { no: 'Mine notater', en: 'My notes' },
     'personal.notesSaved': { no: 'Lagret', en: 'Saved' },
     'personal.notesPlaceholder': { no: 'Tanker, ønsker, ting å huske for turen...', en: 'Thoughts, wishes, things to remember for the trip...' },
+    'personal.settings':   { no: 'Innstillinger', en: 'Settings' },
+    'personal.myRole':     { no: 'Min rolle', en: 'My role' },
+    'personal.roleSaved':  { no: 'Rolle lagret ✓', en: 'Role saved ✓' },
+    'personal.roleError':  { no: 'Kunne ikke lagre rolle', en: 'Could not save role' },
 
     // Guest fallback
     'guest':               { no: 'Gjest', en: 'Guest' },

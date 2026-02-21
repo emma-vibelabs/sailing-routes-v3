@@ -8,20 +8,20 @@
 const TRIP_TASKS = [
   // FEBRUAR
   { id: 'passport', text: { no: 'Sjekk at pass er gyldig (6 mnd etter retur)', en: 'Check passport validity (6 months after return)' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-02-28', important: true },
-  { id: 'skipper', text: { no: 'Sjekk status på skipperbevis / ICC', en: 'Check skipper license / ICC status' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-02-28' },
+  { id: 'skipper', role: 'skipper', text: { no: 'Sjekk status på skipperbevis / ICC', en: 'Check skipper license / ICC status' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-02-28' },
 
   // MARS — early
   { id: 'flights', text: { no: 'Bestill fly til Athen', en: 'Book flights to Athens' }, category: { no: 'Logistikk', en: 'Logistics' }, deadline: '2026-03-07', important: true },
   { id: 'insurance', text: { no: 'Bestill reiseforsikring m/ sjøsport-dekning', en: 'Book travel insurance with watersports cover' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-03-07', important: true },
-  { id: 'vhf', text: { no: 'VHF-radiosertifikat i orden?', en: 'VHF radio certificate in order?' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-03-14' },
+  { id: 'vhf', role: 'skipper', text: { no: 'VHF-radiosertifikat i orden?', en: 'VHF radio certificate in order?' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-03-14' },
 
   // MARS — mid
-  { id: 'marinas', text: { no: 'Forhåndsbestill populære marinaer', en: 'Pre-book popular marinas' }, category: { no: 'Logistikk', en: 'Logistics' }, deadline: '2026-03-14' },
-  { id: 'charter', text: { no: 'Gjennomgå charter-kontrakt & deposit', en: 'Review charter contract & deposit' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-03-21' },
+  { id: 'marinas', role: 'skipper', text: { no: 'Forhåndsbestill populære marinaer', en: 'Pre-book popular marinas' }, category: { no: 'Logistikk', en: 'Logistics' }, deadline: '2026-03-14' },
+  { id: 'charter', role: 'skipper', text: { no: 'Gjennomgå charter-kontrakt & deposit', en: 'Review charter contract & deposit' }, category: { no: 'Dokumenter', en: 'Documents' }, deadline: '2026-03-21' },
   { id: 'splitwise', text: { no: 'Sett opp Splitwise-gruppe for fellesutgifter', en: 'Set up Splitwise group for shared expenses' }, category: { no: 'Logistikk', en: 'Logistics' }, deadline: '2026-03-21' },
 
   // MARS — late
-  { id: 'offlinemaps', text: { no: 'Last ned Navionics offline-kart', en: 'Download Navionics offline charts' }, category: { no: 'Navigasjon', en: 'Navigation' }, deadline: '2026-03-28' },
+  { id: 'offlinemaps', role: 'skipper', text: { no: 'Last ned Navionics offline-kart', en: 'Download Navionics offline charts' }, category: { no: 'Navigasjon', en: 'Navigation' }, deadline: '2026-03-28' },
   { id: 'weatherapp', text: { no: 'Last ned Windy & PredictWind', en: 'Download Windy & PredictWind' }, category: { no: 'Navigasjon', en: 'Navigation' }, deadline: '2026-03-28' },
   { id: 'transfer', text: { no: 'Bestill transfer flyplass \u2192 Alimos marina', en: 'Book airport transfer \u2192 Alimos marina' }, category: { no: 'Logistikk', en: 'Logistics' }, deadline: '2026-03-28' },
 
@@ -37,14 +37,14 @@ const TRIP_TASKS = [
   { id: 'sunscreen', text: { no: 'Kjøp solkrem SPF 50+ (dyrt i Hellas!)', en: 'Buy sunscreen SPF 50+ (expensive in Greece!)' }, category: { no: 'Helse', en: 'Health' }, deadline: '2026-04-11' },
   { id: 'quickdry', text: { no: 'Quick-dry klær: t-skjorter, shorts, badetøy', en: 'Quick-dry clothes: t-shirts, shorts, swimwear' }, category: { no: 'Utstyr', en: 'Gear' }, deadline: '2026-04-11' },
   { id: 'mealplan', text: { no: 'Lag meny for de 3 første dagene', en: 'Plan meals for the first 3 days' }, category: { no: 'Proviant', en: 'Provisions' }, deadline: '2026-04-11' },
-  { id: 'firstaid', text: { no: 'Sjekk førstehjelp-sett', en: 'Check first aid kit' }, category: { no: 'Helse', en: 'Health' }, deadline: '2026-04-11' },
+  { id: 'firstaid', role: 'skipper', text: { no: 'Sjekk førstehjelp-sett', en: 'Check first aid kit' }, category: { no: 'Helse', en: 'Health' }, deadline: '2026-04-11' },
 
   // APRIL 17 — day before
   { id: 'softbag', text: { no: 'Pakk i myk bag \u2014 IKKE koffert!', en: 'Pack in soft bag \u2014 NOT suitcase!' }, category: { no: 'Siste dag', en: 'Last day' }, deadline: '2026-04-17', important: true },
   { id: 'staples', text: { no: 'Storhandling i Athen (pasta, ris, olivenolje, kaffe)', en: 'Grocery run in Athens (pasta, rice, olive oil, coffee)' }, category: { no: 'Proviant', en: 'Provisions' }, deadline: '2026-04-17', important: true },
   { id: 'drinks', text: { no: 'Drikke & alkohol fra supermarked i Athen', en: 'Drinks & alcohol from supermarket in Athens' }, category: { no: 'Proviant', en: 'Provisions' }, deadline: '2026-04-17' },
   { id: 'chargebanks', text: { no: 'Lad alle powerbanks & elektronikk', en: 'Charge all power banks & electronics' }, category: { no: 'Siste dag', en: 'Last day' }, deadline: '2026-04-17' },
-  { id: 'emergency', text: { no: 'Print nødkontakter (kystvakt 108, charter nødnr)', en: 'Print emergency contacts (coast guard 108, charter emergency no.)' }, category: { no: 'Helse', en: 'Health' }, deadline: '2026-04-17', important: true },
+  { id: 'emergency', role: 'skipper', text: { no: 'Print nødkontakter (kystvakt 108, charter nødnr)', en: 'Print emergency contacts (coast guard 108, charter emergency no.)' }, category: { no: 'Helse', en: 'Health' }, deadline: '2026-04-17', important: true },
   { id: 'checkweather', text: { no: 'Sjekk været for dag 1\u20133', en: 'Check weather for days 1\u20133' }, category: { no: 'Siste dag', en: 'Last day' }, deadline: '2026-04-17' },
 ];
 
@@ -60,7 +60,7 @@ function DAY_NAMES_FULL_FN() {
 }
 
 // ---- Calendar System ----
-function initCalendar(daysLeft) {
+function initCalendar(daysLeft, userRole) {
   const container = document.getElementById('calendarContainer');
   const taskPanel = document.getElementById('taskPanel');
   const taskPanelCard = document.getElementById('taskPanelCard');
@@ -88,8 +88,14 @@ function initCalendar(daysLeft) {
     localStorage.setItem('sr-removed-tasks', JSON.stringify(removedTasks));
   }
 
+  const role = userRole || 'passenger';
+
   function activeTasks() {
-    return TRIP_TASKS.filter(t => !removedTasks.includes(t.id));
+    return TRIP_TASKS.filter(t => {
+      if (removedTasks.includes(t.id)) return false;
+      if (t.role === 'skipper' && role !== 'skipper') return false;
+      return true;
+    });
   }
 
   function tasksForDate(dateStr) {
