@@ -1348,6 +1348,58 @@ body {
   background: rgba(255,255,255,0.45);
 }
 
+.route-mode-control {
+  margin-top: 0.46rem;
+  width: min(280px, calc(100vw - 2rem));
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  border-radius: 10px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.1);
+  padding: 0.45rem 0.55rem 0.5rem;
+  pointer-events: auto;
+}
+
+.route-mode-label {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 0.38rem;
+}
+
+.route-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.38rem;
+}
+
+.route-mode-btn {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.4rem 0.45rem;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.route-mode-btn:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+}
+
+.route-mode-btn.active {
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+}
+
 .measure-control {
   margin-top: 0.5rem;
   width: min(280px, calc(100vw - 2rem));
@@ -1414,6 +1466,66 @@ body {
   border-radius: 8px;
   background: #fff;
   margin-bottom: 0.5rem;
+}
+
+.measure-active-route {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--accent) 8%, #fff);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 0.71rem;
+  font-weight: 700;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  margin-bottom: 0.42rem;
+  transition: background var(--transition), transform var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.measure-active-route:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 14%, #fff);
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
+  transform: translateY(-1px);
+}
+
+.measure-active-route:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.measure-method {
+  font-size: 0.66rem;
+  line-height: 1.35;
+  color: var(--text-light);
+  margin-bottom: 0.45rem;
+}
+
+.measure-route-summary {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.85);
+  padding: 0.42rem 0.5rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.measure-route-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  line-height: 1.25;
+}
+
+.measure-route-row + .measure-route-row {
+  margin-top: 0.22rem;
+}
+
+.measure-route-row strong {
+  color: var(--text);
+  font-size: 0.71rem;
 }
 
 .measure-actions {
@@ -1483,6 +1595,16 @@ body {
   font-weight: 700;
 }
 
+.measure-segment-highlight {
+  border-bottom-style: solid;
+  border-bottom-color: color-mix(in srgb, var(--accent) 24%, var(--border-light));
+}
+
+.measure-segment-highlight span {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .measure-waypoint-wrapper {
   background: transparent;
   border: none;
@@ -1517,6 +1639,8 @@ body {
   font-weight: 600;
   border: 2px solid #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
+  transition: transform 0.18s ease, opacity 0.18s ease;
 }
 
 .start-marker {
@@ -1524,6 +1648,17 @@ body {
   height: 30px;
   font-size: 12px;
   border: 3px solid #fff;
+}
+
+.inactive-stop-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--marker-color) 88%, #fff);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.14);
+  transform: translate(var(--offset-x, 0px), var(--offset-y, 0px));
+  opacity: 0.8;
 }
 
 /* Weather widget */
@@ -1617,6 +1752,15 @@ body {
 
 .legend-item.dimmed .legend-name {
   color: var(--text-light);
+}
+
+.legend-item.selected {
+  background: color-mix(in srgb, var(--accent) 12%, #fff);
+}
+
+.legend-item.selected .legend-name {
+  color: var(--text);
+  font-weight: 600;
 }
 
 .entry-prep-link {
@@ -3844,6 +3988,23 @@ body {
     margin-top: 0.35rem;
     margin-right: 0.15rem;
     width: min(240px, calc(100vw - 1.5rem));
+  }
+
+  body[data-map-state="full"] .map-container .route-mode-control {
+    margin-top: 0.32rem;
+    margin-right: 0.15rem;
+    width: min(240px, calc(100vw - 1.5rem));
+    padding: 0.38rem 0.48rem 0.42rem;
+  }
+
+  body[data-map-state="full"] .map-container .route-mode-label {
+    font-size: 0.62rem;
+    margin-bottom: 0.3rem;
+  }
+
+  body[data-map-state="full"] .map-container .route-mode-btn {
+    font-size: 0.68rem;
+    padding: 0.34rem 0.4rem;
   }
 
   body[data-map-state="full"] .map-container .measure-toggle {

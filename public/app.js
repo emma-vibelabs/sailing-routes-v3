@@ -14,6 +14,7 @@
   let map = null;
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
   let activeRouteId = null;
+  let currentRouteMode = 'seaway'; // seaway | straight
   let currentSection = 'explore';   // explore | vote | plan
   let currentSubTab = 'routes';     // routes | stops (within explore)
   let currentPrepView = 'landing';
@@ -24,6 +25,13 @@
   let measurementWaypoints = [];
   let measurementLine = null;
   let measurementUi = null;
+  let showActiveRouteMeasurement = false;
+  let routeModeUi = null;
+
+  const STORAGE_KEYS = {
+    activeRouteId: 'sr-active-route',
+    routeMode: 'sr-route-mode',
+  };
 
   // ---- Mobile state ----
   let isMobile = window.innerWidth <= 768;
@@ -101,6 +109,34 @@
     return [25, 50, 75, 100][Math.min(level - 1, 3)] || 25;
   }
 
+  function readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      // no-op (private mode / storage blocked)
+    }
+  }
+
+  function routeModeLabel(mode) {
+    const isEn = I18n.lang() === 'en';
+    if (mode === 'straight') return isEn ? 'Straight lines' : 'Rette linjer';
+    return isEn ? 'Seaway (approx)' : 'Sjøvei (omtrentlig)';
+  }
+
+  function displayDay(stop) {
+    const rawDay = Number(stop && stop.day);
+    if (!Number.isFinite(rawDay)) return 1;
+    return Math.max(1, rawDay);
+  }
+
   // ---- Screen transitions ----
   function showScreen(name) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
@@ -126,6 +162,7 @@
         );
         I18n.applyToDOM();
         updateMeasurementUi();
+        updateRouteModeUi();
       });
     });
   }
@@ -433,50 +470,285 @@
   // ============================================
   // MAP
   // ============================================
+  function routePointKey(lat, lng) {
+    return `${Number(lat).toFixed(5)},${Number(lng).toFixed(5)}`;
+  }
+
+  function collisionOffsets(count) {
+    if (count <= 1) return [{ x: 0, y: 0 }];
+    if (count === 2) return [{ x: -12, y: 0 }, { x: 12, y: 0 }];
+    if (count === 3) return [{ x: -11, y: 7 }, { x: 11, y: 7 }, { x: 0, y: -10 }];
+    if (count === 4) return [{ x: -12, y: 0 }, { x: 12, y: 0 }, { x: 0, y: -12 }, { x: 0, y: 12 }];
+
+    const radius = 13 + Math.min(10, Math.floor((count - 5) / 2));
+    const result = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (-Math.PI / 2) + (i * 2 * Math.PI / count);
+      result.push({
+        x: Math.round(Math.cos(angle) * radius),
+        y: Math.round(Math.sin(angle) * radius),
+      });
+    }
+    return result;
+  }
+
+  function computeRouteOverlapOffsets(stops) {
+    const grouped = {};
+    const byIndex = {};
+
+    (stops || []).forEach((stop, index) => {
+      const key = routePointKey(stop.lat, stop.lng);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(index);
+    });
+
+    Object.values(grouped).forEach(indices => {
+      if (indices.length < 2) return;
+      const offsets = collisionOffsets(indices.length);
+      indices.forEach((idx, order) => {
+        byIndex[idx] = offsets[order];
+      });
+    });
+
+    return byIndex;
+  }
+
+  function buildRouteCoords(route, mode) {
+    const coords = [];
+    (route.stops || []).forEach(stop => {
+      if (mode === 'seaway' && Array.isArray(stop.waypoints)) {
+        stop.waypoints.forEach(wp => coords.push(wp));
+      }
+      coords.push([stop.lat, stop.lng]);
+    });
+    return coords;
+  }
+
+  function routeModeButtonText(mode) {
+    const isEn = I18n.lang() === 'en';
+    if (mode === 'straight') return isEn ? 'Straight' : 'Rett';
+    return isEn ? 'Seaway' : 'Sjøvei';
+  }
+
+  function routeModeControlTitle() {
+    return I18n.lang() === 'en' ? 'Route rendering' : 'Rutetype';
+  }
+
+  function createStopIcon(route, stop, index, isActive, offset) {
+    const markerOffset = offset || { x: 0, y: 0 };
+
+    if (!isActive) {
+      return L.divIcon({
+        className: 'numbered-marker-wrapper',
+        html: `<div class="inactive-stop-marker" style="--offset-x:${markerOffset.x}px;--offset-y:${markerOffset.y}px;--marker-color:${route.color}"></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+      });
+    }
+
+    const isStart = index === 0;
+    return L.divIcon({
+      className: 'numbered-marker-wrapper',
+      html: `<div class="numbered-marker ${isStart ? 'start-marker' : ''}" style="--offset-x:${markerOffset.x}px;--offset-y:${markerOffset.y}px;background:${route.color}">${displayDay(stop)}</div>`,
+      iconSize: isStart ? [30, 30] : [24, 24],
+      iconAnchor: isStart ? [15, 15] : [12, 12],
+    });
+  }
+
+  function flattenLatLngs(latlngs, out) {
+    if (!Array.isArray(latlngs)) return out;
+    latlngs.forEach(item => {
+      if (!item) return;
+      if (Array.isArray(item)) flattenLatLngs(item, out);
+      else if (typeof item.lat === 'number' && typeof item.lng === 'number') out.push(item);
+      else if (typeof item[0] === 'number' && typeof item[1] === 'number') out.push(L.latLng(item[0], item[1]));
+    });
+    return out;
+  }
+
+  function polylineNm(polyline) {
+    if (!map || !polyline) return 0;
+    const points = flattenLatLngs(polyline.getLatLngs(), []);
+    if (points.length < 2) return 0;
+    let total = 0;
+    for (let i = 1; i < points.length; i++) {
+      total += map.distance(points[i - 1], points[i]) / 1852;
+    }
+    return total;
+  }
+
+  function activeRouteGeometryNm() {
+    if (!activeRouteId || !routeLayers[activeRouteId]) return 0;
+    return polylineNm(routeLayers[activeRouteId].polyline);
+  }
+
+  function getDefaultRouteId() {
+    const routes = window.ROUTES_DATA || [];
+    if (!routes.length) return null;
+    const stored = readStorage(STORAGE_KEYS.activeRouteId);
+    if (stored && routes.some(route => route.id === stored)) return stored;
+    return routes[0].id;
+  }
+
+  function updateLegendState() {
+    const legend = document.getElementById('mapLegend');
+    if (!legend) return;
+    legend.querySelectorAll('.legend-item').forEach(item => {
+      const isActive = item.dataset.route === activeRouteId;
+      item.classList.toggle('selected', isActive);
+      item.classList.toggle('dimmed', !isActive);
+    });
+  }
+
+  function fitRoute(routeId, options) {
+    const layer = routeLayers[routeId];
+    if (!map || !layer) return;
+    map.fitBounds(layer.polyline.getBounds(), {
+      padding: [50, 50],
+      maxZoom: 10,
+      animate: !(options && options.animate === false),
+      duration: options && typeof options.duration === 'number' ? options.duration : 0.6,
+    });
+  }
+
+  function applyRouteVisualState() {
+    const routes = window.ROUTES_DATA || [];
+    routes.forEach(route => {
+      const layer = routeLayers[route.id];
+      if (!layer) return;
+
+      const isActive = route.id === activeRouteId;
+      layer.polyline.setLatLngs(layer.coordsByMode[currentRouteMode]);
+      layer.polyline.setStyle({
+        opacity: isActive ? 0.92 : 0.22,
+        weight: isActive ? 4 : 2,
+        dashArray: isActive ? null : '7 8',
+      });
+      if (isActive) layer.polyline.bringToFront();
+
+      layer.markers.forEach(entry => {
+        const offset = isActive ? (layer.overlapOffsets[entry.index] || { x: 0, y: 0 }) : { x: 0, y: 0 };
+        entry.marker.setIcon(createStopIcon(route, entry.stop, entry.index, isActive, offset));
+        entry.marker.setOpacity(1);
+        entry.marker.setZIndexOffset(isActive ? (1400 + entry.index) : (80 + entry.index));
+        if (isActive) entry.marker.bringToFront();
+      });
+    });
+
+    updateLegendState();
+    updateMeasurementUi();
+  }
+
+  function setRouteMode(mode, options) {
+    const nextMode = mode === 'straight' ? 'straight' : 'seaway';
+    const shouldFit = !(options && options.fit === false);
+    const shouldPersist = !(options && options.persist === false);
+
+    currentRouteMode = nextMode;
+    if (shouldPersist) writeStorage(STORAGE_KEYS.routeMode, nextMode);
+
+    applyRouteVisualState();
+    if (shouldFit && activeRouteId) fitRoute(activeRouteId);
+    updateRouteModeUi();
+  }
+
+  function updateRouteModeUi() {
+    if (!routeModeUi) return;
+    routeModeUi.title.textContent = routeModeControlTitle();
+    routeModeUi.seaway.textContent = routeModeButtonText('seaway');
+    routeModeUi.straight.textContent = routeModeButtonText('straight');
+    routeModeUi.seaway.classList.toggle('active', currentRouteMode === 'seaway');
+    routeModeUi.straight.classList.toggle('active', currentRouteMode === 'straight');
+  }
+
+  function initRouteModeControl() {
+    const RouteModeControl = L.Control.extend({
+      options: { position: 'topright' },
+      onAdd: function () {
+        const container = L.DomUtil.create('div', 'route-mode-control');
+        container.innerHTML = `
+          <div class="route-mode-label" data-role="title"></div>
+          <div class="route-mode-switch">
+            <button type="button" class="route-mode-btn" data-role="seaway"></button>
+            <button type="button" class="route-mode-btn" data-role="straight"></button>
+          </div>
+        `;
+
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.disableScrollPropagation(container);
+
+        const title = container.querySelector('[data-role="title"]');
+        const seaway = container.querySelector('[data-role="seaway"]');
+        const straight = container.querySelector('[data-role="straight"]');
+
+        seaway.addEventListener('click', () => setRouteMode('seaway'));
+        straight.addEventListener('click', () => setRouteMode('straight'));
+
+        routeModeUi = { title, seaway, straight };
+        updateRouteModeUi();
+
+        return container;
+      }
+    });
+
+    new RouteModeControl().addTo(map);
+  }
+
   function initMap() {
     map = L.map('map', { center: [37.5, 25.0], zoom: 7, zoomControl: true });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
       subdomains: 'abcd', maxZoom: 19,
     }).addTo(map);
+
+    const storedMode = readStorage(STORAGE_KEYS.routeMode);
+    currentRouteMode = storedMode === 'straight' ? 'straight' : 'seaway';
+
     initNauticalScale();
     initWaypointMeasureTool();
+    initRouteModeControl();
     (window.ROUTES_DATA || []).forEach(route => drawRoute(route));
     renderLegend();
+    const defaultRouteId = getDefaultRouteId();
+    if (defaultRouteId) selectRoute(defaultRouteId, { fit: false, persist: false });
+    updateRouteModeUi();
   }
 
   function drawRoute(route) {
-    const coords = [];
-    route.stops.forEach(s => {
-      if (s.waypoints) s.waypoints.forEach(wp => coords.push(wp));
-      coords.push([s.lat, s.lng]);
-    });
-    const polyline = L.polyline(coords, { color: route.color, weight: 3, opacity: 0.7 }).addTo(map);
+    const coordsByMode = {
+      straight: buildRouteCoords(route, 'straight'),
+      seaway: buildRouteCoords(route, 'seaway'),
+    };
+
+    const polyline = L.polyline(coordsByMode[currentRouteMode], {
+      color: route.color,
+      weight: 3,
+      opacity: 0.7,
+      lineCap: 'round',
+      lineJoin: 'round',
+    }).addTo(map);
+
     polyline.on('click', (e) => {
       if (measurementMode) {
         if (e && e.originalEvent) L.DomEvent.stop(e.originalEvent);
         addMeasurementWaypoint(e.latlng);
         return;
       }
-      selectRoute(route.id);
+      selectRoute(route.id, { fit: true });
     });
 
     const markers = route.stops.map((stop, i) => {
-      const isStart = i === 0;
-      const icon = L.divIcon({
-        className: 'numbered-marker-wrapper',
-        html: `<div class="numbered-marker ${isStart ? 'start-marker' : ''}" style="background:${route.color}">${i}</div>`,
-        iconSize: isStart ? [30, 30] : [24, 24],
-        iconAnchor: isStart ? [15, 15] : [12, 12],
-      });
-      const marker = L.marker([stop.lat, stop.lng], { icon }).addTo(map);
+      const marker = L.marker([stop.lat, stop.lng], {
+        icon: createStopIcon(route, stop, i, false, { x: 0, y: 0 }),
+        zIndexOffset: 80 + i,
+      }).addTo(map);
       const { slug: stopSlug, island: stopIsland } = findIsland(stop.name);
       const nameHtml = stopIsland
         ? `<a href="#" class="popup-stop-link" data-slug="${stopSlug}" style="color:var(--accent);text-decoration:underline;font-weight:600;cursor:pointer">${escapeHtml(stop.name)}</a>`
         : `<strong>${escapeHtml(stop.name)}</strong>`;
       marker.bindPopup(`
         ${nameHtml}<br>
-        ${t('detail.day')} ${stop.day}${stop.nm ? ' &middot; ' + stop.nm + ' NM' : ''}
+        ${t('detail.day')} ${displayDay(stop)}${stop.nm ? ' &middot; ' + stop.nm + ' NM' : ''}
         ${stop.highlight ? '<br><em>' + escapeHtml(P(stop.highlight)) + '</em>' : ''}
       `);
       marker.on('click', (e) => {
@@ -486,7 +758,7 @@
           addMeasurementWaypoint(marker.getLatLng());
           return;
         }
-        selectRoute(route.id);
+        selectRoute(route.id, { fit: true });
       });
       marker.on('popupopen', () => {
         const link = marker.getPopup().getElement()?.querySelector('.popup-stop-link');
@@ -507,23 +779,33 @@
           });
         }
       });
-      return marker;
+      return { marker, stop, index: i };
     });
-    routeLayers[route.id] = { polyline, markers };
+
+    routeLayers[route.id] = {
+      route,
+      polyline,
+      markers,
+      coordsByMode,
+      overlapOffsets: computeRouteOverlapOffsets(route.stops),
+    };
   }
 
-  function selectRoute(routeId) {
-    activeRouteId = routeId;
+  function selectRoute(routeId, options) {
     const routes = window.ROUTES_DATA || [];
-    routes.forEach(r => {
-      const layer = routeLayers[r.id];
-      if (!layer) return;
-      const isActive = r.id === routeId;
-      layer.polyline.setStyle({ opacity: isActive ? 0.9 : 0.15, weight: isActive ? 4 : 2 });
-      layer.markers.forEach(m => m.setOpacity(isActive ? 1 : 0.2));
-    });
-    const layer = routeLayers[routeId];
-    if (layer) map.fitBounds(layer.polyline.getBounds(), { padding: [50, 50], maxZoom: 10, animate: true, duration: 0.6 });
+    const shouldFit = !(options && options.fit === false);
+    const shouldPersist = !(options && options.persist === false);
+    const fallbackRouteId = getDefaultRouteId();
+
+    if (!routeId || !routeLayers[routeId]) routeId = fallbackRouteId;
+    if (!routeId || !routeLayers[routeId]) return;
+
+    activeRouteId = routeId;
+    if (shouldPersist) writeStorage(STORAGE_KEYS.activeRouteId, routeId);
+
+    applyRouteVisualState();
+    if (shouldFit) fitRoute(routeId);
+
     const route = routes.find(r => r.id === routeId);
     if (route) document.getElementById('activeRouteName').textContent = P(route.name);
     document.querySelectorAll('.route-card').forEach(card => card.classList.toggle('selected', card.dataset.routeId === routeId));
@@ -534,19 +816,9 @@
   }
 
   function resetMapView() {
-    activeRouteId = null;
-    (window.ROUTES_DATA || []).forEach(r => {
-      const layer = routeLayers[r.id];
-      if (!layer) return;
-      layer.polyline.setStyle({ opacity: 0.7, weight: 3 });
-      layer.markers.forEach(m => m.setOpacity(1));
-    });
-    map.setView([37.5, 25.0], 7, { animate: true, duration: 0.6 });
-    document.getElementById('activeRouteName').textContent = '';
-    if (isMobile) {
-      const fab = document.getElementById('mapFab');
-      if (fab) fab.querySelector('span').textContent = t('map.button');
-    }
+    const routeId = activeRouteId || getDefaultRouteId();
+    if (!routeId) return;
+    selectRoute(routeId, { fit: true, persist: false });
   }
 
   function renderLegend() {
@@ -561,9 +833,11 @@
     legend.querySelectorAll('.legend-item').forEach(item => {
       item.addEventListener('click', () => {
         const id = item.dataset.route;
-        if (activeRouteId === id) resetMapView(); else selectRoute(id);
+        if (activeRouteId === id) fitRoute(id);
+        else selectRoute(id, { fit: true });
       });
     });
+    updateLegendState();
   }
 
   function waypointLabel(index) {
@@ -593,6 +867,14 @@
       undo: isEn ? 'Undo' : 'Angre',
       clear: isEn ? 'Clear' : 'Nullstill',
       empty: isEn ? 'Add at least two points for NM.' : 'Legg minst to punkter for NM.',
+      method: isEn
+        ? 'Trip NM uses itinerary data. Map NM uses the selected route rendering mode.'
+        : 'Tur-NM bruker reisedata. Kart-NM bruker valgt rutetype.',
+      activeRoute: isEn ? 'Measure active route' : 'Mål aktiv rute',
+      canonical: isEn ? 'Itinerary (canonical)' : 'Reiseplan (kanonisk)',
+      geometry: isEn ? 'Map geometry' : 'Kartgeometri',
+      mode: isEn ? 'Mode' : 'Modus',
+      noActiveRoute: isEn ? 'Select a route to compare canonical NM vs map geometry NM.' : 'Velg en rute for å sammenligne kanonisk NM mot kart-NM.',
     };
     return labels[key] || '';
   }
@@ -627,6 +909,8 @@
     measurementUi.body.classList.toggle('hidden', !measurementMode);
     measurementUi.undo.textContent = measurementText('undo');
     measurementUi.clear.textContent = measurementText('clear');
+    measurementUi.method.textContent = measurementText('method');
+    measurementUi.activeRoute.textContent = measurementText('activeRoute');
 
     const latlngs = measurementWaypoints.map(marker => marker.getLatLng());
     let totalNm = 0;
@@ -647,16 +931,48 @@
     measurementUi.undo.disabled = measurementWaypoints.length === 0;
     measurementUi.clear.disabled = measurementWaypoints.length === 0;
 
+    const route = (window.ROUTES_DATA || []).find(r => r.id === activeRouteId);
+    measurementUi.activeRoute.disabled = !route;
+    if (route) {
+      const geometryNm = activeRouteGeometryNm();
+      measurementUi.routeSummary.innerHTML = `
+        <div class="measure-route-row"><span>${measurementText('canonical')}</span><strong>~${formatNm(route.distance)} NM</strong></div>
+        <div class="measure-route-row"><span>${measurementText('geometry')} (${routeModeLabel(currentRouteMode)})</span><strong>${formatNm(geometryNm)} NM</strong></div>
+      `;
+    } else {
+      measurementUi.routeSummary.textContent = measurementText('noActiveRoute');
+    }
+
     if (segments.length) {
       measurementUi.empty.classList.add('hidden');
-      measurementUi.segmentList.innerHTML = segments.map(seg =>
+      let segmentHtml = segments.map(seg =>
         `<div class="measure-segment-row"><span>${seg.from} -> ${seg.to}</span><strong>${formatNm(seg.nm)} NM</strong></div>`
       ).join('');
+      if (showActiveRouteMeasurement && route) {
+        segmentHtml = `<div class="measure-segment-row measure-segment-highlight"><span>${escapeHtml(P(route.name))} (${routeModeLabel(currentRouteMode)})</span><strong>${formatNm(activeRouteGeometryNm())} NM</strong></div>` + segmentHtml;
+      }
+      measurementUi.segmentList.innerHTML = segmentHtml;
     } else {
-      measurementUi.segmentList.innerHTML = '';
-      measurementUi.empty.classList.remove('hidden');
-      measurementUi.empty.textContent = measurementText('empty');
+      if (showActiveRouteMeasurement && route) {
+        measurementUi.empty.classList.add('hidden');
+        measurementUi.segmentList.innerHTML = `<div class="measure-segment-row measure-segment-highlight"><span>${escapeHtml(P(route.name))} (${routeModeLabel(currentRouteMode)})</span><strong>${formatNm(activeRouteGeometryNm())} NM</strong></div>`;
+        measurementUi.totalLabel.textContent = `${measurementText('total')}: ${formatNm(activeRouteGeometryNm())} NM`;
+      } else {
+        measurementUi.segmentList.innerHTML = '';
+        measurementUi.empty.classList.remove('hidden');
+        measurementUi.empty.textContent = measurementText('empty');
+      }
     }
+  }
+
+  function measureActiveRoute() {
+    if (!activeRouteId || !routeLayers[activeRouteId]) return;
+    if (measurementWaypoints.length || measurementLine) {
+      clearMeasurementWaypoints();
+    }
+    showActiveRouteMeasurement = true;
+    setMeasurementMode(true);
+    updateMeasurementUi();
   }
 
   function updateMeasurementPath() {
@@ -684,6 +1000,7 @@
 
   function addMeasurementWaypoint(latlng) {
     if (!map || !latlng) return;
+    showActiveRouteMeasurement = false;
     const marker = L.marker(latlng, {
       draggable: true,
       icon: waypointIcon(waypointLabel(measurementWaypoints.length)),
@@ -714,6 +1031,7 @@
   function clearMeasurementWaypoints() {
     measurementWaypoints.forEach(marker => map.removeLayer(marker));
     measurementWaypoints = [];
+    showActiveRouteMeasurement = false;
     if (measurementLine) {
       map.removeLayer(measurementLine);
       measurementLine = null;
@@ -740,6 +1058,9 @@
           <div class="measure-body hidden" data-role="body">
             <p class="measure-hint" data-role="hint"></p>
             <div class="measure-total" data-role="total"></div>
+            <button type="button" class="measure-active-route" data-role="activeRoute"></button>
+            <p class="measure-method" data-role="method"></p>
+            <div class="measure-route-summary" data-role="routeSummary"></div>
             <div class="measure-actions">
               <button type="button" data-role="undo"></button>
               <button type="button" data-role="clear"></button>
@@ -756,6 +1077,9 @@
         const body = container.querySelector('[data-role="body"]');
         const hint = container.querySelector('[data-role="hint"]');
         const totalLabel = container.querySelector('[data-role="total"]');
+        const activeRoute = container.querySelector('[data-role="activeRoute"]');
+        const method = container.querySelector('[data-role="method"]');
+        const routeSummary = container.querySelector('[data-role="routeSummary"]');
         const undo = container.querySelector('[data-role="undo"]');
         const clear = container.querySelector('[data-role="clear"]');
         const empty = container.querySelector('[data-role="empty"]');
@@ -765,10 +1089,11 @@
         clear.textContent = measurementText('clear');
 
         toggle.addEventListener('click', () => setMeasurementMode(!measurementMode));
+        activeRoute.addEventListener('click', () => measureActiveRoute());
         undo.addEventListener('click', () => undoMeasurementWaypoint());
         clear.addEventListener('click', () => clearMeasurementWaypoints());
 
-        measurementUi = { toggle, body, hint, totalLabel, undo, clear, empty, segmentList };
+        measurementUi = { toggle, body, hint, totalLabel, activeRoute, method, routeSummary, undo, clear, empty, segmentList };
         updateMeasurementUi();
 
         return container;
@@ -855,7 +1180,7 @@
     const list = document.getElementById('routesList');
     const routes = window.ROUTES_DATA || [];
     list.innerHTML = routes.map((r, i) => `
-      <div class="route-card" data-route-id="${r.id}" style="animation-delay:${0.05 * i}s">
+      <div class="route-card${activeRouteId === r.id ? ' selected' : ''}" data-route-id="${r.id}" style="animation-delay:${0.05 * i}s">
         <div class="route-card-hero" style="background-image:url('${unsplash(r.heroImage, 600, 300)}')">
           <div class="route-card-label">
             <div class="route-region">${escapeHtml(P(r.region))}</div>
@@ -960,7 +1285,7 @@
           const thumbId = island ? island.image : (s.image || null);
           return `
             <div class="itinerary-row ${s.isRest ? 'rest' : ''}" data-stop-slug="${slug}">
-              <span class="itin-day">${t('detail.day')} ${s.day}</span>
+              <span class="itin-day">${t('detail.day')} ${displayDay(s)}</span>
               <img class="itin-thumb" src="${unsplash(thumbId, 72, 72)}" alt="${escapeHtml(s.name)}" loading="lazy" />
               <div class="itin-info">
                 <div class="itin-route-name">${escapeHtml(routeText)}</div>

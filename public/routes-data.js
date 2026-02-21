@@ -120,6 +120,7 @@ window.ROUTES_DATA = [
         lng: 23.1500,
         nm: 5,
         hours: 0.9,
+        waypoints: [[37.275, 23.102], [37.302, 23.126]],
         highlight: { no: "Beskyttet bukt, fantastiske sjømat-restaurantar", en: "Sheltered bay, fantastic seafood restaurants" },
         isRest: false,
         image: "Porto Heli"
@@ -192,6 +193,7 @@ window.ROUTES_DATA = [
         lng: 23.1550,
         nm: 42,
         hours: 7.6,
+        waypoints: [[36.89, 23.06], [37.02, 23.08], [37.14, 23.10], [37.20, 23.11], [37.24, 23.13]],
         highlight: { no: "Lang seildag nordover, stopp for lunsj undervegs", en: "Long sailing day northward, lunch stop along the way" },
         isRest: false,
         image: "Spetses"
@@ -204,6 +206,7 @@ window.ROUTES_DATA = [
         lng: 23.4570,
         nm: 28,
         hours: 5.1,
+        waypoints: [[37.32, 23.14], [37.40, 23.19], [37.46, 23.27], [37.50, 23.36]],
         highlight: { no: "Siste seildag gjennom den smale kanalen", en: "Last sailing day through the narrow channel" },
         isRest: false,
         image: "Poros"
@@ -216,6 +219,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 33,
         hours: 6.0,
+        waypoints: [[37.55, 23.37], [37.66, 23.50], [37.75, 23.59], [37.82, 23.72]],
         highlight: { no: "Tilbake til Athen, levering av båt", en: "Back to Athens, boat handover" },
         isRest: false,
         image: "Alimos Marina"
@@ -276,6 +280,7 @@ window.ROUTES_DATA = [
         lng: 24.3220,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97], [37.65, 24.12]],
         highlight: { no: "Kea-l\u00f8va, hyggelig hamn \u2014 f\u00f8rste seildag via Cape Sounion", en: "The Lion of Kea, cosy harbour \u2014 first sailing day via Cape Sounion" },
         isRest: false,
         image: "Kea"
@@ -336,6 +341,7 @@ window.ROUTES_DATA = [
         lng: 24.4450,
         nm: 26,
         hours: 4.7,
+        waypoints: [[36.90, 24.74], [36.84, 24.67], [36.77, 24.58], [36.72, 24.52]],
         highlight: { no: "Vulkansk øy, Sarakiniko måneoverflate, fargerike fiskarhus", en: "Volcanic island, Sarakiniko moonscape, colourful fishermen's houses" },
         isRest: false,
         image: "Milos"
@@ -432,6 +438,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 58,
         hours: 10.5,
+        waypoints: [[37.65, 24.02], [37.65, 23.86], [37.71, 23.75], [37.82, 23.72]],
         highlight: { no: "Siste seildag tilbake via Cape Sounion til Athen", en: "Final sailing day back via Cape Sounion to Athens" },
         isRest: false,
         image: "Alimos Marina"
@@ -492,6 +499,7 @@ window.ROUTES_DATA = [
         lng: 24.3220,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97], [37.65, 24.12]],
         highlight: { no: "F\u00f8rste natt, roleg overgang via Cape Sounion", en: "First night, calm transition via Cape Sounion" },
         isRest: false,
         image: "Kea"
@@ -648,6 +656,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 58,
         hours: 10.5,
+        waypoints: [[37.65, 24.02], [37.65, 23.86], [37.71, 23.75], [37.82, 23.72]],
         highlight: { no: "Lang siste seildag via Cape Sounion til Athen", en: "Long final sailing day via Cape Sounion to Athens" },
         isRest: false,
         image: "Alimos Marina"
@@ -708,6 +717,7 @@ window.ROUTES_DATA = [
         lng: 24.3220,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97], [37.65, 24.12]],
         highlight: { no: "F\u00f8rste stopp via Cape Sounion, roleg overgang", en: "First stop via Cape Sounion, calm transition" },
         isRest: false,
         image: "Kea"
@@ -924,6 +934,7 @@ window.ROUTES_DATA = [
         lng: 24.3220,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97], [37.65, 24.12]],
         highlight: { no: "Kea-l\u00f8va, vandring til Ioulida \u2014 f\u00f8rste seildag via Sounion", en: "The Lion of Kea, hike to Ioulida \u2014 first sailing day via Sounion" },
         isRest: false,
         image: "Kea"
@@ -1106,6 +1117,7 @@ window.ROUTES_DATA = [
         lng: 24.3220,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.82, 23.72], [37.71, 23.75], [37.65, 23.86], [37.64, 23.97], [37.65, 24.12]],
         highlight: { no: "Første stopp via Sounion \u2014 Kea-løva, roleg hamn", en: "First stop via Sounion \u2014 the Lion of Kea, quiet harbour" },
         isRest: false,
         image: "Kea"
@@ -1142,7 +1154,7 @@ window.ROUTES_DATA = [
         lng: 26.5480,
         nm: 68,
         hours: 12.4,
-        waypoints: [[37.42, 25.70], [37.38, 26.00], [37.35, 26.30]],
+        waypoints: [[37.42, 25.70], [37.39, 25.95], [37.36, 26.18], [37.34, 26.40]],
         highlight: { no: "DEN STORE ETAPPEN \u2014 68nm over ope hav, avgang ved daggry", en: "THE BIG LEG \u2014 68nm across open sea, departure at dawn" },
         isRest: false,
         image: "Patmos"
@@ -1161,7 +1173,7 @@ window.ROUTES_DATA = [
       },
       {
         day: 6,
-        name: "Lipsi (kviledag)",
+        name: "Lipsi (hviledag)",
         port: "Lipsi",
         lat: 37.2940,
         lng: 26.7430,
@@ -1210,7 +1222,7 @@ window.ROUTES_DATA = [
       },
       {
         day: 10,
-        name: "Amorgos (kviledag)",
+        name: "Amorgos (hviledag)",
         port: "Katapola",
         lat: 36.8230,
         lng: 25.8540,
@@ -1400,6 +1412,7 @@ window.ROUTES_DATA = [
         lng: 23.7270,
         nm: 9,
         hours: 1.6,
+        waypoints: [[39.19, 23.79], [39.16, 23.75]],
         highlight: { no: "Mamma Mia-øy, 360 kyrkjer, plommedyrking", en: "Mamma Mia island, 360 churches, plum farming" },
         isRest: false,
         image: "Skopelos"
@@ -1448,6 +1461,7 @@ window.ROUTES_DATA = [
         lng: 24.1120,
         nm: 42,
         hours: 7.6,
+        waypoints: [[38.98, 23.84], [38.84, 23.96], [38.74, 24.05]],
         highlight: { no: "Roleg kystby på Evia, proviantering", en: "Quiet coastal town on Evia, provisioning" },
         isRest: false,
         image: "Kymi"
@@ -1460,7 +1474,6 @@ window.ROUTES_DATA = [
         lng: 24.2300,
         nm: 38,
         hours: 6.9,
-        waypoints: [[38.50, 24.20], [38.30, 24.35], [38.15, 24.55], [38.13, 24.60], [38.05, 24.45]],
         highlight: { no: "Tilbake sørover langs Evias austkyst", en: "Back south along Evia's east coast" },
         isRest: false,
         image: "Evia Sør"
@@ -1473,6 +1486,7 @@ window.ROUTES_DATA = [
         lng: 23.7050,
         nm: 35,
         hours: 6.4,
+        waypoints: [[37.83, 24.12], [37.76, 23.98]],
         highlight: { no: "Siste etappe heim via Sounion til Athen", en: "Final leg home via Sounion to Athens" },
         isRest: false,
         image: "Alimos Marina"

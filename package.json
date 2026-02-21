@@ -2,6 +2,9 @@
   "name": "sailing-routes-v3",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "check:distances": "node scripts/check-distances.mjs"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0"
   }
