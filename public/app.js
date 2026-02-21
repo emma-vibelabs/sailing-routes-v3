@@ -20,6 +20,10 @@
   let currentStopFilter = 'alle';
   let voteSelection = null;
   let totalVoteCount = 0;
+  let measurementMode = false;
+  let measurementWaypoints = [];
+  let measurementLine = null;
+  let measurementUi = null;
 
   // ---- Mobile state ----
   let isMobile = window.innerWidth <= 768;
@@ -434,6 +438,8 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
       subdomains: 'abcd', maxZoom: 19,
     }).addTo(map);
+    initNauticalScale();
+    initWaypointMeasureTool();
     (window.ROUTES_DATA || []).forEach(route => drawRoute(route));
     renderLegend();
   }
@@ -445,7 +451,14 @@
       coords.push([s.lat, s.lng]);
     });
     const polyline = L.polyline(coords, { color: route.color, weight: 3, opacity: 0.7 }).addTo(map);
-    polyline.on('click', () => selectRoute(route.id));
+    polyline.on('click', (e) => {
+      if (measurementMode) {
+        if (e && e.originalEvent) L.DomEvent.stop(e.originalEvent);
+        addMeasurementWaypoint(e.latlng);
+        return;
+      }
+      selectRoute(route.id);
+    });
 
     const markers = route.stops.map((stop, i) => {
       const isStart = i === 0;
@@ -465,7 +478,15 @@
         ${t('detail.day')} ${stop.day}${stop.nm ? ' &middot; ' + stop.nm + ' NM' : ''}
         ${stop.highlight ? '<br><em>' + escapeHtml(P(stop.highlight)) + '</em>' : ''}
       `);
-      marker.on('click', () => selectRoute(route.id));
+      marker.on('click', (e) => {
+        if (measurementMode) {
+          marker.closePopup();
+          if (e && e.originalEvent) L.DomEvent.stop(e.originalEvent);
+          addMeasurementWaypoint(marker.getLatLng());
+          return;
+        }
+        selectRoute(route.id);
+      });
       marker.on('popupopen', () => {
         const link = marker.getPopup().getElement()?.querySelector('.popup-stop-link');
         if (link) {
