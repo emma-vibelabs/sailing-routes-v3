@@ -907,29 +907,28 @@
           const isMyVote = userVotedRoute === r.id;
           const voters = (currentVoters[r.id] || []);
 
-          // Action area:
-          // - My vote → ✓ + "Fjern" button
-          // - Other rows → just count (whole row is tappable)
+          // Right-side action zone:
+          // - My vote → ✓ + "Fjern"
+          // - Not my vote → count + colored vote tap zone
           let actionHtml = '';
           if (isMyVote) {
-            actionHtml = `<span class="vote-row-voted">✓</span><button class="vote-row-remove" data-route="${r.id}">${t('vote.remove')}</button>`;
+            actionHtml = `<div class="vote-row-action my" data-route="${r.id}"><span class="vote-row-voted">✓</span><span class="vote-row-remove-label">${t('vote.remove')}</span></div>`;
+          } else {
+            actionHtml = `<div class="vote-row-action" data-route="${r.id}" style="--vote-color:${r.color}"><span class="vote-row-count">${count}</span><span class="vote-row-action-label">${userVotedRoute ? t('vote.change') : t('vote.submit')}</span></div>`;
           }
 
           return `
             <div class="vote-row ${isMyVote ? 'my-vote' : ''}" data-route="${r.id}">
               <div class="vote-row-bar" style="width:${pct}%;background:${r.color}"></div>
               <div class="vote-row-content">
-                <div class="vote-row-left">
+                <div class="vote-row-left" data-route="${r.id}">
                   <span class="vote-row-dot" style="background:${r.color}"></span>
                   <div class="vote-row-info">
                     <span class="vote-row-name">${escapeHtml(P(r.name))}</span>
                     ${voters.length ? `<span class="vote-row-voters">${voters.map(v => escapeHtml(v)).join(', ')}</span>` : ''}
                   </div>
                 </div>
-                <div class="vote-row-right">
-                  <span class="vote-row-count">${count}</span>
-                  ${actionHtml}
-                </div>
+                ${actionHtml}
               </div>
             </div>`;
         }).join('')}
@@ -937,23 +936,31 @@
       ${total > 0 ? `<div class="vote-total">${total} ${total === 1 ? (I18n.lang() === 'en' ? 'vote' : 'stemme') : (I18n.lang() === 'en' ? 'votes' : 'stemmer')}</div>` : ''}
     `;
 
-    // Remove vote button click (stopPropagation so row handler doesn't fire)
-    listEl.querySelectorAll('.vote-row-remove').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    // LEFT side → navigate to route detail
+    listEl.querySelectorAll('.vote-row-left').forEach(left => {
+      left.addEventListener('click', (e) => {
         e.stopPropagation();
-        removeVote();
+        const routeId = left.dataset.route;
+        switchSection('explore');
+        switchSubTab('routes');
+        showRouteDetail(routeId);
+        pushAppState({ section: 'explore', subTab: 'routes', routeDetail: routeId });
       });
     });
 
-    // Click anywhere on row → vote/change (same as button)
-    listEl.querySelectorAll('.vote-row').forEach(row => {
-      row.addEventListener('click', (e) => {
-        // Let explicit remove button handle itself
-        if (e.target.closest('.vote-row-remove')) return;
-        const routeId = row.dataset.route;
-        // If this is already my vote, do nothing (use Remove button)
-        if (row.classList.contains('my-vote')) return;
-        submitVote(routeId);
+    // RIGHT side action zone → vote/change
+    listEl.querySelectorAll('.vote-row-action:not(.my)').forEach(action => {
+      action.addEventListener('click', (e) => {
+        e.stopPropagation();
+        submitVote(action.dataset.route);
+      });
+    });
+
+    // RIGHT side "my" action zone → remove vote
+    listEl.querySelectorAll('.vote-row-action.my').forEach(action => {
+      action.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeVote();
       });
     });
   }

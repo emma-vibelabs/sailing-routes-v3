@@ -1115,15 +1115,9 @@ body {
   background: var(--bg-card);
   border-radius: var(--radius);
   overflow: hidden;
-  cursor: pointer;
   transition: all var(--transition);
   box-shadow: var(--shadow);
   border: 2px solid transparent;
-  -webkit-tap-highlight-color: rgba(0,0,0,0.05);
-}
-
-.vote-row:active {
-  transform: scale(0.98);
 }
 
 .vote-row:hover {
@@ -1133,11 +1127,6 @@ body {
 .vote-row.my-vote {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(45,74,94,0.10);
-  cursor: default;
-}
-
-.vote-row.my-vote:active {
-  transform: none;
 }
 
 .vote-row-bar {
@@ -1152,18 +1141,24 @@ body {
 .vote-row-content {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.7rem 0.85rem;
-  gap: 0.5rem;
+  align-items: stretch;
+  min-height: 52px;
 }
 
+/* LEFT zone — route info, tapping navigates to detail */
 .vote-row-left {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   min-width: 0;
   flex: 1;
+  padding: 0.65rem 0 0.65rem 0.85rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+}
+
+.vote-row-left:active {
+  background: rgba(0,0,0,0.04);
 }
 
 .vote-row-dot {
@@ -1196,43 +1191,62 @@ body {
   margin-top: 0.1rem;
 }
 
-.vote-row-right {
+/* RIGHT zone — vote action, visually separated */
+.vote-row-action {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  justify-content: center;
+  min-width: 56px;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  border-left: 1px solid var(--border);
+  -webkit-tap-highlight-color: rgba(0,0,0,0.04);
+  transition: background var(--transition);
+}
+
+.vote-row-action:active {
+  background: color-mix(in srgb, var(--vote-color, var(--accent)) 12%, transparent);
+}
+
+.vote-row-action-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--vote-color, var(--accent));
+  margin-top: 0.15rem;
 }
 
 .vote-row-count {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  min-width: 1.2rem;
-  text-align: right;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* MY vote action zone */
+.vote-row-action.my {
+  cursor: pointer;
+  border-left: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.vote-row-action.my:active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 .vote-row-voted {
   font-size: 1rem;
   color: var(--accent);
   font-weight: 700;
+  line-height: 1;
 }
 
-.vote-row-remove {
-  padding: 0.3rem 0.6rem;
-  font-family: var(--font-body);
-  font-size: 0.7rem;
+.vote-row-remove-label {
+  font-size: 0.6rem;
   color: var(--text-muted);
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-
-.vote-row-remove:hover {
-  color: #c0392b;
-  border-color: #c0392b;
+  margin-top: 0.15rem;
 }
 
 .vote-total {
