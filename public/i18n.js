@@ -25,6 +25,9 @@ var I18n = (function () {
 
     // Top bar / navigation
     'header.title':        { no: 'SEILRUTER HELLAS 2026', en: 'SAILING ROUTES GREECE 2026' },
+    'tab.explore':         { no: 'Utforsk', en: 'Explore' },
+    'tab.vote':            { no: 'Stem', en: 'Vote' },
+    'tab.plan':            { no: 'Planlegg', en: 'Plan' },
     'tab.routes':          { no: 'Ruter', en: 'Routes' },
     'tab.stops':           { no: 'Stopp', en: 'Stops' },
     'tab.minside':         { no: 'Min side', en: 'My page' },
@@ -82,9 +85,11 @@ var I18n = (function () {
     'region.evia':              { no: 'Evia', en: 'Evia' },
 
     // Vote
-    'vote.header':         { no: 'Velg din favoritt', en: 'Choose your favourite' },
-    'vote.sub':            { no: 'Hvilken rute vil du seile?', en: 'Which route do you want to sail?' },
+    'vote.header':         { no: 'Hvilken rute frister mest?', en: 'Which route is most tempting?' },
+    'vote.sub':            { no: 'Din stemme teller! Velg din favoritt for seilasen i 2026.', en: 'Your vote counts! Choose your favourite for the 2026 voyage.' },
     'vote.submit':         { no: 'Stem', en: 'Vote' },
+    'vote.change':         { no: 'Endre', en: 'Change' },
+    'vote.remove':         { no: 'Fjern', en: 'Remove' },
     'vote.results':        { no: 'Resultater', en: 'Results' },
 
     // Map / mobile
@@ -107,6 +112,8 @@ var I18n = (function () {
     'prep.myPlanning':     { no: 'Min planlegging', en: 'My planning' },
 
     // Prep nav cards
+    'prep.ourBoat':        { no: 'Vår båt', en: 'Our boat' },
+    'prep.ourBoatDesc':    { no: 'Beneteau Oceanis 51.1 — Mighty M', en: 'Beneteau Oceanis 51.1 — Mighty M' },
     'prep.boatLife':       { no: 'Livet om bord', en: 'Life on board' },
     'prep.boatLifeDesc':   { no: 'Hva du kan forvente av to uker på seilbåt', en: 'What to expect from two weeks on a sailboat' },
     'prep.seasickness':    { no: 'Sjøsyke', en: 'Seasickness' },
@@ -142,6 +149,8 @@ var I18n = (function () {
 
     // Personal dashboard
     'personal.greeting':   { no: 'Hei,', en: 'Hi,' },
+    'personal.dashboardSub': { no: 'Her er status på forberedelsene dine.', en: 'Here\u2019s your preparation status.' },
+    'personal.nextTask':   { no: 'Neste oppgave', en: 'Next task' },
     'personal.notes':      { no: 'Mine notater', en: 'My notes' },
     'personal.notesSaved': { no: 'Lagret', en: 'Saved' },
     'personal.notesPlaceholder': { no: 'Tanker, ønsker, ting å huske for turen...', en: 'Thoughts, wishes, things to remember for the trip...' },

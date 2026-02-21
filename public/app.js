@@ -1121,6 +1121,7 @@
     }
 
     const cards = [
+      { id: 'our-boat', icon: '🛥', title: t('prep.ourBoat'), desc: t('prep.ourBoatDesc') },
       { id: 'boat-life', icon: '⛵', title: t('prep.boatLife'), desc: t('prep.boatLifeDesc') },
       { id: 'seasickness', icon: '💊', title: t('prep.seasickness'), desc: t('prep.seasicknessDesc') },
       { id: 'packing', icon: '🎒', title: t('prep.packing'), desc: t('prep.packingDesc') },
@@ -1164,6 +1165,7 @@
     document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
     const content = window.PREP_CONTENT || {};
     switch (view) {
+      case 'our-boat': renderOurBoat('prepOurBoat'); break;
       case 'boat-life': renderPrepArticle('prepBoatLife', content.boatLife); break;
       case 'seasickness': renderSeasickness('prepSeasickness', content.seasickness); break;
       case 'packing': renderPublicPacking('prepPacking', content.packingList); break;
@@ -1171,6 +1173,136 @@
     }
     document.getElementById('prepScroll').scrollTop = 0;
     pushAppState({ section: 'plan', prepView: view });
+  }
+
+  function renderOurBoat(containerId) {
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+
+    const base = 'https://ortsasailing.com/wp-content/gallery/mighty-m-oceanis-51-1/';
+    const images = [
+      'IMG_3262.jpeg', 'IMG_6376.jpeg', 'IMG_6377.jpeg', 'IMG_6380.jpeg',
+      'IMG_6393.jpeg', 'IMG_6402.jpeg', 'IMG_6406.jpeg', 'IMG_6407.jpeg',
+      'IMG_6408.jpeg', 'IMG_6409.jpeg', 'IMG_6410.jpeg', 'IMG_6411.jpeg',
+      'IMG_6412.jpeg', 'IMG_6419.jpeg', 'IMG_6426.jpeg', 'IMG_3798.jpeg',
+      'IMG_3800.jpeg', 'IMG_3804.jpeg', 'IMG_3807.jpeg', 'IMG_3813.jpeg',
+      '3cb4f2de-5c08-4d32-a6d0-f871815cfa85.jpg',
+      '95d95896-0367-46d8-a53d-6a1b72103be9.jpg',
+      'd45e4939-a9f2-4a80-b9a1-e68c786c987b.jpg',
+    ];
+
+    const isEn = I18n.lang() === 'en';
+
+    const specs = [
+      { label: isEn ? 'Length' : 'Lengde', value: '15.94 m / 51\'1″' },
+      { label: isEn ? 'Beam' : 'Bredde', value: '4.80 m / 15\'10″' },
+      { label: isEn ? 'Year' : 'Årgang', value: '2023' },
+      { label: isEn ? 'Cabins' : 'Lugarer', value: '5 + 1' },
+      { label: 'WC', value: '3 + 1' },
+      { label: isEn ? 'Engine' : 'Motor', value: 'Yanmar 110 hp' },
+      { label: isEn ? 'Water' : 'Vann', value: '770 L' },
+      { label: isEn ? 'Fuel' : 'Drivstoff', value: '400 L' },
+      { label: isEn ? 'Sail area' : 'Seilareal', value: '122 m²' },
+      { label: isEn ? 'Draught' : 'Dypgang', value: '2.05 m' },
+    ];
+
+    const equipment = isEn ? [
+      'Generator 8000 kVA', 'Air conditioning 30 000 BTU', 'Solar panels',
+      'Bow thruster', 'Fixed gangway', 'Bimini top + sprayhood',
+      'Electric winch (portside)', 'Cockpit cushions & teak floor',
+      'Espresso machine', 'Fans in all cabins + salon',
+      'Bluetooth radio (salon + cockpit speakers)',
+      'Raymarine Axiom+ 7″ chartplotter × 2',
+      'Autopilot with wireless remote', 'AIS receiver', 'Wind & speed sensors',
+    ] : [
+      'Generator 8000 kVA', 'Aircondition 30 000 BTU', 'Solcellepaneler',
+      'Baugpropell', 'Fast landgang', 'Bimini + sprayhood',
+      'Elektrisk vinsj (babord)', 'Cockpitkontroll & tekk-dekk',
+      'Espressomaskin', 'Vifter i alle lugarer + salong',
+      'Bluetooth-radio (høyttalere i salong + cockpit)',
+      'Raymarine Axiom+ 7″ kartplotter × 2',
+      'Autopilot med trådløs fjernkontroll', 'AIS-mottaker', 'Vind- og fartsensorer',
+    ];
+
+    el.innerHTML = `
+      <button class="prep-back">&larr; ${t('prep.back')}</button>
+      <div class="boat-hero">
+        <div class="boat-hero-img">
+          <img src="${base}${images[0]}" alt="Mighty M" loading="eager" />
+        </div>
+        <div class="boat-hero-overlay">
+          <h2 class="boat-hero-name">Mighty M</h2>
+          <p class="boat-hero-model">Beneteau Oceanis 51.1</p>
+        </div>
+      </div>
+
+      <p class="boat-intro">
+        ${isEn
+          ? 'Our home for two weeks — a brand new (2023) Beneteau Oceanis 51.1. Pure sailing pleasure with taut lines, a stepped hull and a spacious deck. Easy to handle, comfortable and smart.'
+          : 'Vårt hjem i to uker — en splitter ny (2023) Beneteau Oceanis 51.1. Ren seilglede med stramme linjer, trinnsskrog og romslig dekk. Enkel å håndtere, komfortabel og smart.'}
+      </p>
+
+      <div class="boat-specs-grid">
+        ${specs.map(s => `
+          <div class="boat-spec">
+            <span class="boat-spec-value">${s.value}</span>
+            <span class="boat-spec-label">${s.label}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <h3 class="boat-section-title">${isEn ? 'Equipment' : 'Utstyr'}</h3>
+      <ul class="boat-equipment">
+        ${equipment.map(e => `<li>${e}</li>`).join('')}
+      </ul>
+
+      <h3 class="boat-section-title">${isEn ? 'Photo gallery' : 'Bildegalleri'}</h3>
+      <div class="boat-gallery">
+        ${images.map((img, i) => `
+          <div class="boat-gallery-item" data-index="${i}">
+            <img src="${base}${img}" alt="Mighty M ${i + 1}" loading="lazy" />
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="boat-lightbox hidden" id="boatLightbox">
+        <button class="boat-lb-close">&times;</button>
+        <button class="boat-lb-prev">&lsaquo;</button>
+        <button class="boat-lb-next">&rsaquo;</button>
+        <img class="boat-lb-img" id="boatLbImg" src="" alt="" />
+        <div class="boat-lb-counter" id="boatLbCounter"></div>
+      </div>
+
+      <div class="boat-source">
+        <a href="https://ortsasailing.com/yachts/beneteau-oceanis-51-1-mighty-m/" target="_blank" rel="noopener">
+          ${isEn ? 'View on OrtsaSailing.com' : 'Se på OrtsaSailing.com'} &rarr;
+        </a>
+      </div>
+    `;
+
+    el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
+
+    // Lightbox
+    let lbIndex = 0;
+    const lightbox = el.querySelector('#boatLightbox');
+    const lbImg = el.querySelector('#boatLbImg');
+    const lbCounter = el.querySelector('#boatLbCounter');
+
+    function openLb(i) {
+      lbIndex = i;
+      lbImg.src = base + images[i];
+      lbCounter.textContent = (i + 1) + ' / ' + images.length;
+      lightbox.classList.remove('hidden');
+    }
+    function closeLb() { lightbox.classList.add('hidden'); }
+
+    el.querySelectorAll('.boat-gallery-item').forEach(item => {
+      item.addEventListener('click', () => openLb(parseInt(item.dataset.index)));
+    });
+    el.querySelector('.boat-lb-close').addEventListener('click', closeLb);
+    el.querySelector('.boat-lb-prev').addEventListener('click', () => openLb((lbIndex - 1 + images.length) % images.length));
+    el.querySelector('.boat-lb-next').addEventListener('click', () => openLb((lbIndex + 1) % images.length));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLb(); });
   }
 
   function renderPrepArticle(containerId, data) {
