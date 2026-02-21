@@ -125,6 +125,7 @@
           b.classList.toggle('active', b.dataset.lang === newLang)
         );
         I18n.applyToDOM();
+        updateMeasurementUi();
       });
     });
   }
@@ -563,6 +564,288 @@
         if (activeRouteId === id) resetMapView(); else selectRoute(id);
       });
     });
+  }
+
+  function waypointLabel(index) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (index < alphabet.length) return alphabet[index];
+    const letter = alphabet[index % alphabet.length];
+    const cycle = Math.floor(index / alphabet.length);
+    return letter + cycle;
+  }
+
+  function waypointIcon(label) {
+    return L.divIcon({
+      className: 'measure-waypoint-wrapper',
+      html: `<div class="measure-waypoint">${label}</div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
+    });
+  }
+
+  function measurementText(key) {
+    const isEn = I18n.lang() === 'en';
+    const labels = {
+      toggleOff: isEn ? 'Route measure' : 'Rutemaler',
+      toggleOn: isEn ? 'Route measure: ON' : 'Rutemaler: PA',
+      hint: isEn ? 'Tap chart to add A-B points. Drag points for turns.' : 'Trykk i kartet for A-B-punkter. Dra punktene for svinger.',
+      total: isEn ? 'Total distance' : 'Total distanse',
+      undo: isEn ? 'Undo' : 'Angre',
+      clear: isEn ? 'Clear' : 'Nullstill',
+      empty: isEn ? 'Add at least two points for NM.' : 'Legg minst to punkter for NM.',
+    };
+    return labels[key] || '';
+  }
+
+  function formatNm(nm) {
+    if (nm >= 10) return Math.round(nm).toString();
+    if (nm >= 1) return (Math.round(nm * 10) / 10).toFixed(1).replace(/\.0$/, '');
+    if (nm >= 0.1) return nm.toFixed(1).replace(/\.0$/, '');
+    return nm.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+  }
+
+  function refreshWaypointLabels() {
+    measurementWaypoints.forEach((marker, i) => {
+      marker.setIcon(waypointIcon(waypointLabel(i)));
+    });
+  }
+
+  function removeWaypoint(marker) {
+    const index = measurementWaypoints.indexOf(marker);
+    if (index === -1) return;
+    map.removeLayer(marker);
+    measurementWaypoints.splice(index, 1);
+    refreshWaypointLabels();
+    updateMeasurementPath();
+  }
+
+  function updateMeasurementUi() {
+    if (!measurementUi) return;
+
+    measurementUi.toggle.textContent = measurementMode ? measurementText('toggleOn') : measurementText('toggleOff');
+    measurementUi.toggle.classList.toggle('active', measurementMode);
+    measurementUi.body.classList.toggle('hidden', !measurementMode);
+    measurementUi.undo.textContent = measurementText('undo');
+    measurementUi.clear.textContent = measurementText('clear');
+
+    const latlngs = measurementWaypoints.map(marker => marker.getLatLng());
+    let totalNm = 0;
+    const segments = [];
+
+    for (let i = 1; i < latlngs.length; i++) {
+      const nm = map.distance(latlngs[i - 1], latlngs[i]) / 1852;
+      totalNm += nm;
+      segments.push({
+        from: waypointLabel(i - 1),
+        to: waypointLabel(i),
+        nm,
+      });
+    }
+
+    measurementUi.hint.textContent = measurementText('hint');
+    measurementUi.totalLabel.textContent = `${measurementText('total')}: ${formatNm(totalNm)} NM`;
+    measurementUi.undo.disabled = measurementWaypoints.length === 0;
+    measurementUi.clear.disabled = measurementWaypoints.length === 0;
+
+    if (segments.length) {
+      measurementUi.empty.classList.add('hidden');
+      measurementUi.segmentList.innerHTML = segments.map(seg =>
+        `<div class="measure-segment-row"><span>${seg.from} -> ${seg.to}</span><strong>${formatNm(seg.nm)} NM</strong></div>`
+      ).join('');
+    } else {
+      measurementUi.segmentList.innerHTML = '';
+      measurementUi.empty.classList.remove('hidden');
+      measurementUi.empty.textContent = measurementText('empty');
+    }
+  }
+
+  function updateMeasurementPath() {
+    const latlngs = measurementWaypoints.map(marker => marker.getLatLng());
+    if (latlngs.length >= 2) {
+      if (!measurementLine) {
+        measurementLine = L.polyline(latlngs, {
+          color: '#173f57',
+          weight: 3,
+          opacity: 0.95,
+          dashArray: '10 7',
+          lineCap: 'round',
+          lineJoin: 'round',
+          interactive: false,
+        }).addTo(map);
+      } else {
+        measurementLine.setLatLngs(latlngs);
+      }
+    } else if (measurementLine) {
+      map.removeLayer(measurementLine);
+      measurementLine = null;
+    }
+    updateMeasurementUi();
+  }
+
+  function addMeasurementWaypoint(latlng) {
+    if (!map || !latlng) return;
+    const marker = L.marker(latlng, {
+      draggable: true,
+      icon: waypointIcon(waypointLabel(measurementWaypoints.length)),
+      zIndexOffset: 1000,
+      keyboard: false,
+    }).addTo(map);
+
+    marker.on('drag', updateMeasurementPath);
+    marker.on('dragend', updateMeasurementPath);
+    marker.on('contextmenu', (e) => {
+      if (e && e.originalEvent) L.DomEvent.stop(e.originalEvent);
+      removeWaypoint(marker);
+    });
+
+    measurementWaypoints.push(marker);
+    refreshWaypointLabels();
+    updateMeasurementPath();
+  }
+
+  function undoMeasurementWaypoint() {
+    const marker = measurementWaypoints.pop();
+    if (!marker) return;
+    map.removeLayer(marker);
+    refreshWaypointLabels();
+    updateMeasurementPath();
+  }
+
+  function clearMeasurementWaypoints() {
+    measurementWaypoints.forEach(marker => map.removeLayer(marker));
+    measurementWaypoints = [];
+    if (measurementLine) {
+      map.removeLayer(measurementLine);
+      measurementLine = null;
+    }
+    updateMeasurementUi();
+  }
+
+  function setMeasurementMode(enabled) {
+    measurementMode = !!enabled;
+    if (map) {
+      const container = map.getContainer();
+      container.classList.toggle('measure-mode', measurementMode);
+    }
+    updateMeasurementUi();
+  }
+
+  function initWaypointMeasureTool() {
+    const MeasureControl = L.Control.extend({
+      options: { position: 'topright' },
+      onAdd: function () {
+        const container = L.DomUtil.create('div', 'measure-control');
+        container.innerHTML = `
+          <button type="button" class="measure-toggle" data-role="toggle"></button>
+          <div class="measure-body hidden" data-role="body">
+            <p class="measure-hint" data-role="hint"></p>
+            <div class="measure-total" data-role="total"></div>
+            <div class="measure-actions">
+              <button type="button" data-role="undo"></button>
+              <button type="button" data-role="clear"></button>
+            </div>
+            <div class="measure-empty" data-role="empty"></div>
+            <div class="measure-segments" data-role="segments"></div>
+          </div>
+        `;
+
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.disableScrollPropagation(container);
+
+        const toggle = container.querySelector('[data-role="toggle"]');
+        const body = container.querySelector('[data-role="body"]');
+        const hint = container.querySelector('[data-role="hint"]');
+        const totalLabel = container.querySelector('[data-role="total"]');
+        const undo = container.querySelector('[data-role="undo"]');
+        const clear = container.querySelector('[data-role="clear"]');
+        const empty = container.querySelector('[data-role="empty"]');
+        const segmentList = container.querySelector('[data-role="segments"]');
+
+        undo.textContent = measurementText('undo');
+        clear.textContent = measurementText('clear');
+
+        toggle.addEventListener('click', () => setMeasurementMode(!measurementMode));
+        undo.addEventListener('click', () => undoMeasurementWaypoint());
+        clear.addEventListener('click', () => clearMeasurementWaypoints());
+
+        measurementUi = { toggle, body, hint, totalLabel, undo, clear, empty, segmentList };
+        updateMeasurementUi();
+
+        return container;
+      }
+    });
+
+    new MeasureControl().addTo(map);
+
+    map.on('click', (e) => {
+      if (!measurementMode) return;
+      addMeasurementWaypoint(e.latlng);
+    });
+  }
+
+  function roundedScaleNm(maxNm) {
+    if (!maxNm || maxNm <= 0) return 0.1;
+
+    const smallSteps = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+    for (let i = smallSteps.length - 1; i >= 0; i--) {
+      if (smallSteps[i] <= maxNm) return smallSteps[i];
+    }
+
+    const magnitude = Math.pow(10, Math.floor(Math.log10(maxNm)));
+    const candidates = [1, 2, 5].map(step => step * magnitude);
+    let rounded = candidates[0];
+    candidates.forEach(candidate => {
+      if (candidate <= maxNm) rounded = candidate;
+    });
+    return rounded;
+  }
+
+  function initNauticalScale() {
+    const NauticalScale = L.Control.extend({
+      options: { position: 'bottomleft', maxWidth: 140 },
+      onAdd: function (mapInstance) {
+        const container = L.DomUtil.create('div', 'nautical-scale-control');
+        container.innerHTML = `
+          <div class="nautical-scale-label"></div>
+          <div class="nautical-scale-bar-wrap">
+            <div class="nautical-scale-bar"></div>
+          </div>
+        `;
+        this._label = container.querySelector('.nautical-scale-label');
+        this._bar = container.querySelector('.nautical-scale-bar');
+
+        L.DomEvent.disableClickPropagation(container);
+        mapInstance.on('zoomend moveend resize', this._update, this);
+        this._update();
+        return container;
+      },
+      onRemove: function (mapInstance) {
+        mapInstance.off('zoomend moveend resize', this._update, this);
+      },
+      _update: function () {
+        if (!this._map) return;
+        const size = this._map.getSize();
+        if (!size || !size.x || !size.y) return;
+
+        const maxWidth = this.options.maxWidth || 140;
+        const center = L.point(size.x / 2, size.y / 2);
+        const leftPoint = L.point(center.x - maxWidth / 2, center.y);
+        const rightPoint = L.point(center.x + maxWidth / 2, center.y);
+
+        const left = this._map.containerPointToLatLng(leftPoint);
+        const right = this._map.containerPointToLatLng(rightPoint);
+        const nmAtMaxWidth = this._map.distance(left, right) / 1852;
+        if (!nmAtMaxWidth || nmAtMaxWidth <= 0) return;
+
+        const nm = roundedScaleNm(nmAtMaxWidth);
+        const widthPx = Math.max(24, Math.round(maxWidth * (nm / nmAtMaxWidth)));
+
+        this._bar.style.width = `${widthPx}px`;
+        this._label.textContent = `${formatNm(nm)} NM`;
+      },
+    });
+
+    new NauticalScale().addTo(map);
   }
 
   // ============================================
