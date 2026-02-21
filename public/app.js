@@ -586,8 +586,8 @@
   function measurementText(key) {
     const isEn = I18n.lang() === 'en';
     const labels = {
-      toggleOff: isEn ? 'Route measure' : 'Rutemaler',
-      toggleOn: isEn ? 'Route measure: ON' : 'Rutemaler: PA',
+      toggleOff: isEn ? 'Route measure' : 'Rute-måler',
+      toggleOn: isEn ? 'Route measure: ON' : 'Rute-måler: PÅ',
       hint: isEn ? 'Tap chart to add A-B points. Drag points for turns.' : 'Trykk i kartet for A-B-punkter. Dra punktene for svinger.',
       total: isEn ? 'Total distance' : 'Total distanse',
       undo: isEn ? 'Undo' : 'Angre',
