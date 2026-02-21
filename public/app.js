@@ -15,22 +15,36 @@
   let map = null;
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
   let activeRouteId = null;
-  let currentTab = 'routes';
+  let currentSection = 'explore';   // explore | vote | plan
+  let currentSubTab = 'routes';     // routes | stops (within explore)
   let currentPrepView = 'landing';
   let currentStopFilter = 'alle';
   let voteSelection = null;
+  let totalVoteCount = 0;
 
   // ---- Mobile state ----
   let isMobile = window.innerWidth <= 768;
-  let mapOverlayOpen = false;
+  let pushingState = false; // flag to prevent re-push during popstate
 
   window.addEventListener('resize', () => {
     const wasMobile = isMobile;
     isMobile = window.innerWidth <= 768;
-    if (wasMobile !== isMobile && map) {
-      setTimeout(() => map.invalidateSize(), 100);
+    if (wasMobile !== isMobile) {
+      if (!isMobile) {
+        document.body.removeAttribute('data-map-state');
+      } else if (!document.body.dataset.mapState) {
+        setMapState('hidden');
+      }
+      if (map) setTimeout(() => map.invalidateSize(), 100);
     }
   });
+
+  // ---- Helpers ----
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
 
   // ---- Elements ----
   const screens = {
@@ -41,7 +55,7 @@
   const nameInput = document.getElementById('nameInput');
   const enterBtn = document.getElementById('enterBtn');
 
-  // ---- Helpers ----
+  // ---- More Helpers ----
   function unsplash(id, w, h) {
     const urls = window.IMAGE_URLS || {};
     const baseUrl = urls[id] || urls['greek-island'];
@@ -95,7 +109,6 @@
   // ---- Language toggle ----
   const langToggle = document.getElementById('langToggle');
   if (langToggle) {
-    // Set initial state from stored preference
     const stored = I18n.lang();
     langToggle.querySelectorAll('.lang-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.lang === stored)
@@ -114,6 +127,104 @@
     });
   }
 
+  // ============================================
+  // ENTRY SCREEN — rotating hero + live votes
+  // ============================================
+  let entryImageInterval = null;
+
+  function initEntryScreen() {
+    const routes = window.ROUTES_DATA || [];
+    if (!routes.length) return;
+    const bg = document.getElementById('entryHeroBg');
+    if (!bg) return;
+    let i = 0;
+    function cycle() {
+      const r = routes[i % routes.length];
+      bg.style.backgroundImage = `url('${unsplash(r.heroImage, 900, 500)}')`;
+      i++;
+    }
+    cycle();
+    entryImageInterval = setInterval(cycle, 3500);
+
+    // Fetch live vote count
+    fetch('/api/results').then(r => r.json()).then(data => {
+      if (data && data.tally) {
+        const total = Object.values(data.tally).reduce((a, b) => a + b, 0);
+        totalVoteCount = total;
+        const el = document.getElementById('entryLiveVotes');
+        if (el && total > 0) {
+          el.textContent = total + (total === 1 ? ' stemme' : ' stemmer') + ' så langt';
+        }
+      }
+    }).catch(() => {});
+  }
+
+  initEntryScreen();
+
+  // ---- Early auth restore (persistent login) ----
+  Auth.getSession().then(session => {
+    if (session && session.user) {
+      if (prepInitialized) renderPrepNavCards();
+      updateUserButton();
+    }
+  }).catch(() => {});
+
+  // ---- User button (login/logout) in header ----
+  function updateUserButton() {
+    const btn = document.getElementById('topUserBtn');
+    if (!btn) return;
+    if (Auth.isLoggedIn()) {
+      btn.style.display = 'flex';
+      btn.style.background = 'var(--accent)';
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+
+  (function initUserButton() {
+    const btn = document.getElementById('topUserBtn');
+    if (!btn) return;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const existing = document.querySelector('.top-user-menu');
+      if (existing) { existing.remove(); return; }
+      if (!Auth.isLoggedIn()) {
+        switchSection('plan');
+        pushAppState({ section: 'plan', prepView: 'personal' });
+        showPrepSub('personal');
+        return;
+      }
+      const user = Auth.getUser();
+      const name = user?.name || user?.email?.split('@')[0] || '';
+      const menu = document.createElement('div');
+      menu.className = 'top-user-menu';
+      menu.innerHTML = `
+        <div class="top-user-menu-name">${escapeHtml(name)}</div>
+        <button class="top-user-menu-item" id="userMenuAccount">${t('tab.minside')}</button>
+        <button class="top-user-menu-item" id="userMenuLogout">${t('auth.logout')}</button>
+      `;
+      document.querySelector('.top-bar').appendChild(menu);
+      menu.querySelector('#userMenuAccount').addEventListener('click', () => {
+        menu.remove();
+        switchSection('plan');
+        pushAppState({ section: 'plan', prepView: 'personal' });
+        showPrepSub('personal');
+      });
+      menu.querySelector('#userMenuLogout').addEventListener('click', async () => {
+        menu.remove();
+        await Auth.signOut();
+        updateUserButton();
+        if (prepInitialized) renderPrepNavCards();
+      });
+      document.addEventListener('click', function closeMenu() {
+        menu.remove();
+        document.removeEventListener('click', closeMenu);
+      }, { once: true });
+    });
+  })();
+
   // ---- Entry ----
   const saved = localStorage.getItem('seilruter-name');
   if (saved) { nameInput.value = saved; enterBtn.disabled = false; }
@@ -131,13 +242,16 @@
     if (!voterName) return;
     localStorage.setItem('seilruter-name', voterName);
     document.getElementById('voterLabel').textContent = voterName;
+    if (entryImageInterval) { clearInterval(entryImageInterval); entryImageInterval = null; }
     showScreen('app');
     renderRoutesList();
     renderStopsPanel();
+    renderVoteList();
     fetchTally();
     initPrepSection();
-    Auth.getSession().catch(() => {});
     if (isMobile) initMobileMap();
+    // Set initial history state
+    history.replaceState({ section: 'explore', subTab: 'routes' }, '', '#explore');
   });
 
   // Prep shortcut from entry screen
@@ -146,50 +260,157 @@
     voterName = nameInput.value.trim() || t('guest');
     localStorage.setItem('seilruter-name', voterName);
     document.getElementById('voterLabel').textContent = voterName;
+    if (entryImageInterval) { clearInterval(entryImageInterval); entryImageInterval = null; }
     showScreen('app');
     renderRoutesList();
     renderStopsPanel();
+    renderVoteList();
     fetchTally();
     initPrepSection();
-    Auth.getSession().catch(() => {});
     if (isMobile) initMobileMap();
-    document.querySelector('[data-tab="minside"]').click();
+    switchSection('plan');
+    history.replaceState({ section: 'plan', prepView: 'landing' }, '', '#plan');
   });
 
-  // ---- Tabs ----
+  // ============================================
+  // SECTION & TAB SWITCHING
+  // ============================================
+  function switchSection(section) {
+    currentSection = section;
+    const exploreEl = document.getElementById('exploreSection');
+    const prepEl = document.getElementById('prepSection');
+    const subNav = document.getElementById('subNav');
+    const fab = document.getElementById('mapFab');
+
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.section === section)
+    );
+
+    // Clear route name in header when not on explore
+    if (section !== 'explore') {
+      document.getElementById('activeRouteName').textContent = '';
+    }
+
+    if (section === 'plan') {
+      exploreEl.classList.add('hidden');
+      prepEl.classList.remove('hidden');
+      if (subNav) subNav.style.display = 'none';
+      if (fab) fab.style.display = 'none';
+      if (!prepInitialized) initPrepSection();
+      showPrepLanding();
+    } else if (section === 'vote') {
+      exploreEl.classList.remove('hidden');
+      prepEl.classList.add('hidden');
+      if (subNav) subNav.style.display = 'none';
+      if (fab) fab.style.display = 'none';
+      document.querySelectorAll('.tab-panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'panel-vote')
+      );
+    } else {
+      // explore
+      exploreEl.classList.remove('hidden');
+      prepEl.classList.add('hidden');
+      if (subNav) subNav.style.display = '';
+      if (fab) fab.style.display = '';
+      switchSubTab(currentSubTab);
+    }
+  }
+
+  function switchSubTab(subTab) {
+    currentSubTab = subTab;
+    document.querySelectorAll('.sub-nav-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.subTab === subTab)
+    );
+    document.querySelectorAll('.tab-panel').forEach(p =>
+      p.classList.toggle('active', p.id === 'panel-' + subTab)
+    );
+    if (subTab === 'routes') {
+      document.getElementById('routeDetail').style.display = 'none';
+      document.getElementById('routesList').style.display = '';
+      const fab = document.getElementById('mapFab');
+      if (fab) fab.classList.remove('fab-lifted');
+    }
+    if (subTab === 'stops') {
+      document.getElementById('stopDetail').style.display = 'none';
+      document.getElementById('stopsGrid').style.display = '';
+      document.querySelector('.stops-header').style.display = '';
+    }
+  }
+
+  // ---- History / pushState ----
+  function pushAppState(state) {
+    if (pushingState) return;
+    history.pushState(state, '', '#' + (state.section || 'explore'));
+  }
+
+  function restoreAppState(state) {
+    if (!state) return;
+    pushingState = true;
+    if (state.mapFull && isMobile) {
+      setMapState('full');
+      document.body.style.overflow = 'hidden';
+    } else if (document.body.dataset.mapState === 'full') {
+      setMapState('hidden');
+      document.body.style.overflow = '';
+    }
+    if (state.section) switchSection(state.section);
+    if (state.section === 'explore' && state.subTab) switchSubTab(state.subTab);
+    if (state.routeDetail) showRouteDetail(state.routeDetail);
+    else if (state.section === 'explore' && !state.stopDetail) {
+      document.getElementById('routeDetail').style.display = 'none';
+      document.getElementById('routesList').style.display = '';
+      // Lower FAB when leaving route detail
+      const fab = document.getElementById('mapFab');
+      if (fab) fab.classList.remove('fab-lifted');
+    }
+    if (state.stopDetail) showStopDetail(state.stopDetail);
+    else if (state.section === 'explore' && state.subTab === 'stops') {
+      document.getElementById('stopDetail').style.display = 'none';
+      document.getElementById('stopsGrid').style.display = '';
+      document.querySelector('.stops-header').style.display = '';
+    }
+    if (state.prepView && state.section === 'plan') {
+      if (state.prepView === 'landing') showPrepLanding();
+      else showPrepSub(state.prepView);
+    }
+    pushingState = false;
+  }
+
+  window.addEventListener('popstate', (e) => {
+    if (e.state) {
+      restoreAppState(e.state);
+    } else {
+      // No state — go back to entry screen or explore
+      if (document.body.dataset.mapState === 'full') {
+        setMapState('hidden');
+        document.body.style.overflow = '';
+      } else if (screens.app.classList.contains('active')) {
+        pushingState = true;
+        switchSection('explore');
+        switchSubTab('routes');
+        document.getElementById('routeDetail').style.display = 'none';
+        document.getElementById('routesList').style.display = '';
+        const fab = document.getElementById('mapFab');
+        if (fab) fab.classList.remove('fab-lifted');
+        pushingState = false;
+      }
+    }
+  });
+
+  // Main tab click handlers
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const tab = btn.dataset.tab;
-      currentTab = tab;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      switchSection(btn.dataset.section);
+      pushAppState({ section: btn.dataset.section });
+    });
+  });
 
-      const exploreEl = document.getElementById('exploreSection');
-      const prepEl = document.getElementById('prepSection');
-      const fab = document.getElementById('mapFab');
-
-      if (tab === 'minside') {
-        exploreEl.classList.add('hidden');
-        prepEl.classList.remove('hidden');
-        if (fab) fab.style.display = 'none';
-        if (!prepInitialized) initPrepSection();
-        showPrepLanding();
-      } else {
-        exploreEl.classList.remove('hidden');
-        prepEl.classList.add('hidden');
-        if (fab) fab.style.display = '';
-        document.querySelectorAll('.tab-panel').forEach(p =>
-          p.classList.toggle('active', p.id === 'panel-' + tab)
-        );
-        if (tab === 'routes') {
-          document.getElementById('routeDetail').style.display = 'none';
-          document.getElementById('routesList').style.display = '';
-        }
-        if (tab === 'stops') {
-          document.getElementById('stopDetail').style.display = 'none';
-          document.getElementById('stopsGrid').style.display = '';
-          document.querySelector('.stops-header').style.display = '';
-        }
-      }
+  // Sub-tab click handlers
+  document.querySelectorAll('.sub-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchSubTab(btn.dataset.subTab);
+      pushAppState({ section: 'explore', subTab: btn.dataset.subTab });
     });
   });
 
@@ -224,12 +445,35 @@
         iconAnchor: isStart ? [15, 15] : [12, 12],
       });
       const marker = L.marker([stop.lat, stop.lng], { icon }).addTo(map);
+      const { slug: stopSlug, island: stopIsland } = findIsland(stop.name);
+      const nameHtml = stopIsland
+        ? `<a href="#" class="popup-stop-link" data-slug="${stopSlug}" style="color:var(--accent);text-decoration:underline;font-weight:600;cursor:pointer">${escapeHtml(stop.name)}</a>`
+        : `<strong>${escapeHtml(stop.name)}</strong>`;
       marker.bindPopup(`
-        <strong>${stop.name}</strong><br>
+        ${nameHtml}<br>
         ${t('detail.day')} ${stop.day}${stop.nm ? ' &middot; ' + stop.nm + ' NM' : ''}
-        ${stop.highlight ? '<br><em>' + P(stop.highlight) + '</em>' : ''}
+        ${stop.highlight ? '<br><em>' + escapeHtml(P(stop.highlight)) + '</em>' : ''}
       `);
       marker.on('click', () => selectRoute(route.id));
+      marker.on('popupopen', () => {
+        const link = marker.getPopup().getElement()?.querySelector('.popup-stop-link');
+        if (link) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            marker.closePopup();
+            // Close fullscreen map visually WITHOUT history.back()
+            // (history.back would trigger popstate and overwrite the navigation)
+            if (isMobile && document.body.dataset.mapState === 'full') {
+              setMapState('hidden');
+              document.body.style.overflow = '';
+            }
+            switchSection('explore');
+            switchSubTab('stops');
+            showStopDetail(link.dataset.slug);
+            pushAppState({ section: 'explore', subTab: 'stops', stopDetail: link.dataset.slug });
+          });
+        }
+      });
       return marker;
     });
     routeLayers[route.id] = { polyline, markers };
@@ -250,7 +494,7 @@
     const route = routes.find(r => r.id === routeId);
     if (route) document.getElementById('activeRouteName').textContent = P(route.name);
     document.querySelectorAll('.route-card').forEach(card => card.classList.toggle('selected', card.dataset.routeId === routeId));
-    if (isMobile && !mapOverlayOpen) {
+    if (isMobile) {
       const fab = document.getElementById('mapFab');
       if (fab && route) fab.querySelector('span').textContent = P(route.name);
     }
@@ -278,7 +522,7 @@
     legend.innerHTML = routes.map(r => `
       <div class="legend-item" data-route="${r.id}">
         <span class="legend-dot" style="background:${r.color}"></span>
-        <span class="legend-name">${P(r.name)}</span>
+        <span class="legend-name">${escapeHtml(P(r.name))}</span>
       </div>
     `).join('');
     legend.querySelectorAll('.legend-item').forEach(item => {
@@ -299,20 +543,19 @@
       <div class="route-card" data-route-id="${r.id}" style="animation-delay:${0.05 * i}s">
         <div class="route-card-hero" style="background-image:url('${unsplash(r.heroImage, 600, 300)}')">
           <div class="route-card-label">
-            <div class="route-region">${P(r.region)}</div>
-            <div class="route-name">${P(r.name)}</div>
+            <div class="route-region">${escapeHtml(P(r.region))}</div>
+            <div class="route-name">${escapeHtml(P(r.name))}</div>
           </div>
         </div>
         <div class="route-card-body">
-          <div class="route-card-desc">${P(r.tagline)}</div>
+          <div class="route-card-desc">${escapeHtml(P(r.tagline))}</div>
           <div class="route-card-stats">
             <span><span class="stat-icon">⛵</span> ~${r.distance} NM</span>
             <span><span class="stat-icon">📅</span> ${r.sailingDays}+${r.restDays}d</span>
-            <span class="difficulty-badge" style="background:${difficultyColor(r.difficultyLevel)}20;color:${difficultyColor(r.difficultyLevel)}">${P(r.difficulty)}</span>
+            <span class="difficulty-badge" style="background:${difficultyColor(r.difficultyLevel)}20;color:${difficultyColor(r.difficultyLevel)}">${escapeHtml(P(r.difficulty))}</span>
           </div>
           <div class="route-card-actions">
             <button class="btn-detail" data-route="${r.id}">${t('route.details')}</button>
-            <button class="btn-vote" style="background:${r.color}" data-route="${r.id}">${t('route.vote')}</button>
           </div>
         </div>
       </div>
@@ -325,9 +568,6 @@
     });
     list.querySelectorAll('.btn-detail').forEach(btn => {
       btn.addEventListener('click', () => showRouteDetail(btn.dataset.route));
-    });
-    list.querySelectorAll('.btn-vote').forEach(btn => {
-      btn.addEventListener('click', () => submitVote(btn.dataset.route));
     });
   }
 
@@ -342,11 +582,11 @@
       <button class="detail-back">&larr; ${t('detail.back')}</button>
       <div class="detail-hero" style="background-image:url('${unsplash(r.heroImage, 700, 350)}')">
         <div class="detail-hero-text">
-          <div class="detail-region">${P(r.region)}</div>
-          <h2>${P(r.name)}</h2>
+          <div class="detail-region">${escapeHtml(P(r.region))}</div>
+          <h2>${escapeHtml(P(r.name))}</h2>
         </div>
       </div>
-      <div class="detail-tagline">${P(r.tagline)}</div>
+      <div class="detail-tagline">${escapeHtml(P(r.tagline))}</div>
 
       <div class="stats-grid">
         <div class="stat-box">
@@ -368,7 +608,7 @@
         <div class="meter-bar">
           <div class="meter-fill" style="width:${difficultyPercent(r.difficultyLevel)}%;background:${difficultyColor(r.difficultyLevel)}"></div>
         </div>
-        <div class="meter-text" style="color:${difficultyColor(r.difficultyLevel)}">${P(r.difficulty)}</div>
+        <div class="meter-text" style="color:${difficultyColor(r.difficultyLevel)}">${escapeHtml(P(r.difficulty))}</div>
       </div>
 
       <p class="detail-desc">${P(r.description)}</p>
@@ -406,10 +646,10 @@
           return `
             <div class="itinerary-row ${s.isRest ? 'rest' : ''}" data-stop-slug="${slug}">
               <span class="itin-day">${t('detail.day')} ${s.day}</span>
-              <img class="itin-thumb" src="${unsplash(thumbId, 72, 72)}" alt="${s.name}" loading="lazy" />
+              <img class="itin-thumb" src="${unsplash(thumbId, 72, 72)}" alt="${escapeHtml(s.name)}" loading="lazy" />
               <div class="itin-info">
-                <div class="itin-route-name">${routeText}</div>
-                <div class="itin-highlight">${P(s.highlight) || ''}</div>
+                <div class="itin-route-name">${escapeHtml(routeText)}</div>
+                <div class="itin-highlight">${escapeHtml(P(s.highlight) || '')}</div>
               </div>
               <div class="itin-stats">
                 ${s.isRest
@@ -423,15 +663,19 @@
         }).join('')}
       </div>
 
-      <button class="detail-vote-btn" style="background:${r.color}" data-route="${r.id}">${t('detail.voteFor')} ${P(r.name)}</button>
+      <button class="detail-vote-btn" style="background:${r.color}" data-route="${r.id}">${t('detail.voteFor')} ${escapeHtml(P(r.name))}</button>
     `;
 
     detail.querySelector('.detail-back').addEventListener('click', () => {
       detail.style.display = 'none';
       document.getElementById('routesList').style.display = '';
       resetMapView();
+      // Lower FAB back to default position (no vote button)
+      const fab = document.getElementById('mapFab');
+      if (fab) fab.classList.remove('fab-lifted');
+      pushAppState({ section: 'explore', subTab: 'routes' });
     });
-    detail.querySelector('.detail-vote-btn').addEventListener('click', () => submitVote(r.id));
+    detail.querySelector('.detail-vote-btn').addEventListener('click', () => openVoteFlow(r.id));
 
     // Click itinerary row → show full stop detail
     detail.querySelectorAll('.itinerary-row').forEach(row => {
@@ -439,22 +683,18 @@
         const slug = row.dataset.stopSlug;
         const islands = window.ISLANDS_DATA || {};
         if (islands[slug]) {
-          currentTab = 'stops';
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'stops'));
-          document.getElementById('exploreSection').classList.remove('hidden');
-          document.getElementById('prepSection').classList.add('hidden');
-          document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-stops'));
+          currentSubTab = 'stops';
+          switchSubTab('stops');
           showStopDetail(slug, () => {
-            currentTab = 'routes';
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'routes'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-routes'));
+            currentSubTab = 'routes';
+            switchSubTab('routes');
             showRouteDetail(r.id);
           });
         } else {
           const stop = r.stops.find(s => slugify(s.name) === slug);
           if (stop && map) {
             map.setView([stop.lat, stop.lng], 12, { animate: true, duration: 0.5 });
-            if (isMobile) { const fab = document.getElementById('mapFab'); if (fab) fab.click(); }
+            if (isMobile) showMobileMap();
           }
         }
       });
@@ -463,6 +703,10 @@
     document.getElementById('routesList').style.display = 'none';
     detail.style.display = '';
     document.getElementById('sidebar').scrollTop = 0;
+    // Lift FAB above fixed vote button
+    const fab = document.getElementById('mapFab');
+    if (fab) fab.classList.add('fab-lifted');
+    pushAppState({ section: 'explore', subTab: 'routes', routeDetail: routeId });
   }
 
   // ============================================
@@ -515,8 +759,8 @@
             <span class="stop-card-region">${t('region.' + isl.region)}</span>
           </div>
           <div class="stop-card-body">
-            <div class="stop-card-name">${isl.name}</div>
-            <div class="stop-card-desc">${P(isl.tagline) || ''}</div>
+            <div class="stop-card-name">${escapeHtml(isl.name)}</div>
+            <div class="stop-card-desc">${escapeHtml(P(isl.tagline) || '')}</div>
             <div class="stop-card-routes">${rts.length} ${rts.length !== 1 ? t('stops.routes') : t('stops.route')}</div>
           </div>
         </div>
@@ -544,7 +788,7 @@
     detail.innerHTML = `
       <button class="detail-back">${backLabel}</button>
       <div class="stop-detail-img" style="background-image:url('${unsplash(isl.image, 700, 350)}')"></div>
-      <h3>${isl.name}</h3>
+      <h3>${escapeHtml(isl.name)}</h3>
       <span class="stop-region-tag">${t('region.' + isl.region)}</span>
       <p class="stop-desc">${P(isl.description) || ''}</p>
 
@@ -552,7 +796,7 @@
         <div class="stop-section">
           <div class="stop-section-title">${t('stops.highlights')}</div>
           <ul style="padding-left:1rem;font-size:0.82rem;color:var(--text-muted);line-height:1.6">
-            ${highlights.map(h => `<li>${h}</li>`).join('')}
+            ${highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}
           </ul>
         </div>
       ` : ''}
@@ -561,10 +805,10 @@
         <div class="stop-section">
           <div class="stop-section-title">${t('stops.anchorage')}</div>
           <div class="anchorage-grid">
-            <div class="anchorage-item"><strong>${t('stops.protection')}:</strong> ${P(isl.anchorage.protection)}</div>
-            <div class="anchorage-item"><strong>${t('stops.bottom')}:</strong> ${P(isl.anchorage.bottom)}</div>
-            <div class="anchorage-item"><strong>${t('stops.depth')}:</strong> ${P(isl.anchorage.depth)}</div>
-            <div class="anchorage-item"><strong>${t('stops.facilities')}:</strong> ${P(isl.anchorage.facilities) || '—'}</div>
+            <div class="anchorage-item"><strong>${t('stops.protection')}:</strong> ${escapeHtml(P(isl.anchorage.protection))}</div>
+            <div class="anchorage-item"><strong>${t('stops.bottom')}:</strong> ${escapeHtml(P(isl.anchorage.bottom))}</div>
+            <div class="anchorage-item"><strong>${t('stops.depth')}:</strong> ${escapeHtml(P(isl.anchorage.depth))}</div>
+            <div class="anchorage-item"><strong>${t('stops.facilities')}:</strong> ${escapeHtml(P(isl.anchorage.facilities) || '—')}</div>
           </div>
         </div>
       ` : ''}
@@ -574,8 +818,8 @@
           <div class="stop-section-title">${t('stops.restaurants')}</div>
           ${isl.restaurants.map(r => `
             <div class="restaurant-item">
-              <div class="restaurant-name">${r.name} <span style="color:var(--text-light)">${r.price || ''}</span></div>
-              <div class="restaurant-info">${P(r.specialty)}</div>
+              <div class="restaurant-name">${escapeHtml(r.name)} <span style="color:var(--text-light)">${r.price || ''}</span></div>
+              <div class="restaurant-info">${escapeHtml(P(r.specialty))}</div>
             </div>
           `).join('')}
         </div>
@@ -597,9 +841,9 @@
 
       ${throughRoutes.length ? `
         <div class="stop-section">
-          <div class="stop-section-title">${t('stops.routesThrough')} ${isl.name}</div>
+          <div class="stop-section-title">${t('stops.routesThrough')} ${escapeHtml(isl.name)}</div>
           <div class="stop-routes-list">
-            ${throughRoutes.map(r => `<span class="stop-route-chip" style="background:${r.color}">${P(r.name)}</span>`).join('')}
+            ${throughRoutes.map(r => `<span class="stop-route-chip" style="background:${r.color}">${escapeHtml(P(r.name))}</span>`).join('')}
           </div>
         </div>
       ` : ''}
@@ -615,85 +859,211 @@
     document.querySelector('.stops-header').style.display = 'none';
     detail.style.display = '';
     document.getElementById('sidebar').scrollTop = 0;
+    pushAppState({ section: 'explore', subTab: 'stops', stopDetail: slug });
   }
 
   // ============================================
-  // VOTING
+  // VOTING — Single-viewport inline voting
   // ============================================
-  function renderVotePanel() {
-    const routes = window.ROUTES_DATA || [];
-    const cards = document.getElementById('voteCards');
-    cards.innerHTML = routes.map(r => `
-      <div class="vote-card" data-route="${r.id}">
-        <span class="vote-color-dot" style="background:${r.color}"></span>
-        <div class="vote-card-info">
-          <div class="vote-card-name">${P(r.name)}</div>
-          <div class="vote-card-tagline">${P(r.tagline)}</div>
-          <div class="vote-card-stats">~${r.distance} NM &middot; ${r.sailingDays}+${r.restDays}d &middot; ${P(r.difficulty)}</div>
-        </div>
-      </div>
-    `).join('') + `<button class="vote-submit-btn" id="voteSubmitBtn" disabled>${t('vote.submit')}</button>`;
+  let currentTally = {};
+  let currentVoters = {};
 
-    cards.querySelectorAll('.vote-card').forEach(card => {
-      card.addEventListener('click', () => {
-        voteSelection = card.dataset.route;
-        cards.querySelectorAll('.vote-card').forEach(c => c.classList.toggle('selected', c === card));
-        document.getElementById('voteSubmitBtn').disabled = false;
-        selectRoute(voteSelection);
+  function openVoteFlow(preselectedRouteId) {
+    switchSection('vote');
+    // Scroll to the preselected route row
+    if (preselectedRouteId) {
+      setTimeout(() => {
+        const row = document.querySelector(`.vote-row[data-route="${preselectedRouteId}"]`);
+        if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }
+
+  function renderVoteList() {
+    const routes = window.ROUTES_DATA || [];
+    const total = Object.values(currentTally).reduce((a, b) => a + b, 0) || 0;
+    const sorted = [...routes].sort((a, b) => (currentTally[b.id] || 0) - (currentTally[a.id] || 0));
+    const loggedIn = Auth.isLoggedIn();
+    const user = loggedIn ? Auth.getUser() : null;
+
+    // Only check existing vote for LOGGED IN users
+    let userVotedRoute = null;
+    if (loggedIn) {
+      const userName = user?.name || user?.email?.split('@')[0] || '';
+      for (const [routeId, names] of Object.entries(currentVoters)) {
+        if (names.some(n => n.toLowerCase() === userName.toLowerCase())) {
+          userVotedRoute = routeId;
+          break;
+        }
+      }
+    }
+
+    const listEl = document.getElementById('voteList');
+    listEl.innerHTML = `
+      <div class="vote-rows">
+        ${sorted.map((r) => {
+          const count = currentTally[r.id] || 0;
+          const pct = total > 0 ? (count / total * 100) : 0;
+          const isMyVote = userVotedRoute === r.id;
+          const voters = (currentVoters[r.id] || []);
+
+          // Action area:
+          // - My vote → ✓ + "Fjern" button
+          // - Other rows → just count (whole row is tappable)
+          let actionHtml = '';
+          if (isMyVote) {
+            actionHtml = `<span class="vote-row-voted">✓</span><button class="vote-row-remove" data-route="${r.id}">${t('vote.remove')}</button>`;
+          }
+
+          return `
+            <div class="vote-row ${isMyVote ? 'my-vote' : ''}" data-route="${r.id}">
+              <div class="vote-row-bar" style="width:${pct}%;background:${r.color}"></div>
+              <div class="vote-row-content">
+                <div class="vote-row-left">
+                  <span class="vote-row-dot" style="background:${r.color}"></span>
+                  <div class="vote-row-info">
+                    <span class="vote-row-name">${escapeHtml(P(r.name))}</span>
+                    ${voters.length ? `<span class="vote-row-voters">${voters.map(v => escapeHtml(v)).join(', ')}</span>` : ''}
+                  </div>
+                </div>
+                <div class="vote-row-right">
+                  <span class="vote-row-count">${count}</span>
+                  ${actionHtml}
+                </div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+      ${total > 0 ? `<div class="vote-total">${total} ${total === 1 ? (I18n.lang() === 'en' ? 'vote' : 'stemme') : (I18n.lang() === 'en' ? 'votes' : 'stemmer')}</div>` : ''}
+    `;
+
+    // Remove vote button click (stopPropagation so row handler doesn't fire)
+    listEl.querySelectorAll('.vote-row-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeVote();
       });
     });
-    document.getElementById('voteSubmitBtn').addEventListener('click', () => { if (voteSelection) submitVote(voteSelection); });
+
+    // Click anywhere on row → vote/change (same as button)
+    listEl.querySelectorAll('.vote-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        // Let explicit remove button handle itself
+        if (e.target.closest('.vote-row-remove')) return;
+        const routeId = row.dataset.route;
+        // If this is already my vote, do nothing (use Remove button)
+        if (row.classList.contains('my-vote')) return;
+        submitVote(routeId);
+      });
+    });
   }
 
   async function submitVote(routeId) {
+    if (!Auth.isLoggedIn()) {
+      const authPrompt = document.createElement('div');
+      authPrompt.className = 'vote-auth-prompt';
+      authPrompt.innerHTML = `
+        <div class="vote-auth-box">
+          <p>${I18n.lang() === 'en' ? 'You need to log in to vote.' : 'Du må logge inn for å stemme.'}</p>
+          <div class="vote-auth-buttons">
+            <button class="vote-auth-login">${t('auth.login')}</button>
+            <button class="vote-auth-register">${t('auth.register')}</button>
+          </div>
+          <button class="vote-auth-dismiss">✕</button>
+        </div>
+      `;
+      const existing = document.querySelector('.vote-auth-prompt');
+      if (existing) existing.remove();
+      document.getElementById('panel-vote').appendChild(authPrompt);
+      authPrompt.querySelector('.vote-auth-login').addEventListener('click', () => {
+        authPrompt.remove();
+        switchSection('plan');
+        pushAppState({ section: 'plan', prepView: 'personal' });
+        showPrepSub('personal');
+      });
+      authPrompt.querySelector('.vote-auth-register').addEventListener('click', () => {
+        authPrompt.remove();
+        switchSection('plan');
+        pushAppState({ section: 'plan', prepView: 'personal' });
+        showPrepSub('personal');
+      });
+      authPrompt.querySelector('.vote-auth-dismiss').addEventListener('click', () => authPrompt.remove());
+      return;
+    }
+
+    const user = Auth.getUser();
+    const voteName = user?.name || user?.email?.split('@')[0] || voterName;
+
+    // Optimistic UI — immediately mark as voted
+    const btn = document.querySelector(`.vote-row-btn[data-route="${routeId}"]`);
+    if (btn) { btn.textContent = '…'; btn.disabled = true; }
+
     try {
       const res = await fetch('/api/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: voterName, route: routeId }),
+        body: JSON.stringify({ name: voteName, route: routeId }),
       });
       const data = await res.json();
       if (data.success) {
-        const votedText = t('detail.voted');
-        document.querySelectorAll('.btn-vote[data-route="' + routeId + '"]').forEach(btn => {
-          btn.textContent = votedText; btn.style.opacity = '0.7'; btn.style.pointerEvents = 'none';
-        });
+        currentTally = data.tally;
+        currentVoters = data.voters;
+        renderVoteList();
+        updateVoteBadge(data.tally);
+        // Update detail vote btn if visible
         const detailBtn = document.querySelector('.detail-vote-btn[data-route="' + routeId + '"]');
-        if (detailBtn) { detailBtn.textContent = votedText; detailBtn.style.opacity = '0.7'; detailBtn.style.pointerEvents = 'none'; }
-        renderVoteResults(data.tally, data.voters);
+        if (detailBtn) { detailBtn.textContent = t('detail.voted'); detailBtn.style.opacity = '0.7'; detailBtn.style.pointerEvents = 'none'; }
       }
     } catch (err) { console.error('Vote error:', err); }
+  }
+
+  async function removeVote() {
+    if (!Auth.isLoggedIn()) return;
+    const user = Auth.getUser();
+    const voteName = user?.name || user?.email?.split('@')[0] || voterName;
+
+    try {
+      const res = await fetch('/api/vote', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: voteName }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        currentTally = data.tally;
+        currentVoters = data.voters;
+        renderVoteList();
+        updateVoteBadge(data.tally);
+      }
+    } catch (err) { console.error('Remove vote error:', err); }
   }
 
   async function fetchTally() {
     try {
       const res = await fetch('/api/results');
       const data = await res.json();
-      if (data.tally) renderVoteResults(data.tally, data.voters);
+      if (data.tally) {
+        currentTally = data.tally;
+        currentVoters = data.voters || {};
+        renderVoteList();
+        updateVoteBadge(data.tally);
+      }
     } catch (err) { console.error('Tally fetch error:', err); }
   }
 
-  function renderVoteResults(tally, voters) {
-    const resultsEl = document.getElementById('voteResults');
-    const routes = window.ROUTES_DATA || [];
-    const total = Object.values(tally).reduce((a, b) => a + b, 0) || 1;
-    const sorted = routes.map(r => ({ ...r, count: tally[r.id] || 0, voterList: (voters && voters[r.id]) || [] })).sort((a, b) => b.count - a.count);
-    resultsEl.innerHTML = `
-      <div class="results-title">${t('vote.results')}</div>
-      ${sorted.map(r => `
-        <div class="result-bar">
-          <div class="result-bar-header">
-            <span class="result-bar-name" style="color:${r.color}">${P(r.name)}</span>
-            <span class="result-bar-count">${r.count}</span>
-          </div>
-          <div class="result-bar-track">
-            <div class="result-bar-fill" style="width:${(r.count / total * 100).toFixed(1)}%;background:${r.color}"></div>
-          </div>
-          ${r.voterList.length ? `<div class="result-voters">${r.voterList.join(', ')}</div>` : ''}
-        </div>
-      `).join('')}
-    `;
+  function updateVoteBadge(tally) {
+    const badge = document.getElementById('voteBadge');
+    if (!badge) return;
+    const total = Object.values(tally).reduce((a, b) => a + b, 0);
+    totalVoteCount = total;
+    if (total > 0) {
+      badge.textContent = total;
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
   }
+
 
   // ============================================
   // FORBEREDELSER
@@ -736,7 +1106,7 @@
       const daysLeft = Math.max(0, Math.ceil((tripStart - today) / (1000 * 60 * 60 * 24)));
       ctaHtml = `
         <div class="prep-user-card">
-          <div class="prep-user-greeting">${t('personal.greeting')} ${name}!</div>
+          <div class="prep-user-greeting">${t('personal.greeting')} ${escapeHtml(name)}!</div>
           <div class="prep-user-countdown">${daysLeft} ${t('cal.daysLeft')}</div>
           <button class="prep-user-go" data-prep="personal">${t('prep.myPlanning')} &rarr;</button>
         </div>
@@ -778,6 +1148,7 @@
     document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
     renderPrepNavCards();
     document.getElementById('prepScroll').scrollTop = 0;
+    pushAppState({ section: 'plan', prepView: 'landing' });
   }
 
   function showPrepSub(view) {
@@ -792,6 +1163,7 @@
       case 'personal': renderPersonalArea('prepPersonal'); break;
     }
     document.getElementById('prepScroll').scrollTop = 0;
+    pushAppState({ section: 'plan', prepView: view });
   }
 
   function renderPrepArticle(containerId, data) {
@@ -838,11 +1210,11 @@
                 ${s.medications.map(m => `
                   <div class="med-card">
                     <div class="med-card-header">
-                      <strong>${m.name}</strong>
-                      <span class="med-rating">${P(m.rating)}</span>
+                      <strong>${escapeHtml(m.name)}</strong>
+                      <span class="med-rating">${escapeHtml(P(m.rating))}</span>
                     </div>
-                    <div class="med-dosage">${P(m.dosage)}</div>
-                    <div class="med-notes">${P(m.notes)}</div>
+                    <div class="med-dosage">${escapeHtml(P(m.dosage))}</div>
+                    <div class="med-notes">${escapeHtml(P(m.notes))}</div>
                   </div>
                 `).join('')}
               </div>
@@ -956,6 +1328,7 @@
         submitBtn.textContent = t('auth.waiting');
         try {
           if (isRegister) await Auth.signUp(email, password, name); else await Auth.signIn(email, password);
+          updateUserButton();
           renderPersonalDashboard(el, daysLeft);
         } catch (err) {
           errorEl.textContent = err.message;
@@ -968,34 +1341,53 @@
     render();
   }
 
+  // ============================================
+  // PERSONAL DASHBOARD — KPI grid + cards
+  // ============================================
   function renderPersonalDashboard(el, daysLeft) {
     const user = Auth.getUser();
     const name = user?.name || user?.email?.split('@')[0] || t('sailor');
     el.innerHTML = `
       <button class="prep-back">&larr; ${t('prep.back')}</button>
-      <div class="personal-hero">
-        <div class="personal-greeting">${t('personal.greeting')} ${name}!</div>
-        <div class="personal-countdown-big">${daysLeft}</div>
-        <div class="personal-countdown-label">${t('cal.daysLeft')}</div>
+
+      <div class="dashboard-header">
+        <h1>${t('personal.greeting')} ${escapeHtml(name)}!</h1>
+        <p>${t('personal.dashboardSub') || 'Her er status på forberedelsene dine.'}</p>
       </div>
-      <div class="personal-sections">
-        <div class="personal-card personal-card-calendar"><div id="calendarContainer"></div></div>
-        <div class="personal-card" id="taskPanelCard" style="display:none"><div id="taskPanel"></div></div>
-        <div class="personal-card">
+
+      <div class="dashboard-kpi">
+        <div class="kpi-card kpi-countdown">
+          <div class="kpi-value">${daysLeft}</div>
+          <div class="kpi-label">${t('cal.daysLeft')}</div>
+        </div>
+        <div class="kpi-card kpi-progress">
+          <div class="kpi-value" id="dashProgress">0%</div>
+          <div class="kpi-label">${t('cal.preparations') || 'Forberedelser'}</div>
+        </div>
+        <div class="kpi-card kpi-next" id="dashNextDeadline">
+          <div class="kpi-value">—</div>
+          <div class="kpi-label">${t('personal.nextTask') || 'Neste oppgave'}</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-card personal-card-calendar"><div id="calendarContainer"></div></div>
+        <div class="dash-card" id="taskPanelCard" style="display:none"><div id="taskPanel"></div></div>
+        <div class="dash-card">
           <div class="personal-card-header">
             <h3>${t('cal.preparations')}</h3>
             <span class="prep-progress-label" id="prepProgress"></span>
           </div>
           <div id="checklistContainer"></div>
         </div>
-        <div class="personal-card" id="quickAddCard" style="display:none">
+        <div class="dash-card" id="quickAddCard" style="display:none">
           <div class="personal-card-header">
             <h3>${t('cal.removedTasks')}</h3>
             <p class="personal-card-sub">${t('cal.removedSub')}</p>
           </div>
           <div id="quickAddContainer"></div>
         </div>
-        <div class="personal-card">
+        <div class="dash-card">
           <div class="personal-card-header">
             <h3>${t('personal.notes')}</h3>
             <span class="notes-saved hidden" id="notesSaved">${t('personal.notesSaved')}</span>
@@ -1006,7 +1398,7 @@
       <button class="auth-logout" id="logoutBtn">${t('auth.logout')}</button>
     `;
     el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
-    el.querySelector('#logoutBtn').addEventListener('click', async () => { await Auth.signOut(); renderAuthForm(el, daysLeft); });
+    el.querySelector('#logoutBtn').addEventListener('click', async () => { await Auth.signOut(); updateUserButton(); renderAuthForm(el, daysLeft); });
     initCalendar(daysLeft);
     initNotes();
   }
@@ -1031,32 +1423,45 @@
   }
 
   // ============================================
-  // MOBILE MAP OVERLAY
+  // MOBILE MAP — data-map-state (no DOM moving)
   // ============================================
+  function setMapState(state) {
+    document.body.setAttribute('data-map-state', state); // hidden | peek | full
+    requestAnimationFrame(() => { if (map) map.invalidateSize(); });
+  }
+
+  function showMobileMap() {
+    setMapState('full');
+    document.body.style.overflow = 'hidden';
+    pushAppState({ section: currentSection, subTab: currentSubTab, mapFull: true });
+    setTimeout(() => {
+      if (map) map.invalidateSize();
+      if (activeRouteId && routeLayers[activeRouteId]) {
+        map.fitBounds(routeLayers[activeRouteId].polyline.getBounds(), { padding: [50, 50], maxZoom: 10, animate: true, duration: 0.4 });
+      }
+    }, 50);
+  }
+
+  function hideMobileMap() {
+    setMapState('hidden');
+    document.body.style.overflow = '';
+    if (!pushingState) {
+      history.back();
+    }
+  }
+
   function initMobileMap() {
     const fab = document.getElementById('mapFab');
-    const overlay = document.getElementById('mapOverlay');
     const closeBtn = document.getElementById('mapOverlayClose');
-    if (!fab || !overlay) return;
-    const mapContainer = document.querySelector('.map-container');
-    overlay.appendChild(mapContainer);
-    mapContainer.style.display = 'block';
-    fab.addEventListener('click', () => {
-      overlay.classList.add('open');
-      mapOverlayOpen = true;
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => {
-        if (map) map.invalidateSize();
-        if (activeRouteId && routeLayers[activeRouteId]) {
-          map.fitBounds(routeLayers[activeRouteId].polyline.getBounds(), { padding: [50, 50], maxZoom: 10, animate: true, duration: 0.4 });
-        }
-      }, 50);
-    });
-    closeBtn.addEventListener('click', () => {
-      overlay.classList.remove('open');
-      mapOverlayOpen = false;
-      document.body.style.overflow = '';
-    });
+    if (!fab) return;
+
+    setMapState('hidden');
+
+    fab.addEventListener('click', () => showMobileMap());
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => hideMobileMap());
+    }
   }
 
 })();
