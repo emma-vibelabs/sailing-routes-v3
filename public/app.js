@@ -1204,7 +1204,7 @@
     // Only check existing vote for LOGGED IN users
     let userVotedRoute = null;
     if (loggedIn) {
-      const userName = user?.name || user?.email?.split('@')[0] || '';
+      const userName = user?.email?.split('@')[0] || user?.name || '';
       for (const [routeId, names] of Object.entries(currentVoters)) {
         if (names.some(n => n.toLowerCase() === userName.toLowerCase())) {
           userVotedRoute = routeId;
@@ -1313,18 +1313,15 @@
       return;
     }
 
-    const user = Auth.getUser();
-    const voteName = user?.name || user?.email?.split('@')[0] || t('sailor');
-
     // Optimistic UI — immediately mark as voted
     const btn = document.querySelector(`.vote-row-btn[data-route="${routeId}"]`);
     if (btn) { btn.textContent = '…'; btn.disabled = true; }
 
     try {
-      const res = await fetch('/api/vote', {
+      const res = await Auth.authFetch('/api/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: voteName, route: routeId }),
+        body: JSON.stringify({ route: routeId }),
       });
       const data = await res.json();
       if (data.success) {
@@ -1341,14 +1338,11 @@
 
   async function removeVote() {
     if (!Auth.isLoggedIn()) return;
-    const user = Auth.getUser();
-    const voteName = user?.name || user?.email?.split('@')[0] || t('sailor');
 
     try {
-      const res = await fetch('/api/vote', {
+      const res = await Auth.authFetch('/api/vote', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: voteName }),
       });
       const data = await res.json();
       if (data.success) {
