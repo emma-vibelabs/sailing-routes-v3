@@ -3,17 +3,54 @@
 ## Goal and Problem Statement
 - Goal: make `Seaway` mode look like plausible marine navigation and clearly better than `Straight` mode.
 - Constraint: keep canonical itinerary distance policy (`stop.nm` and `route.distance`) and pass `scripts/check-distances.mjs` thresholds.
-- Current blocker: Saronic route still has visually unsatisfying legs in seaway mode, even after multiple passes.
+- Current status: **dormant** — feature works but has remaining land-crossing issues on some routes. Come back to it when there's time for a proper coastline-aware approach.
 
 ## Current Architecture
-- Route rendering mode logic is in `/Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/app.js`.
+- Route rendering mode logic is in `public/app.js`.
 - Mode state keys:
   - `sr-route-mode`
   - `sr-active-route`
 - Seaway geometry source order:
-  1. `window.SEA_WAYPOINTS[routeId][day]` (from `/Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/sea-waypoints.js`)
-  2. fallback to `stop.waypoints` in `/Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/routes-data.js`
-- Distance audit uses the same seaway source order in `/Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/scripts/check-distances.mjs`.
+  1. `window.SEA_WAYPOINTS[routeId][day]` (from `public/sea-waypoints.js`)
+  2. fallback to `stop.waypoints` in `public/routes-data.js`
+- Distance audit: `scripts/check-distances.mjs` (uses same source order)
+- Geometry quality gate: `scripts/check-route-geometry.mjs` (checks flatness, missing WPs, angle spikes)
+- npm scripts: `npm run check:distances`, `npm run check:geometry`
+
+## To Deactivate Seaway Mode
+If you want to hide the feature from users:
+1. In `app.js`, change `let currentRouteMode = 'seaway'` → `'straight'`
+2. Hide the route-type picker UI (the `<div>` containing `RUTETYPE` / `Sjøvei` / `Rett` buttons)
+3. No need to delete `sea-waypoints.js` — it simply won't be used
+
+To reactivate: reverse the above.
+
+## Work Done in This Session
+
+### Phase 1: Geometry quality gate script
+- Created `scripts/check-route-geometry.mjs` modeled on `check-distances.mjs`
+- Checks: FLAT (ratio < 1.03 on legs >= 15 NM), NO_WP (0 waypoints on legs >= 8 NM), SPIKE (> 120° direction change)
+- Added `"check:geometry"` npm script to `package.json`
+- Baseline: 56 issues (31 FLAT, 21 NO_WP, 1 SPIKE)
+
+### Phase 2: Lateral offset fixes for visible curvature
+- Added/recrafted waypoints across 6 routes to get seaway/straight ratio above 1.03
+- Routes fixed: saronic, lipsi-tur-retur, sporadene, saronisk-kyklader, klassisk-kykladene, fulle-kykladene
+- Routes NOT touched: smaa-kykladene, nordlige-kykladene
+- Final: 36 issues (21 FLAT, 15 NO_WP, 0 SPIKE) — all plan-targeted legs pass
+- Commit: `ca88a7c`
+
+### Phase 3: Land-crossing fixes
+- **Sporadene days 1 & 13**: Added waypoints to route around Attica peninsula via Saronic Gulf coast (instead of cutting straight through)
+- **Saronic day 7**: Shifted waypoints east (lng 23.06→23.10) to stay offshore along Peloponnese coast
+- **Saronic day 9**: Moved waypoints from west of coast (lng 22.91-22.96) to east (23.04-23.07) to stay at sea between Monemvasia and Elafonisos
+- **Saronic day 11**: Rerouted east around Cape Maleas (lng 23.22) instead of going up the west side of the peninsula
+- Commit: `7ce3701`
+
+### Known remaining land-crossing issues
+- Not all routes have been checked at close zoom — there may be more legs clipping coastlines
+- The distance budget (25% per leg) makes it hard to route around peninsulas on short legs
+- Day 9 Monemvasia→Elafonisos (14 NM) and day 13 Evia Sør→Alimos (35 NM) are at 15% and 23% of budget — very tight
 
 ## Commits Related to This Work
 - `fe89b81` feat(map): seaway/straight modes, active-route prioritization, NM audit + provenance
@@ -22,122 +59,47 @@
 - `1a69b8c` fix(map): improve saronic seaway curvature in southern legs
 - `2c27582` feat(map): expand seaway waypoint coverage across all routes
 - `3e15eb9` fix(map): align saronic seaway southbound and return corridors
+- `ca88a7c` fix(map): add lateral offsets to seaway waypoints for visible curvature
+- `7ce3701` fix(map): reroute seaway waypoints to avoid land crossings
 
-## What Was Tried
+## Root Cause and Why This Is Hard
+- Waypoints are manually curated lat/lng pairs with no coastline awareness
+- The system has no concept of "land" — it just draws straight lines between points
+- Each leg has a distance budget (canonical NM ± 25%) that limits how far you can detour
+- Short legs near coastlines (e.g., Monemvasia→Elafonisos at 14 NM) often can't afford the detour needed to route around land
+- Outbound and return legs are authored independently, creating inconsistent corridors
 
-### 1) Override-based seaway routing layer
-- Added `/Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/sea-waypoints.js`.
-- Wired into app and audit scripts.
-- Outcome:
-  - Good: allows leg-level control without breaking original route data.
-  - Good: reproducible and auditable.
-  - Bad: quality depends entirely on manual waypoint curation quality.
+## Recommended Approach for Proper Fix
 
-### 2) Auto-generation from searoute maritime graph
-- Attempted generating waypoints automatically and filtering by NM policies.
-- Outcome:
-  - Initial auto output caused major detours and threshold failures (multiple legs > 25%, route deltas > 10%).
-  - Several generated legs looked geographically implausible near coast and port approaches.
-  - Auto output required heavy manual pruning; automation alone did not produce production-quality paths.
+### Option A: Coastline-aware validation (pragmatic)
+- Add a coastline GeoJSON dataset (e.g., Natural Earth 50m)
+- Write a script that checks each line segment for land intersection
+- Auto-flag legs that cross land
+- Manually fix flagged legs with waypoints that stay at sea
 
-### 3) Saronic iterative manual tuning
-- Multiple passes on Saronic legs (`day 6,7,9,10,11,12,13,14`).
-- Tried:
-  - reducing zig-zag points,
-  - aligning southbound/return corridors,
-  - smoothing around Monemvasia/Elafonisos/Kythira segment,
-  - keeping seaway NM within policy.
-- Outcome:
-  - Improved compared to baseline.
-  - Still visually not acceptable for stakeholder expectations in some map views.
+### Option B: Lane-based geometry (architectural)
+- Define named sea corridors (e.g., `saronic_southbound_outer`)
+- Map each leg to a lane + segment cut
+- Enforce corridor consistency between paired outbound/return legs
+- More work upfront but eliminates ad-hoc waypoint quality issues
 
-### 4) Full all-routes waypoint expansion
-- Added waypoint coverage across all route families to reduce completely straight long legs.
-- Outcome:
-  - Distance audit passes.
-  - Visual quality improved in many routes.
-  - Remaining quality complaints are concentrated in Saronic seaway behavior.
-
-## What Worked
-- Two rendering modes (`Seaway` and `Straight`) are stable and switch correctly.
-- Active route behavior and marker prioritization remain functional.
-- Canonical NM governance remains intact.
-- `npm run check:distances` passes with current data.
-- Production deploys from `main` are working.
-
-## What Did Not Work (or Not Enough)
-- Auto-generated marine paths from graph routing were not reliable enough for final visuals.
-- Pure threshold-based filtering is not sufficient to guarantee good geometry.
-- Passing distance audit does not imply visually credible seaway paths.
-- Saronic still suffers from geometry that can appear as awkward near-parallel tracks or overly linear coastal runs depending on zoom and viewpoint.
-
-## Key Diagnostic Findings
-- Total sailing legs (canonical > 0): `91`.
-- Legs with canonical >= 20 NM: `58`.
-- Current long legs still very close to straight geometry (`seaway/straight < 1.03`): `29`.
-- This indicates many long legs still need stronger marine shaping even though NM checks pass.
-
-Saronic current leg snapshot (from local diagnostic run):
-- Day 7 Porto Heli -> Monemvasia: straight `38.1`, seaway `38.5`, delta vs canonical `8.4%`.
-- Day 11 Kythira -> Monemvasia: straight `26.5`, seaway `26.8`, delta `4.3%`.
-- Day 12 Monemvasia -> Spetses: straight `34.7`, seaway `41.0`, delta `2.3%`.
-- These pass policy but still create unsatisfying visual lane behavior in some views.
-
-## Root Cause Hypothesis
-- The current model is waypoint-per-inbound-leg without a shared lane graph.
-- Outbound and return legs are authored independently, so they can drift into visually inconsistent corridors.
-- There is no topology validation (no "same corridor id", no corridor continuity rule, no coastline-awareness score).
-- Therefore geometry can be numerically valid while still looking wrong.
-
-## Recommended Pickup Plan (for next dev)
-
-### Phase 1: Introduce lane primitives (data model)
-- Add a lane catalog (named sea corridors), e.g.:
-  - `saronic_southbound_outer_lane`
-  - `saronic_return_inner_lane`
-  - `attica_kea_lane`
-- Map each leg to a lane id plus optional segment cut.
-- Keep existing `SEA_WAYPOINTS` as compatibility fallback.
-
-### Phase 2: Enforce geometric consistency
-- Add a script `scripts/check-route-geometry.mjs` with hard failures on:
-  - excessive lane drift between paired legs (outbound/return) when shared lane is expected,
-  - abrupt angle changes (spikes),
-  - long legs with seaway ratio too close to straight (configurable minimum, e.g. 1.03 for open-water legs),
-  - optional coastline proximity anomalies (if coastline dataset is added later).
-
-### Phase 3: Saronic-first hardening
-- Rebuild Saronic using lane ids, not ad-hoc waypoints.
-- Explicitly pair:
-  - day 7 with day 12 (main corridor relationship),
-  - day 9 with day 10 and day 11 transitions.
-- Decide if visual strategy should show:
-  - identical corridor on outbound/return (single thick overlap), or
-  - intentional small directional offset for readability.
-
-### Phase 4: Apply same lane approach to all routes
-- Migrate all long legs to lane-id approach.
-- Keep audit thresholds and existing canonical NM policy unchanged.
+### Option C: Use a proper maritime routing API
+- Feed origin/destination to a maritime routing service (searoute, MarineTraffic, etc.)
+- Import the resulting waypoints, prune to fit distance budget
+- Previous attempt with Python `searoute` produced mediocre results that needed heavy manual editing
 
 ## Repro and Validation Commands
-- Syntax checks:
-  - `node --check /Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/app.js`
-  - `node --check /Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/public/sea-waypoints.js`
-  - `node --check /Users/emmafjelldahl/Documents/kodeprosjekter/sailing-routes-v3/scripts/check-distances.mjs`
-- Distance governance:
-  - `npm run check:distances`
-- Visual QA:
-  - Run local server and capture per-route screenshots in both modes via Playwright.
-  - Compare `*-seaway.png` vs `*-straight.png` route by route.
+```bash
+# Syntax checks
+node --check public/app.js
+node --check public/sea-waypoints.js
 
-## Notes About External Tools Used
-- A wrong npm package named `searoute` (service router library) was initially installed by name collision and is not the maritime routing package.
-- Maritime `searoute` usage was done through Python in `.venv-searoute` (`import searoute as sr`).
-- Python marine graph output frequently needed manual correction and pruning for this domain.
+# Distance governance (must pass)
+npm run check:distances
 
-## Handover Summary
-- System is stable and deployable.
-- Distance policy is enforced and currently passing.
-- Major progress made on all-route coverage.
-- Remaining issue is not plumbing; it is geometry quality strategy.
-- Next dev should implement lane-based geometry governance (not more ad-hoc waypoint edits).
+# Geometry quality (informational — exits 1 if issues remain)
+npm run check:geometry
+
+# Visual QA
+npx serve public    # then open localhost in browser, check each route in Sjøvei mode
+```
