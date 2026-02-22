@@ -61,6 +61,15 @@ function DAY_NAMES_FULL_FN() {
 
 // ---- Calendar System ----
 function initCalendar(daysLeft, userRole) {
+  if (window.__srChecklistPollTimer) {
+    clearInterval(window.__srChecklistPollTimer);
+    window.__srChecklistPollTimer = null;
+  }
+  if (window.__srChecklistSyncTimer) {
+    clearTimeout(window.__srChecklistSyncTimer);
+    window.__srChecklistSyncTimer = null;
+  }
+
   const container = document.getElementById('calendarContainer');
   const taskPanel = document.getElementById('taskPanel');
   const taskPanelCard = document.getElementById('taskPanelCard');
@@ -80,12 +89,53 @@ function initCalendar(daysLeft, userRole) {
   let selectedDate = null;
 
   // Persisted state
-  let completedTasks = JSON.parse(localStorage.getItem('sr-completed-tasks') || '[]');
-  let removedTasks = JSON.parse(localStorage.getItem('sr-removed-tasks') || '[]');
+  const STORAGE_KEYS = {
+    completed: 'sr-completed-tasks',
+    removed: 'sr-removed-tasks',
+  };
+  const allowedTaskIds = new Set(TRIP_TASKS.map(t => t.id));
+
+  function parseStoredArray(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function normalizeTaskIds(arr) {
+    if (!Array.isArray(arr)) return [];
+    const seen = new Set();
+    const out = [];
+    for (const item of arr) {
+      if (typeof item !== 'string') continue;
+      const id = item.trim();
+      if (!id || !allowedTaskIds.has(id) || seen.has(id)) continue;
+      seen.add(id);
+      out.push(id);
+    }
+    return out;
+  }
+
+  function sameStringSet(a, b) {
+    const left = normalizeTaskIds(a).sort();
+    const right = normalizeTaskIds(b).sort();
+    if (left.length !== right.length) return false;
+    for (let i = 0; i < left.length; i++) {
+      if (left[i] !== right[i]) return false;
+    }
+    return true;
+  }
+
+  let completedTasks = normalizeTaskIds(parseStoredArray(STORAGE_KEYS.completed));
+  let removedTasks = normalizeTaskIds(parseStoredArray(STORAGE_KEYS.removed));
 
   function saveState() {
-    localStorage.setItem('sr-completed-tasks', JSON.stringify(completedTasks));
-    localStorage.setItem('sr-removed-tasks', JSON.stringify(removedTasks));
+    localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify(normalizeTaskIds(completedTasks)));
+    localStorage.setItem(STORAGE_KEYS.removed, JSON.stringify(normalizeTaskIds(removedTasks)));
   }
 
   const role = userRole || 'passenger';
@@ -119,6 +169,30 @@ function initCalendar(daysLeft, userRole) {
     const d = new Date(task.deadline);
     d.setHours(0, 0, 0, 0);
     return d < today && !completedTasks.includes(task.id);
+  }
+
+  function updateDashboardKpis() {
+    const tasks = activeTasks();
+    const done = tasks.filter(t => completedTasks.includes(t.id)).length;
+    const total = tasks.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    const progressKpi = document.getElementById('dashProgress');
+    if (progressKpi) progressKpi.textContent = pct + '%';
+
+    const nextKpi = document.querySelector('#dashNextDeadline .kpi-value');
+    if (nextKpi) {
+      const nextTask = tasks
+        .filter(t => !completedTasks.includes(t.id))
+        .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+      if (nextTask) {
+        const d = new Date(nextTask.deadline);
+        const dateLabel = d.getDate() + '. ' + MONTH_NAMES_FN()[d.getMonth()].substring(0, 3).toLowerCase();
+        nextKpi.textContent = dateLabel;
+      } else {
+        nextKpi.textContent = I18n.lang() === 'en' ? 'Done' : 'Ferdig';
+      }
+    }
   }
 
   // ---- Render Month Grid ----
@@ -424,6 +498,8 @@ function initCalendar(daysLeft, userRole) {
         syncToServer();
       });
     });
+
+    updateDashboardKpis();
   }
 
   // ---- Render Quick Add (removed tasks) ----
@@ -461,17 +537,55 @@ function initCalendar(daysLeft, userRole) {
     });
   }
 
-  // ---- Sync to server (if authenticated) ----
+  function isLoggedIn() {
+    return typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn();
+  }
+
+  // ---- Sync to shared planning state ----
   function syncToServer() {
-    if (typeof Auth !== 'undefined' && Auth.isLoggedIn && Auth.isLoggedIn()) {
-      Auth.authFetch('/api/countdown', {
+    if (!isLoggedIn()) return;
+
+    const completed = normalizeTaskIds(completedTasks);
+    const removed = normalizeTaskIds(removedTasks);
+    completedTasks = completed;
+    removedTasks = removed;
+
+    clearTimeout(window.__srChecklistSyncTimer);
+    window.__srChecklistSyncTimer = setTimeout(() => {
+      Auth.authFetch('/api/planning', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          completed_tasks: completedTasks,
-          removed_tasks: removedTasks,
+          checklist_completed: completed,
+          checklist_removed: removed,
         }),
       }).catch(() => {});
+    }, 300);
+  }
+
+  async function refreshFromServer() {
+    if (!isLoggedIn()) return;
+    try {
+      const res = await Auth.authFetch('/api/planning');
+      if (!res.ok) return;
+      const data = await res.json();
+      const remoteCompleted = normalizeTaskIds(data.checklist_completed);
+      const remoteRemoved = normalizeTaskIds(data.checklist_removed);
+      const changed =
+        !sameStringSet(remoteCompleted, completedTasks) ||
+        !sameStringSet(remoteRemoved, removedTasks);
+
+      if (!changed) return;
+
+      completedTasks = remoteCompleted;
+      removedTasks = remoteRemoved;
+      saveState();
+      renderMonth();
+      renderTaskPanel();
+      renderChecklist();
+      renderQuickAdd();
+    } catch (e) {
+      // ignore transient sync errors
     }
   }
 
@@ -490,4 +604,10 @@ function initCalendar(daysLeft, userRole) {
   renderMonth();
   renderChecklist();
   renderQuickAdd();
+  updateDashboardKpis();
+
+  if (isLoggedIn()) {
+    refreshFromServer();
+    window.__srChecklistPollTimer = setInterval(refreshFromServer, 15000);
+  }
 }

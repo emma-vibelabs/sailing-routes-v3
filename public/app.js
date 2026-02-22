@@ -33,6 +33,17 @@
     routeMode: 'sr-route-mode',
   };
 
+  const LOCAL_SHARED_KEYS = {
+    notes: 'sr-shared-notes',
+    packingChecked: 'sr-shared-packing-checked',
+  };
+
+  let sharedPlanningPollTimer = null;
+  let sharedPlanningSaveTimer = null;
+  let pendingSharedPlanningPatch = {};
+  let lastSharedPlanningState = null;
+  let notesSaveTimeout = null;
+
   // ---- Mobile state ----
   let isMobile = window.innerWidth <= 768;
   let pushingState = false; // flag to prevent re-push during popstate
@@ -123,6 +134,46 @@
     } catch (e) {
       // no-op (private mode / storage blocked)
     }
+  }
+
+  function readJsonArrayStorage(key) {
+    const raw = readStorage(key);
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeJsonArrayStorage(key, value) {
+    writeStorage(key, JSON.stringify(Array.isArray(value) ? value : []));
+  }
+
+  function normalizeStringArray(value, maxItems) {
+    if (!Array.isArray(value)) return [];
+    const seen = new Set();
+    const out = [];
+    for (const item of value) {
+      if (typeof item !== 'string') continue;
+      const trimmed = item.trim();
+      if (!trimmed || seen.has(trimmed)) continue;
+      seen.add(trimmed);
+      out.push(trimmed);
+      if (maxItems && out.length >= maxItems) break;
+    }
+    return out;
+  }
+
+  function arraysEqualAsSets(a, b) {
+    const left = normalizeStringArray(a).sort();
+    const right = normalizeStringArray(b).sort();
+    if (left.length !== right.length) return false;
+    for (let i = 0; i < left.length; i++) {
+      if (left[i] !== right[i]) return false;
+    }
+    return true;
   }
 
   function routeModeLabel(mode) {
@@ -330,6 +381,7 @@
   // ============================================
   function switchSection(section) {
     currentSection = section;
+    if (section !== 'plan') stopSharedPlanningPolling();
     const exploreEl = document.getElementById('exploreSection');
     const prepEl = document.getElementById('prepSection');
     const subNav = document.getElementById('subNav');
@@ -1790,6 +1842,7 @@
   }
 
   function showPrepLanding() {
+    stopSharedPlanningPolling();
     currentPrepView = 'landing';
     document.getElementById('prepLanding').classList.remove('hidden');
     document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
@@ -1799,6 +1852,7 @@
   }
 
   function showPrepSub(view) {
+    if (view !== 'personal') stopSharedPlanningPolling();
     currentPrepView = view;
     document.getElementById('prepLanding').classList.add('hidden');
     document.querySelectorAll('.prep-sub').forEach(s => s.classList.add('hidden'));
@@ -2058,6 +2112,250 @@
     });
   }
 
+  function defaultSharedPlanningState() {
+    return {
+      checklist_completed: [],
+      checklist_removed: [],
+      packing_checked: readJsonArrayStorage(LOCAL_SHARED_KEYS.packingChecked),
+      notes: readStorage(LOCAL_SHARED_KEYS.notes) || '',
+      updated_at: null,
+      updated_by: null,
+    };
+  }
+
+  function normalizeSharedPlanningState(data) {
+    const fallback = defaultSharedPlanningState();
+    if (!data || typeof data !== 'object') return fallback;
+    return {
+      checklist_completed: normalizeStringArray(data.checklist_completed, 300),
+      checklist_removed: normalizeStringArray(data.checklist_removed, 300),
+      packing_checked: normalizeStringArray(data.packing_checked, 1000),
+      notes: typeof data.notes === 'string' ? data.notes : fallback.notes,
+      updated_at: data.updated_at || null,
+      updated_by: data.updated_by || null,
+    };
+  }
+
+  async function fetchSharedPlanningState() {
+    if (!Auth.isLoggedIn()) return null;
+    try {
+      const res = await Auth.authFetch('/api/planning');
+      if (!res.ok) return null;
+      const data = await res.json();
+      return normalizeSharedPlanningState(data);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applySharedPlanningState(state, options) {
+    const opts = options || {};
+    if (!state) return;
+    const next = normalizeSharedPlanningState(state);
+    const previous = lastSharedPlanningState || defaultSharedPlanningState();
+    lastSharedPlanningState = next;
+
+    writeStorage(LOCAL_SHARED_KEYS.notes, next.notes || '');
+    writeJsonArrayStorage(LOCAL_SHARED_KEYS.packingChecked, next.packing_checked || []);
+
+    const notesEl = document.getElementById('notesArea');
+    if (notesEl) {
+      const shouldKeepLocalTyping = !opts.force &&
+        document.activeElement === notesEl &&
+        typeof notesEl.value === 'string' &&
+        notesEl.value.trim().length > 0;
+      if (!shouldKeepLocalTyping && notesEl.value !== (next.notes || '')) {
+        notesEl.value = next.notes || '';
+      }
+    }
+
+    if (!arraysEqualAsSets(previous.packing_checked, next.packing_checked)) {
+      renderPersonalPackingList();
+    }
+  }
+
+  function queueSharedPlanningPatch(patch) {
+    pendingSharedPlanningPatch = Object.assign({}, pendingSharedPlanningPatch, patch || {});
+    clearTimeout(sharedPlanningSaveTimer);
+    sharedPlanningSaveTimer = setTimeout(flushSharedPlanningPatch, 700);
+  }
+
+  async function flushSharedPlanningPatch() {
+    if (!Auth.isLoggedIn()) return;
+    const patch = pendingSharedPlanningPatch;
+    pendingSharedPlanningPatch = {};
+    if (!patch || !Object.keys(patch).length) return;
+
+    try {
+      const res = await Auth.authFetch('/api/planning', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      applySharedPlanningState(data, { force: false });
+    } catch (e) {
+      // keep local state; next save/poll will retry
+    }
+  }
+
+  function stopSharedPlanningPolling() {
+    clearInterval(sharedPlanningPollTimer);
+    sharedPlanningPollTimer = null;
+    clearTimeout(sharedPlanningSaveTimer);
+    sharedPlanningSaveTimer = null;
+    if (Auth.isLoggedIn() && pendingSharedPlanningPatch && Object.keys(pendingSharedPlanningPatch).length) {
+      const patch = pendingSharedPlanningPatch;
+      pendingSharedPlanningPatch = {};
+      Auth.authFetch('/api/planning', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      }).catch(() => {});
+    }
+  }
+
+  function startSharedPlanningPolling() {
+    stopSharedPlanningPolling();
+    if (!Auth.isLoggedIn()) return;
+
+    sharedPlanningPollTimer = setInterval(async () => {
+      const data = await fetchSharedPlanningState();
+      if (!data) return;
+      applySharedPlanningState(data, { force: false });
+    }, 15000);
+  }
+
+  async function hydrateSharedPlanningState(forceUiApply) {
+    if (!Auth.isLoggedIn()) {
+      applySharedPlanningState(defaultSharedPlanningState(), { force: true });
+      return;
+    }
+    const data = await fetchSharedPlanningState();
+    if (data) applySharedPlanningState(data, { force: !!forceUiApply });
+  }
+
+  function packingItemKey(categoryId, index) {
+    return categoryId + ':' + index;
+  }
+
+  function renderPersonalPackingList() {
+    const container = document.getElementById('personalPackingContainer');
+    if (!container) return;
+
+    const packingData = window.PREP_CONTENT && window.PREP_CONTENT.packingList;
+    const categories = packingData && Array.isArray(packingData.categories) ? packingData.categories : [];
+    if (!categories.length) {
+      container.innerHTML = '';
+      return;
+    }
+
+    const checked = new Set(
+      normalizeStringArray(
+        (lastSharedPlanningState && lastSharedPlanningState.packing_checked) ||
+        readJsonArrayStorage(LOCAL_SHARED_KEYS.packingChecked),
+        1000
+      )
+    );
+
+    const total = categories.reduce((sum, cat) => sum + (Array.isArray(cat.items) ? cat.items.length : 0), 0);
+    let done = 0;
+
+    const html = categories.map(cat => {
+      const items = Array.isArray(cat.items) ? cat.items : [];
+      let catDone = 0;
+      const itemsHtml = items.map((item, idx) => {
+        const key = packingItemKey(cat.id || 'cat', idx);
+        const isChecked = checked.has(key);
+        if (isChecked) {
+          catDone++;
+          done++;
+        }
+        return `
+          <label class="pp-item ${isChecked ? 'checked' : ''}">
+            <input type="checkbox" data-pack-key="${key}" ${isChecked ? 'checked' : ''} />
+            <span class="pp-item-text">${escapeHtml(P(item.text) || '')}</span>
+          </label>
+        `;
+      }).join('');
+
+      return `
+        <div class="pp-category">
+          <div class="pp-cat-header" data-pack-toggle="${cat.id}">
+            <span>${cat.icon || '•'} ${escapeHtml(P(cat.name) || '')}</span>
+            <span class="pp-cat-progress">${catDone}/${items.length}</span>
+          </div>
+          <div class="pp-cat-items" id="pp-cat-${cat.id}">
+            ${itemsHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = html;
+
+    const progressEl = document.getElementById('packingProgress');
+    if (progressEl) {
+      progressEl.textContent = `${done}/${total}`;
+    }
+
+    container.querySelectorAll('[data-pack-toggle]').forEach(header => {
+      header.addEventListener('click', () => {
+        const items = document.getElementById('pp-cat-' + header.dataset.packToggle);
+        if (!items) return;
+        items.classList.toggle('collapsed');
+      });
+    });
+
+    container.querySelectorAll('input[data-pack-key]').forEach(input => {
+      input.addEventListener('change', () => {
+        const nextChecked = new Set(
+          normalizeStringArray(
+            (lastSharedPlanningState && lastSharedPlanningState.packing_checked) ||
+            readJsonArrayStorage(LOCAL_SHARED_KEYS.packingChecked),
+            1000
+          )
+        );
+        const key = input.dataset.packKey;
+        if (input.checked) nextChecked.add(key);
+        else nextChecked.delete(key);
+
+        const packed = Array.from(nextChecked);
+        writeJsonArrayStorage(LOCAL_SHARED_KEYS.packingChecked, packed);
+        if (!lastSharedPlanningState) lastSharedPlanningState = defaultSharedPlanningState();
+        lastSharedPlanningState.packing_checked = packed;
+        renderPersonalPackingList();
+        queueSharedPlanningPatch({ packing_checked: packed });
+      });
+    });
+  }
+
+  function initNotes() {
+    const textarea = document.getElementById('notesArea');
+    if (!textarea) return;
+
+    const localNote = readStorage(LOCAL_SHARED_KEYS.notes) || '';
+    textarea.value = localNote;
+
+    textarea.addEventListener('input', () => {
+      clearTimeout(notesSaveTimeout);
+      notesSaveTimeout = setTimeout(() => {
+        writeStorage(LOCAL_SHARED_KEYS.notes, textarea.value);
+        if (!lastSharedPlanningState) lastSharedPlanningState = defaultSharedPlanningState();
+        lastSharedPlanningState.notes = textarea.value;
+
+        const saved = document.getElementById('notesSaved');
+        if (saved) {
+          saved.classList.remove('hidden');
+          setTimeout(() => saved.classList.add('hidden'), 1800);
+        }
+
+        queueSharedPlanningPatch({ notes: textarea.value });
+      }, 700);
+    });
+  }
+
   function renderPersonalArea(containerId) {
     const el = document.getElementById(containerId);
     el.classList.remove('hidden');
@@ -2069,6 +2367,7 @@
   }
 
   function renderAuthForm(el, daysLeft) {
+    stopSharedPlanningPolling();
     let isRegister = false;
     function render() {
       el.innerHTML = `
@@ -2190,27 +2489,6 @@
         <div class="dash-card" id="taskPanelCard" style="display:none"><div id="taskPanel"></div></div>
         <div class="dash-card">
           <div class="personal-card-header">
-            <h3>${t('cal.preparations')}</h3>
-            <span class="prep-progress-label" id="prepProgress"></span>
-          </div>
-          <div id="checklistContainer"></div>
-        </div>
-        <div class="dash-card" id="quickAddCard" style="display:none">
-          <div class="personal-card-header">
-            <h3>${t('cal.removedTasks')}</h3>
-            <p class="personal-card-sub">${t('cal.removedSub')}</p>
-          </div>
-          <div id="quickAddContainer"></div>
-        </div>
-        <div class="dash-card">
-          <div class="personal-card-header">
-            <h3>${t('personal.notes')}</h3>
-            <span class="notes-saved hidden" id="notesSaved">${t('personal.notesSaved')}</span>
-          </div>
-          <textarea class="notes-textarea" id="notesArea" placeholder="${t('personal.notesPlaceholder')}"></textarea>
-        </div>
-        <div class="dash-card">
-          <div class="personal-card-header">
             <h3>${t('personal.settings')}</h3>
           </div>
           <div class="role-picker-label">${t('personal.myRole')}</div>
@@ -2226,11 +2504,47 @@
           </div>
           <p class="role-change-note" id="roleChangeNote"></p>
         </div>
+        <div class="dash-card">
+          <div class="personal-card-header">
+            <h3>${t('cal.preparations')}</h3>
+            <span class="prep-progress-label" id="prepProgress"></span>
+          </div>
+          <div id="checklistContainer"></div>
+        </div>
+        <div class="dash-card">
+          <div class="personal-card-header">
+            <h3>${t('personal.sharedPacking')}</h3>
+            <span class="prep-progress-label" id="packingProgress"></span>
+          </div>
+          <p class="personal-card-sub">${t('personal.sharedSync')}</p>
+          <div id="personalPackingContainer"></div>
+        </div>
+        <div class="dash-card" id="quickAddCard" style="display:none">
+          <div class="personal-card-header">
+            <h3>${t('cal.removedTasks')}</h3>
+            <p class="personal-card-sub">${t('cal.removedSub')}</p>
+          </div>
+          <div id="quickAddContainer"></div>
+        </div>
+        <div class="dash-card">
+          <div class="personal-card-header">
+            <h3>${t('personal.groupNotes')}</h3>
+            <span class="notes-saved hidden" id="notesSaved">${t('personal.notesSaved')}</span>
+          </div>
+          <p class="personal-card-sub">${t('personal.sharedSync')}</p>
+          <textarea class="notes-textarea" id="notesArea" placeholder="${t('personal.notesPlaceholder')}"></textarea>
+        </div>
       </div>
       <button class="auth-logout" id="logoutBtn">${t('auth.logout')}</button>
     `;
     el.querySelector('.prep-back').addEventListener('click', showPrepLanding);
-    el.querySelector('#logoutBtn').addEventListener('click', async () => { await Auth.signOut(); updateUserButton(); updateEntryForLoggedIn(); renderAuthForm(el, daysLeft); });
+    el.querySelector('#logoutBtn').addEventListener('click', async () => {
+      stopSharedPlanningPolling();
+      await Auth.signOut();
+      updateUserButton();
+      updateEntryForLoggedIn();
+      renderAuthForm(el, daysLeft);
+    });
 
     // Settings role picker — live save
     el.querySelectorAll('input[name="settingsRole"]').forEach(radio => {
@@ -2255,25 +2569,11 @@
 
     initCalendar(daysLeft, userRole);
     initNotes();
-  }
-
-  // ---- Notes ----
-  let notesSaveTimeout = null;
-  function initNotes() {
-    const textarea = document.getElementById('notesArea');
-    if (!textarea) return;
-    textarea.value = localStorage.getItem('sr-notes') || '';
-    textarea.addEventListener('input', () => {
-      clearTimeout(notesSaveTimeout);
-      notesSaveTimeout = setTimeout(() => {
-        localStorage.setItem('sr-notes', textarea.value);
-        const saved = document.getElementById('notesSaved');
-        if (saved) { saved.classList.remove('hidden'); setTimeout(() => saved.classList.add('hidden'), 2000); }
-        if (Auth.isLoggedIn()) {
-          Auth.authFetch('/api/notes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: textarea.value }) }).catch(() => {});
-        }
-      }, 2000);
+    renderPersonalPackingList();
+    hydrateSharedPlanningState(true).then(() => {
+      renderPersonalPackingList();
     });
+    startSharedPlanningPolling();
   }
 
   // ============================================

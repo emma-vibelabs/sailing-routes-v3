@@ -20,7 +20,7 @@ var I18n = (function () {
     'entry.featureVote':   { no: 'Stem på din favorittute', en: 'Vote for your favourite route' },
     'entry.featurePacking': { no: 'Personlig pakkeliste', en: 'Personal packing list' },
     'entry.featureCountdown': { no: 'Nedtelling til avgang', en: 'Countdown to departure' },
-    'entry.featureNotes':  { no: 'Private reisenotater', en: 'Private travel notes' },
+    'entry.featureNotes':  { no: 'Delte reisenotater', en: 'Shared travel notes' },
     'entry.button':        { no: 'Se rutene', en: 'See the routes' },
     'entry.createAccount': { no: 'Opprett konto / Logg inn', en: 'Create account / Log in' },
     'entry.prepLink':      { no: 'Eller se forberedelser til turen', en: 'Or see trip preparations' },
@@ -111,7 +111,7 @@ var I18n = (function () {
     'prep.voteFeature':    { no: 'Stem på din favorittute', en: 'Vote for your favourite route' },
     'prep.packingFeature': { no: 'Personlig pakkeliste med avkrysning', en: 'Personal packing list with checkboxes' },
     'prep.countdownFeature': { no: 'Nedtellingskalender til avgang', en: 'Countdown calendar to departure' },
-    'prep.notesFeature':   { no: 'Private reisenotater', en: 'Private travel notes' },
+    'prep.notesFeature':   { no: 'Delte reisenotater', en: 'Shared travel notes' },
     'prep.myPlanning':     { no: 'Min planlegging', en: 'My planning' },
 
     // Prep nav cards
@@ -158,6 +158,9 @@ var I18n = (function () {
     'personal.dashboardSub': { no: 'Her er status på forberedelsene dine.', en: 'Here\u2019s your preparation status.' },
     'personal.nextTask':   { no: 'Neste oppgave', en: 'Next task' },
     'personal.notes':      { no: 'Mine notater', en: 'My notes' },
+    'personal.groupNotes': { no: 'Felles notater', en: 'Shared notes' },
+    'personal.sharedPacking': { no: 'Felles pakkeliste', en: 'Shared packing list' },
+    'personal.sharedSync': { no: 'Synkes for hele gruppen', en: 'Synced for the whole group' },
     'personal.notesSaved': { no: 'Lagret', en: 'Saved' },
     'personal.notesPlaceholder': { no: 'Tanker, ønsker, ting å huske for turen...', en: 'Thoughts, wishes, things to remember for the trip...' },
     'personal.settings':   { no: 'Innstillinger', en: 'Settings' },
