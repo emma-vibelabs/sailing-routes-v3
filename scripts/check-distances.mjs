@@ -80,6 +80,25 @@ function loadRoutesData(rootDir) {
   return context.window.ROUTES_DATA || [];
 }
 
+function loadSeaWaypointOverrides(rootDir) {
+  const seawayPath = path.join(rootDir, 'public', 'sea-waypoints.js');
+  if (!fs.existsSync(seawayPath)) return {};
+  const code = fs.readFileSync(seawayPath, 'utf8');
+  const context = { window: {} };
+  vm.createContext(context);
+  vm.runInContext(code, context);
+  return context.window.SEA_WAYPOINTS || {};
+}
+
+function seawayWaypointsForLeg(routeId, stop, overrides) {
+  const routeOverrides = overrides[routeId];
+  const dayKey = stop && stop.day !== undefined && stop.day !== null ? String(stop.day) : null;
+  if (routeOverrides && dayKey && Array.isArray(routeOverrides[dayKey])) {
+    return routeOverrides[dayKey];
+  }
+  return Array.isArray(stop && stop.waypoints) ? stop.waypoints : [];
+}
+
 function loadWaivers(rootDir) {
   const waiversPath = path.join(rootDir, 'research', 'distance-waivers.json');
   if (!fs.existsSync(waiversPath)) return { routes: {}, legs: {} };
@@ -111,6 +130,7 @@ function legWaiver(waivers, routeId, day) {
 const rootDir = process.cwd();
 const waivers = loadWaivers(rootDir);
 const routes = loadRoutesData(rootDir);
+const seaWaypointOverrides = loadSeaWaypointOverrides(rootDir);
 
 if (!routes.length) {
   console.error('No routes found in public/routes-data.js');
@@ -136,7 +156,7 @@ for (const route of routes) {
     const canonicalLeg = Number(to.nm) || 0;
 
     const straightPoints = [[from.lat, from.lng], [to.lat, to.lng]];
-    const seawayPoints = [[from.lat, from.lng], ...(Array.isArray(to.waypoints) ? to.waypoints : []), [to.lat, to.lng]];
+    const seawayPoints = [[from.lat, from.lng], ...seawayWaypointsForLeg(route.id, to, seaWaypointOverrides), [to.lat, to.lng]];
 
     const straightLeg = distanceOfPoints(straightPoints);
     const seawayLeg = distanceOfPoints(seawayPoints);

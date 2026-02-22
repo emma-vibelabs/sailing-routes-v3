@@ -513,11 +513,23 @@
     return byIndex;
   }
 
+  function seawayWaypointsForLeg(route, stop) {
+    const dayKey = stop && stop.day !== undefined && stop.day !== null ? String(stop.day) : null;
+    const overrides = window.SEA_WAYPOINTS || {};
+    const routeOverrides = route && route.id ? overrides[route.id] : null;
+    if (routeOverrides && dayKey && Array.isArray(routeOverrides[dayKey])) {
+      return routeOverrides[dayKey];
+    }
+    return Array.isArray(stop && stop.waypoints) ? stop.waypoints : [];
+  }
+
   function buildRouteCoords(route, mode) {
     const coords = [];
     (route.stops || []).forEach(stop => {
-      if (mode === 'seaway' && Array.isArray(stop.waypoints)) {
-        stop.waypoints.forEach(wp => coords.push(wp));
+      if (mode === 'seaway') {
+        seawayWaypointsForLeg(route, stop).forEach(wp => {
+          if (Array.isArray(wp) && wp.length >= 2) coords.push([wp[0], wp[1]]);
+        });
       }
       coords.push([stop.lat, stop.lng]);
     });
@@ -631,7 +643,6 @@
         entry.marker.setIcon(createStopIcon(route, entry.stop, entry.index, isActive, offset));
         entry.marker.setOpacity(1);
         entry.marker.setZIndexOffset(isActive ? (1400 + entry.index) : (80 + entry.index));
-        if (isActive) entry.marker.bringToFront();
       });
     });
 
