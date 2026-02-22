@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "check:distances": "node scripts/check-distances.mjs",
+    "check:geometry": "node scripts/check-route-geometry.mjs",
     "qa:content": "node scripts/check-content-integrity.mjs"
   },
   "dependencies": {
