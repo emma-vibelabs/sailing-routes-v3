@@ -14,7 +14,7 @@
   let map = null;
   let routeLayers = {};      // { routeId: { polyline, markers[] } }
   let activeRouteId = null;
-  let currentRouteMode = 'seaway'; // seaway | straight
+  let currentRouteMode = 'straight'; // seaway | straight — seaway dormant until land-crossing issues resolved
   let currentSection = 'explore';   // explore | vote | plan
   let currentSubTab = 'routes';     // routes | stops (within explore)
   let currentPrepView = 'landing';
@@ -764,12 +764,12 @@
       subdomains: 'abcd', maxZoom: 19,
     }).addTo(map);
 
-    const storedMode = readStorage(STORAGE_KEYS.routeMode);
-    currentRouteMode = storedMode === 'straight' ? 'straight' : 'seaway';
+    // Seaway mode dormant — force straight, hide route-type picker
+    currentRouteMode = 'straight';
 
     initNauticalScale();
     initWaypointMeasureTool();
-    initRouteModeControl();
+    // initRouteModeControl(); // hidden while seaway is dormant
     (window.ROUTES_DATA || []).forEach(route => drawRoute(route));
     renderLegend();
     const defaultRouteId = getDefaultRouteId();
