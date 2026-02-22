@@ -386,6 +386,34 @@ window.ISLANDS_DATA = {
     image: "Kythnos"
   },
 
+  "kythnos-loutra": {
+    name: "Kythnos Loutra",
+    slug: "kythnos-loutra",
+    region: "kykladene",
+    lat: 37.447,
+    lng: 24.420,
+    tagline: { no: "Loutra-bukta med termiske kilder rett ved kaia", en: "Loutra bay with thermal springs right by the quay" },
+    description: { no: "Loutra er den klassiske yacht-stoppen nord på Kythnos. Den lille bukta gir kort vei til varme kilder ved sjøen og tavernaer langs strandpromenaden.", en: "Loutra is the classic yacht stop on northern Kythnos. The small bay gives easy access to thermal springs by the sea and tavernas along the waterfront." },
+    highlights: [
+      { no: "Termiske kilder ved sjøen i gangavstand fra havna", en: "Thermal springs by the sea within walking distance from the harbor" },
+      { no: "Rolig bukt som fungerer godt som første stopp etter fastlandet", en: "Calm bay that works well as a first stop after the mainland" },
+      { no: "Kort avstand til Chora med taxi/buss", en: "Short ride to Chora by taxi/bus" }
+    ],
+    anchorage: {
+      protection: { no: "Best i nordlige vinder inne i Loutra-bukta", en: "Best in northerly winds inside Loutra bay" },
+      bottom: { no: "Sand med gode holdeforhold", en: "Sand with generally good holding" },
+      depth: "3-8m",
+      facilities: { no: "Kai, vann og tavernaer i sesong", en: "Quay, water, and tavernas in season" }
+    },
+    restaurants: [
+      { name: "Sailor's", specialty: { no: "Enkle mezedes og fisk ved kaifronten", en: "Simple mezedes and fish on the quay front" }, price: "€€" },
+      { name: "Abyss", specialty: { no: "Uformell middag med utsikt over bukta", en: "Casual dinner overlooking the bay" }, price: "€€" }
+    ],
+    mustDo: { no: "Ta et kveldsbad i de varme kildene ved Loutra", en: "Take an evening dip in Loutra's thermal springs" },
+    localSpecialty: { no: "Lokal ost og timianhonning fra Kythnos", en: "Local cheese and thyme honey from Kythnos" },
+    image: "Kythnos"
+  },
+
   "serifos": {
     name: "Serifos",
     slug: "serifos",
@@ -1170,6 +1198,34 @@ window.ISLANDS_DATA = {
     image: "Alonissos"
   },
 
+  "alonissos-marinpark": {
+    name: "Alonissos Marinpark",
+    slug: "alonissos-marinpark",
+    region: "sporadene",
+    lat: 39.145,
+    lng: 23.860,
+    tagline: { no: "Hviledag i Alonissos' marine verneområde", en: "Rest day in Alonissos' marine protected waters" },
+    description: { no: "Denne stoppet representerer en rolig dag i og rundt den nasjonale marine parken. Fokus er natur, klart vann og respekt for verneområdets regler.", en: "This stop represents a quiet day in and around the national marine park. The focus is nature, clear water, and respecting protected-area rules." },
+    highlights: [
+      { no: "Store sjanser for delfin-observasjoner i rolige perioder", en: "Good chances of dolphin sightings in calm periods" },
+      { no: "Adgang til skjermede bukter med svært klart vann", en: "Access to sheltered coves with very clear water" },
+      { no: "Nærhet til Patitiri for forsyninger", en: "Close to Patitiri for provisioning" }
+    ],
+    anchorage: {
+      protection: { no: "Varierer mellom buktene; velg etter vindretning", en: "Varies by bay; choose according to wind direction" },
+      bottom: { no: "Sand og sjøgress", en: "Sand and seagrass" },
+      depth: "4-15m",
+      facilities: { no: "Basis i Patitiri: vann, drivstoff, butikker", en: "Basics in Patitiri: water, fuel, shops" }
+    },
+    restaurants: [
+      { name: "Ostria", specialty: { no: "Sjømat i Patitiri havn", en: "Seafood in Patitiri harbor" }, price: "€€" },
+      { name: "Menta", specialty: { no: "Lokale retter i gamlebyen", en: "Local dishes in the old town" }, price: "€€" }
+    ],
+    mustDo: { no: "Legg opp dagen rundt korte svømmeturer og rolig naturutforskning", en: "Plan the day around short swims and quiet nature exploration" },
+    localSpecialty: { no: "Kritamo og lokal honning", en: "Sea fennel and local honey" },
+    image: "Alonissos"
+  },
+
   "skyros": {
     name: "Skyros",
     slug: "skyros",
@@ -1228,6 +1284,34 @@ window.ISLANDS_DATA = {
     mustDo: { no: "Se tidevannsstrømmen snu i Euripos-sundet fra Chalkis-broen — et naturfenomen som forbauset Aristoteles", en: "Watch the tidal current reverse in the Euripus Strait from the Chalkis bridge — a natural phenomenon that baffled Aristotle" },
     localSpecialty: { no: "Figs of Evia — PDO-beskyttet fikenvariant, tørket og servert med honning og valnøtter", en: "Figs of Evia — PDO-protected fig variety, dried and served with honey and walnuts" },
     image: "South Evia"
+  },
+
+  "evia-sør": {
+    name: "Evia Sør",
+    slug: "evia-sør",
+    region: "sporadene",
+    lat: 38.010,
+    lng: 24.230,
+    tagline: { no: "Karystos-området på sør-Evia, med trygg havn før nordlige etapper", en: "Karystos area in southern Evia, with a secure harbor before northern legs" },
+    description: { no: "Sør-Evia brukes som mellomstopp mellom Attika og Sporadene. Karystos gir gode forsyningsmuligheter og en praktisk havn for værvindu videre nordover.", en: "South Evia is used as a transition stop between Attica and the Sporades. Karystos provides good provisioning and a practical harbor while waiting for a weather window northbound." },
+    highlights: [
+      { no: "Praktisk værvindu-stopp ved kryssing mot Skyros/Sporadene", en: "Practical weather-window stop before crossing to Skyros/Sporades" },
+      { no: "Karystos med dagligliv og mindre charterpress", en: "Karystos with local daily life and less charter pressure" },
+      { no: "God base for tidlig avgang neste dag", en: "Good base for an early departure the next day" }
+    ],
+    anchorage: {
+      protection: { no: "Karystos havn gir god beskyttelse i moderate forhold", en: "Karystos harbor offers good protection in moderate conditions" },
+      bottom: { no: "Sand og mudder", en: "Sand and mud" },
+      depth: "3-10m",
+      facilities: { no: "Kai, vann, drivstoff og proviantering", en: "Quay, water, fuel, and provisioning" }
+    },
+    restaurants: [
+      { name: "Aegea", specialty: { no: "Sjømat ved havnepromenaden", en: "Seafood by the harbor promenade" }, price: "€€" },
+      { name: "To Kima", specialty: { no: "Klassisk taverna med enkle lokale retter", en: "Classic taverna with simple local dishes" }, price: "€€" }
+    ],
+    mustDo: { no: "Bruk stoppet til værbrief, proviantering og tidlig natt før lengre etappe", en: "Use this stop for weather briefing, provisioning, and an early night before a longer leg" },
+    localSpecialty: { no: "Lokale fiken og ost fra Evia", en: "Local Evia figs and cheese" },
+    image: "Evia Sør"
   }
 
 };

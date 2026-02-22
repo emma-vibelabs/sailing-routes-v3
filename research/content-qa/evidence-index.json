@@ -1,0 +1,1133 @@
+{
+  "generatedAt": "2026-02-22",
+  "sources": {
+    "sailingissues_distances": {
+      "title": "SailingIssues: Distances between Greek ports",
+      "url": "https://sailingissues.com/distances-greek-ports.html",
+      "type": "sailing-distance"
+    },
+    "sailingissues_cyclades": {
+      "title": "SailingIssues: Cyclades itineraries",
+      "url": "https://sailingissues.com/yachting-guide/cyclades-itineraries.html",
+      "type": "sailing-itinerary"
+    },
+    "ionian_saronic_day1": {
+      "title": "Ionian Charter: Saronic route day 1-2",
+      "url": "https://www.ionian-charter.com/el/lagoon/item/203-saronic-day1-2",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_distances": {
+      "title": "Sail Greece Yachts: Sailing distance calculator",
+      "url": "https://www.sailgreeceyachts.com/sailing-distances-greece.html",
+      "type": "sailing-distance"
+    },
+    "sailgreece_routes": {
+      "title": "Sail Greece Yachts: Greek island sailing routes overview",
+      "url": "https://www.sailgreeceyachts.com/greek_island_sailing_routes.html",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_saronic": {
+      "title": "Sail Greece Yachts: Saronic Gulf route",
+      "url": "https://www.sailgreeceyachts.com/sailing_route_saronic_gulf.html",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_peloponnese": {
+      "title": "Sail Greece Yachts: Saronic + Eastern Peloponnese route",
+      "url": "https://www.sailgreeceyachts.com/sailing_route_saronic_and_eastern_peloponnesus.html",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_cyclades_1": {
+      "title": "Sail Greece Yachts: Cyclades route 1",
+      "url": "https://www.sailgreeceyachts.com/sailing_route_cyclades_islands_1.html",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_cyclades_2": {
+      "title": "Sail Greece Yachts: Cyclades route 2",
+      "url": "https://www.sailgreeceyachts.com/sailing_route_cyclades_islands_2.html",
+      "type": "sailing-itinerary"
+    },
+    "sailgreece_north_cyclades": {
+      "title": "Sail Greece Yachts: Northern + Middle Cyclades route",
+      "url": "https://www.sailgreeceyachts.com/sailing_route_northern_and_middle_cyclades.html",
+      "type": "sailing-itinerary"
+    },
+    "moorings_greece": {
+      "title": "Moorings: Greece destination overview",
+      "url": "https://www.moorings.com/destinations/mediterranean/greece",
+      "type": "charter-destination"
+    },
+    "moorings_athens": {
+      "title": "Moorings: Athens base information",
+      "url": "https://www.moorings.com/destinations/mediterranean/greece/athens",
+      "type": "charter-base"
+    },
+    "cruiserswiki_cyclades": {
+      "title": "CruisersWiki: Cyclades islands",
+      "url": "https://www.cruiserswiki.org/wiki/Cyclades_Islands",
+      "type": "pilot-guide"
+    },
+    "cruiserswiki_skiathos": {
+      "title": "CruisersWiki: Skiathos",
+      "url": "https://www.cruiserswiki.org/wiki/Skiathos",
+      "type": "pilot-guide"
+    },
+    "cruiserswiki_alonnisos": {
+      "title": "CruisersWiki: Alonnisos",
+      "url": "https://www.cruiserswiki.org/wiki/Alonnisos",
+      "type": "pilot-guide"
+    },
+    "cruiserswiki_patmos": {
+      "title": "CruisersWiki: Patmos",
+      "url": "https://www.cruiserswiki.org/wiki/Patmos",
+      "type": "pilot-guide"
+    },
+    "cruiserswiki_leros": {
+      "title": "CruisersWiki: Leros",
+      "url": "https://www.cruiserswiki.org/wiki/Leros",
+      "type": "pilot-guide"
+    },
+    "alonissos_park": {
+      "title": "National Marine Park of Alonissos (official site)",
+      "url": "https://www.alonissos-park.gr/",
+      "type": "official"
+    },
+    "openseamap_trip_planner": {
+      "title": "OpenSeaMap: Trip planner workflow",
+      "url": "https://wiki.openseamap.org/wiki/h:En:Trip_Planner",
+      "type": "measurement-method"
+    },
+    "leaflet_reference": {
+      "title": "Leaflet reference (distance behavior)",
+      "url": "https://leafletjs.com/reference",
+      "type": "measurement-method"
+    },
+    "nws_nautical_mile": {
+      "title": "NOAA/NWS glossary: Nautical mile",
+      "url": "https://www.weather.gov/ggw/GlossaryN",
+      "type": "definition"
+    },
+    "unsplash_alimos": {
+      "title": "Unsplash photo metadata: Alimos",
+      "url": "https://unsplash.com/photos/yNPqlvtslSQ",
+      "type": "image-provenance"
+    },
+    "unsplash_aegina": {
+      "title": "Unsplash photo metadata: Aegina",
+      "url": "https://unsplash.com/photos/cO_d-mTQwfQ",
+      "type": "image-provenance"
+    },
+    "unsplash_hydra": {
+      "title": "Unsplash photo metadata: Hydra",
+      "url": "https://unsplash.com/photos/eBqs51mysJ0",
+      "type": "image-provenance"
+    },
+    "unsplash_alonissos": {
+      "title": "Unsplash photo metadata: Alonissos",
+      "url": "https://unsplash.com/photos/lVjYiOoxuuI",
+      "type": "image-provenance"
+    }
+  },
+  "routes": {
+    "saronic": {
+      "routeName": "Saronic Gulf",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailgreece_distances"
+      ],
+      "trustScore": 0.86,
+      "verdict": "Trusted",
+      "canonicalNm": 270,
+      "seawayNm": 247,
+      "seawayDeltaPct": 8.5,
+      "notes": "Distance profile and protected-gulf pattern are consistent; canonical NM is now internally consistent."
+    },
+    "klassisk-kykladene": {
+      "routeName": "Classic Cyclades",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "trustScore": 0.78,
+      "verdict": "Conditional",
+      "canonicalNm": 293,
+      "seawayNm": 294.2,
+      "seawayDeltaPct": 0.4,
+      "notes": "Widely recommended Cyclades structure; open-water exposure and Meltemi sensitivity should remain explicit in copy."
+    },
+    "fulle-kykladene": {
+      "routeName": "Full Cyclades",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_2",
+        "sailgreece_distances"
+      ],
+      "trustScore": 0.76,
+      "verdict": "Conditional",
+      "canonicalNm": 322,
+      "seawayNm": 322,
+      "seawayDeltaPct": 0,
+      "notes": "Plausible advanced Cyclades circuit; includes longer exposed legs that require condition-aware planning."
+    },
+    "smaa-kykladene": {
+      "routeName": "Small Cyclades",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_north_cyclades",
+        "sailgreece_distances"
+      ],
+      "trustScore": 0.75,
+      "verdict": "Conditional",
+      "canonicalNm": 323,
+      "seawayNm": 299.7,
+      "seawayDeltaPct": 7.2,
+      "notes": "Small-Cyclades focus is plausible; route messaging should keep weather-window guidance prominent."
+    },
+    "nordlige-kykladene": {
+      "routeName": "Northern Cyclades",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_north_cyclades",
+        "sailgreece_distances"
+      ],
+      "trustScore": 0.77,
+      "verdict": "Conditional",
+      "canonicalNm": 204,
+      "seawayNm": 200.4,
+      "seawayDeltaPct": 1.8,
+      "notes": "Northern-Cyclades loop is coherent; route remains weather-dependent around exposed channels."
+    },
+    "lipsi-tur-retur": {
+      "routeName": "Lipsi Round Trip",
+      "sourceIds": [
+        "sailingissues_distances",
+        "sailgreece_distances",
+        "cruiserswiki_patmos",
+        "cruiserswiki_leros"
+      ],
+      "trustScore": 0.71,
+      "verdict": "Conditional",
+      "canonicalNm": 375,
+      "seawayNm": 355.4,
+      "seawayDeltaPct": 5.2,
+      "notes": "Long eastern extension is feasible but demanding; copy should continue to frame this as advanced mileage."
+    },
+    "sporadene": {
+      "routeName": "Sporades",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "cruiserswiki_alonnisos",
+        "alonissos_park"
+      ],
+      "trustScore": 0.66,
+      "verdict": "Needs revision",
+      "canonicalNm": 302,
+      "seawayNm": 292,
+      "seawayDeltaPct": 3.3,
+      "notes": "Sporades content is route-feasible, but round-trip from Alimos is schedule-sensitive and should stay explicitly caveated."
+    },
+    "saronisk-kyklader": {
+      "routeName": "Saronic + Cyclades",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_routes"
+      ],
+      "trustScore": 0.74,
+      "verdict": "Conditional",
+      "canonicalNm": 288,
+      "seawayNm": 278.3,
+      "seawayDeltaPct": 3.4,
+      "notes": "Hybrid route is coherent; transition legs between sheltered and exposed sectors should remain explicitly signposted."
+    }
+  },
+  "stops": {
+    "aegina": {
+      "stopName": "Aegina",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "alimos-marina": {
+      "stopName": "Alimos Marina",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "alonissos": {
+      "stopName": "Alonissos",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "alonissos-marinpark": {
+      "stopName": "Alonissos Marinpark",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.81,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Added explicit stop alias entry in ISLANDS_DATA to keep stop-detail links resolvable."
+      ]
+    },
+    "amorgos": {
+      "stopName": "Amorgos",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "andros": {
+      "stopName": "Andros",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "cape-sounion": {
+      "stopName": "Cape Sounion",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "delos": {
+      "stopName": "Delos",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "elafonisos": {
+      "stopName": "Elafonisos",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "evia": {
+      "stopName": "Evia — Kymi",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "evia-sør": {
+      "stopName": "Evia Sør",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.81,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Added explicit stop alias entry in ISLANDS_DATA to keep stop-detail links resolvable."
+      ]
+    },
+    "folegandros": {
+      "stopName": "Folegandros",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "hydra": {
+      "stopName": "Hydra",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "ios": {
+      "stopName": "Ios",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "kea": {
+      "stopName": "Kea",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "koufonisia": {
+      "stopName": "Koufonisia",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "kythira": {
+      "stopName": "Kythira",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "kythnos": {
+      "stopName": "Kythnos",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "kythnos-loutra": {
+      "stopName": "Kythnos Loutra",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.81,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Added explicit stop alias entry in ISLANDS_DATA to keep stop-detail links resolvable."
+      ]
+    },
+    "leros": {
+      "stopName": "Leros",
+      "sourceIds": [
+        "sailingissues_distances",
+        "sailgreece_distances",
+        "cruiserswiki_patmos"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "lipsi": {
+      "stopName": "Lipsi",
+      "sourceIds": [
+        "sailingissues_distances",
+        "sailgreece_distances",
+        "cruiserswiki_patmos"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Mismatch",
+      "recommendedEdits": [
+        "No high-confidence Unsplash replacement found; kept existing image pending stronger geo-tagged candidate."
+      ]
+    },
+    "milos": {
+      "stopName": "Milos",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "monemvasia": {
+      "stopName": "Monemvasia",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "mykonos": {
+      "stopName": "Mykonos",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "naxos": {
+      "stopName": "Naxos",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "paros": {
+      "stopName": "Paros",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "patmos": {
+      "stopName": "Patmos",
+      "sourceIds": [
+        "sailingissues_distances",
+        "sailgreece_distances",
+        "cruiserswiki_patmos"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "poros": {
+      "stopName": "Poros",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "porto-heli": {
+      "stopName": "Porto Heli",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "santorini": {
+      "stopName": "Santorini",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.79,
+      "verdict": "Trusted",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": []
+    },
+    "schinoussa": {
+      "stopName": "Schinoussa",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "serifos": {
+      "stopName": "Serifos",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "sifnos": {
+      "stopName": "Sifnos",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic",
+        "sailingissues_cyclades"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "skiathos": {
+      "stopName": "Skiathos",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "skopelos": {
+      "stopName": "Skopelos",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "skyros": {
+      "stopName": "Skyros",
+      "sourceIds": [
+        "sailingissues_distances",
+        "moorings_greece",
+        "cruiserswiki_skiathos",
+        "alonissos_park"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "spetses": {
+      "stopName": "Spetses",
+      "sourceIds": [
+        "ionian_saronic_day1",
+        "sailingissues_distances",
+        "sailgreece_saronic"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "syros": {
+      "stopName": "Syros",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1",
+        "sailgreece_distances"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    },
+    "tinos": {
+      "stopName": "Tinos — Panormos",
+      "sourceIds": [
+        "sailingissues_cyclades",
+        "sailingissues_distances",
+        "sailgreece_cyclades_1"
+      ],
+      "confidence": 0.68,
+      "verdict": "Conditional",
+      "imageGrade": "Regional fit",
+      "recommendedEdits": [
+        "Manual fallback verification completed from route-level and regional sailing sources."
+      ]
+    }
+  },
+  "images": {
+    "Alimos Marina": {
+      "currentUrl": "https://images.unsplash.com/photo-1613806470308-9a7cf4820063",
+      "replacementUrl": "https://images.unsplash.com/photo-1613806470308-9a7cf4820063",
+      "previousUrl": "https://images.unsplash.com/photo-1695479315311-d3e8fb693390",
+      "reason": "Previous image was low-stop-specific; replacement is location-tagged to Alimos/Athens region.",
+      "imageGrade": "Regional fit",
+      "sourceIds": [
+        "unsplash_alimos"
+      ]
+    },
+    "Lavrion": {
+      "currentUrl": "https://images.unsplash.com/photo-1695479315311-d3e8fb693390",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Cape Sounion": {
+      "currentUrl": "https://images.unsplash.com/photo-1520283451192-c3b05d7db25b",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Aegina": {
+      "currentUrl": "https://images.unsplash.com/photo-1566658250122-f325851b112d",
+      "replacementUrl": "https://images.unsplash.com/photo-1566658250122-f325851b112d",
+      "previousUrl": "https://images.unsplash.com/photo-1685902099987-229cf85ccba9",
+      "reason": "Replacement has explicit Aegina location metadata and maritime context.",
+      "imageGrade": "Regional fit",
+      "sourceIds": [
+        "unsplash_aegina"
+      ]
+    },
+    "Poros": {
+      "currentUrl": "https://images.unsplash.com/photo-1661329942813-7520558a2108",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Hydra": {
+      "currentUrl": "https://images.unsplash.com/photo-1663868124748-fd3cad63c59b",
+      "replacementUrl": "https://images.unsplash.com/photo-1663868124748-fd3cad63c59b",
+      "previousUrl": "https://images.unsplash.com/photo-1677268357206-c6cb0e71d9e3",
+      "reason": "Replacement has explicit Hydra location metadata and harbor context.",
+      "imageGrade": "Regional fit",
+      "sourceIds": [
+        "unsplash_hydra"
+      ]
+    },
+    "Spetses": {
+      "currentUrl": "https://images.unsplash.com/photo-1539724491468-b5da9e2e3a87",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Porto Heli": {
+      "currentUrl": "https://images.unsplash.com/photo-1602246731546-a81958471656",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Monemvasia": {
+      "currentUrl": "https://images.unsplash.com/photo-1607614372586-72d399dc57b6",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Elafonisos": {
+      "currentUrl": "https://images.unsplash.com/photo-1654163170293-aa3b529f669f",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kythira": {
+      "currentUrl": "https://images.unsplash.com/photo-1566658255255-59a1426287b9",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kea": {
+      "currentUrl": "https://images.unsplash.com/photo-1507445761851-c6c3c69b4512",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kythnos": {
+      "currentUrl": "https://images.unsplash.com/photo-1661807029914-cef6da0f72fd",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Serifos": {
+      "currentUrl": "https://images.unsplash.com/photo-1564958067614-c77cfca1a72a",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Sifnos": {
+      "currentUrl": "https://images.unsplash.com/photo-1595216433227-31036820720a",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Milos": {
+      "currentUrl": "https://images.unsplash.com/photo-1693941545104-ceb48653ba6d",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Folegandros": {
+      "currentUrl": "https://images.unsplash.com/photo-1513921789195-fe5dd0f15c64",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Paros": {
+      "currentUrl": "https://images.unsplash.com/photo-1602008194020-13ac6665ebdb",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Naxos": {
+      "currentUrl": "https://images.unsplash.com/photo-1652639032641-181ce7236ec6",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Ios": {
+      "currentUrl": "https://images.unsplash.com/photo-1601581875031-e3af5bfb27a8",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Santorini": {
+      "currentUrl": "https://images.unsplash.com/photo-1531876137992-22b6ce5221f1",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Mykonos": {
+      "currentUrl": "https://images.unsplash.com/photo-1494356830678-78f6cd754f1a",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Syros": {
+      "currentUrl": "https://images.unsplash.com/photo-1746314177081-68a06ca3518b",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Koufonisia": {
+      "currentUrl": "https://images.unsplash.com/photo-1606834138864-449f4617b41d",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Schinoussa": {
+      "currentUrl": "https://images.unsplash.com/photo-1606834138864-449f4617b41d",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Amorgos": {
+      "currentUrl": "https://images.unsplash.com/photo-1683463170502-7d3d9a641283",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Andros": {
+      "currentUrl": "https://images.unsplash.com/photo-1650980867635-98ee58ef17b3",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Tinos": {
+      "currentUrl": "https://images.unsplash.com/photo-1627886427864-1f27b8b18cc6",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Delos": {
+      "currentUrl": "https://images.unsplash.com/photo-1654418392363-f9d15856e223",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Patmos": {
+      "currentUrl": "https://images.unsplash.com/photo-1730562934913-17f443692079",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Lipsi": {
+      "currentUrl": "https://images.unsplash.com/photo-1730562934913-17f443692079",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Mismatch",
+      "sourceIds": []
+    },
+    "Leros": {
+      "currentUrl": "https://images.unsplash.com/photo-1691246806224-a6e9dde3678d",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kalymnos": {
+      "currentUrl": "https://images.unsplash.com/photo-1570551649284-3c61341b63f1",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kos": {
+      "currentUrl": "https://images.unsplash.com/photo-1691246806224-a6e9dde3678d",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Nisyros": {
+      "currentUrl": "https://images.unsplash.com/photo-1542099139-dec5aba3fee4",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Symi": {
+      "currentUrl": "https://images.unsplash.com/photo-1672175157531-a2ebfd59eeb6",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Rhodes": {
+      "currentUrl": "https://images.unsplash.com/photo-1680205415325-3ceebea06319",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Skiathos": {
+      "currentUrl": "https://images.unsplash.com/photo-1471085507142-12355181f804",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Skopelos": {
+      "currentUrl": "https://images.unsplash.com/photo-1630926517544-58f45c00804a",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Alonissos": {
+      "currentUrl": "https://images.unsplash.com/photo-1710872417249-5e353f45f8e0",
+      "replacementUrl": "https://images.unsplash.com/photo-1710872417249-5e353f45f8e0",
+      "previousUrl": "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",
+      "reason": "Replacement has explicit Alonissos location metadata and nautical framing.",
+      "imageGrade": "Regional fit",
+      "sourceIds": [
+        "unsplash_alonissos"
+      ]
+    },
+    "Skyros": {
+      "currentUrl": "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "South Evia": {
+      "currentUrl": "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Evia Sør": {
+      "currentUrl": "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    },
+    "Kymi": {
+      "currentUrl": "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
+      "replacementUrl": null,
+      "previousUrl": null,
+      "reason": "Retained. No high-confidence evidence for safer replacement than current asset.",
+      "imageGrade": "Regional fit",
+      "sourceIds": []
+    }
+  }
+}

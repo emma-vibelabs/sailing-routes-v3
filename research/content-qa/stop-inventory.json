@@ -1,0 +1,648 @@
+[
+  {
+    "name": "Aegina",
+    "slug": "aegina",
+    "imageKey": "Aegina",
+    "routes": [
+      "saronic",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Aegina"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Alimos Marina",
+    "slug": "alimos-marina",
+    "imageKey": "Alimos Marina",
+    "routes": [
+      "saronic",
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "nordlige-kykladene",
+      "lipsi-tur-retur",
+      "sporadene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Alimos Marina",
+      "Alimos Marina (retur)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Alonissos",
+    "slug": "alonissos",
+    "imageKey": "Alonissos",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Alonissos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Alonissos Marinpark",
+    "slug": "alonissos-marinpark",
+    "imageKey": "Alonissos",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Alonissos Marinpark (hviledag)"
+    ],
+    "hasIsland": false,
+    "imageExists": true
+  },
+  {
+    "name": "Amorgos",
+    "slug": "amorgos",
+    "imageKey": "Amorgos",
+    "routes": [
+      "smaa-kykladene",
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Amorgos (hviledag)",
+      "Amorgos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Amorgos — Katapola",
+    "slug": "amorgos",
+    "imageKey": "Amorgos",
+    "routes": [
+      "smaa-kykladene"
+    ],
+    "names": [
+      "Amorgos — Katapola"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Andros",
+    "slug": "andros",
+    "imageKey": "Andros",
+    "routes": [
+      "nordlige-kykladene"
+    ],
+    "names": [
+      "Andros (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Andros — Batsi",
+    "slug": "andros",
+    "imageKey": "Andros",
+    "routes": [
+      "nordlige-kykladene"
+    ],
+    "names": [
+      "Andros — Batsi"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Cape Sounion",
+    "slug": "cape-sounion",
+    "imageKey": "Cape Sounion",
+    "routes": [
+      "nordlige-kykladene",
+      "sporadene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Cape Sounion"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Delos",
+    "slug": "delos",
+    "imageKey": "Delos",
+    "routes": [
+      "nordlige-kykladene"
+    ],
+    "names": [
+      "Delos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Elafonisos",
+    "slug": "elafonisos",
+    "imageKey": "Elafonisos",
+    "routes": [
+      "saronic"
+    ],
+    "names": [
+      "Elafonisos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Evia — Kymi",
+    "slug": "evia",
+    "imageKey": "Kymi",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Evia — Kymi"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Evia Sør",
+    "slug": "evia-sør",
+    "imageKey": "Evia Sør",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Evia Sør"
+    ],
+    "hasIsland": false,
+    "imageExists": true
+  },
+  {
+    "name": "Folegandros",
+    "slug": "folegandros",
+    "imageKey": "Folegandros",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene"
+    ],
+    "names": [
+      "Folegandros",
+      "Folegandros (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Hydra",
+    "slug": "hydra",
+    "imageKey": "Hydra",
+    "routes": [
+      "saronic",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Hydra",
+      "Hydra (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Ios",
+    "slug": "ios",
+    "imageKey": "Ios",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene"
+    ],
+    "names": [
+      "Ios"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Kea",
+    "slug": "kea",
+    "imageKey": "Kea",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "nordlige-kykladene",
+      "lipsi-tur-retur",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Kea (Tzia)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Koufonisia",
+    "slug": "koufonisia",
+    "imageKey": "Koufonisia",
+    "routes": [
+      "smaa-kykladene",
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Koufonisia",
+      "Koufonisia (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Kythira",
+    "slug": "kythira",
+    "imageKey": "Kythira",
+    "routes": [
+      "saronic"
+    ],
+    "names": [
+      "Kythira"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Kythnos",
+    "slug": "kythnos",
+    "imageKey": "Kythnos",
+    "routes": [
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "nordlige-kykladene",
+      "lipsi-tur-retur",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Kythnos",
+      "Kythnos (kryssinga!)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Kythnos Loutra",
+    "slug": "kythnos-loutra",
+    "imageKey": "Kythnos",
+    "routes": [
+      "klassisk-kykladene"
+    ],
+    "names": [
+      "Kythnos Loutra"
+    ],
+    "hasIsland": false,
+    "imageExists": true
+  },
+  {
+    "name": "Leros",
+    "slug": "leros",
+    "imageKey": "Leros",
+    "routes": [
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Leros"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Lipsi",
+    "slug": "lipsi",
+    "imageKey": "Lipsi",
+    "routes": [
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Lipsi",
+      "Lipsi (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Milos",
+    "slug": "milos",
+    "imageKey": "Milos",
+    "routes": [
+      "fulle-kykladene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Milos",
+      "Milos (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Milos — Adamas",
+    "slug": "milos",
+    "imageKey": "Milos",
+    "routes": [
+      "klassisk-kykladene"
+    ],
+    "names": [
+      "Milos — Adamas"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Milos — Kleftiko",
+    "slug": "milos",
+    "imageKey": "Milos",
+    "routes": [
+      "klassisk-kykladene"
+    ],
+    "names": [
+      "Milos — Kleftiko"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Monemvasia",
+    "slug": "monemvasia",
+    "imageKey": "Monemvasia",
+    "routes": [
+      "saronic"
+    ],
+    "names": [
+      "Monemvasia",
+      "Monemvasia (hviledag)",
+      "Monemvasia (retur)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Mykonos",
+    "slug": "mykonos",
+    "imageKey": "Mykonos",
+    "routes": [
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "nordlige-kykladene",
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Mykonos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Naxos",
+    "slug": "naxos",
+    "imageKey": "Naxos",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Naxos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Paros",
+    "slug": "paros",
+    "imageKey": "Paros",
+    "routes": [
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Paros",
+      "Paros (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Paros — Naoussa",
+    "slug": "paros",
+    "imageKey": "Paros",
+    "routes": [
+      "klassisk-kykladene"
+    ],
+    "names": [
+      "Paros — Naoussa"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Patmos",
+    "slug": "patmos",
+    "imageKey": "Patmos",
+    "routes": [
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Patmos",
+      "Patmos (retur)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Poros",
+    "slug": "poros",
+    "imageKey": "Poros",
+    "routes": [
+      "saronic",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Poros"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Porto Heli",
+    "slug": "porto-heli",
+    "imageKey": "Porto Heli",
+    "routes": [
+      "saronic"
+    ],
+    "names": [
+      "Porto Heli"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Santorini",
+    "slug": "santorini",
+    "imageKey": "Santorini",
+    "routes": [
+      "fulle-kykladene"
+    ],
+    "names": [
+      "Santorini (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Santorini — Vlychada",
+    "slug": "santorini",
+    "imageKey": "Santorini",
+    "routes": [
+      "fulle-kykladene"
+    ],
+    "names": [
+      "Santorini — Vlychada"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Schinoussa",
+    "slug": "schinoussa",
+    "imageKey": "Schinoussa",
+    "routes": [
+      "smaa-kykladene"
+    ],
+    "names": [
+      "Schinoussa"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Serifos",
+    "slug": "serifos",
+    "imageKey": "Serifos",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Serifos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Sifnos",
+    "slug": "sifnos",
+    "imageKey": "Sifnos",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "saronisk-kyklader"
+    ],
+    "names": [
+      "Sifnos",
+      "Sifnos (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Skiathos",
+    "slug": "skiathos",
+    "imageKey": "Skiathos",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Skiathos",
+      "Skiathos (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Skopelos",
+    "slug": "skopelos",
+    "imageKey": "Skopelos",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Skopelos",
+      "Skopelos (retur)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Skyros",
+    "slug": "skyros",
+    "imageKey": "Skyros",
+    "routes": [
+      "sporadene"
+    ],
+    "names": [
+      "Skyros",
+      "Skyros (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Spetses",
+    "slug": "spetses",
+    "imageKey": "Spetses",
+    "routes": [
+      "saronic"
+    ],
+    "names": [
+      "Spetses"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Syros",
+    "slug": "syros",
+    "imageKey": "Syros",
+    "routes": [
+      "klassisk-kykladene",
+      "fulle-kykladene",
+      "smaa-kykladene",
+      "nordlige-kykladene",
+      "lipsi-tur-retur"
+    ],
+    "names": [
+      "Syros",
+      "Syros (hviledag)"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  },
+  {
+    "name": "Tinos — Panormos",
+    "slug": "tinos",
+    "imageKey": "Tinos",
+    "routes": [
+      "nordlige-kykladene"
+    ],
+    "names": [
+      "Tinos — Panormos"
+    ],
+    "hasIsland": true,
+    "imageExists": true
+  }
+]

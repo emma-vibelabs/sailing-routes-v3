@@ -15,15 +15,15 @@ window.IMAGE_URLS = {
 
   // ── Attica & mainland ports ──────────────────────────────────────────────
   "Piraeus":                "https://images.unsplash.com/photo-1695479315311-d3e8fb693390",
-  "Alimos Marina":          "https://images.unsplash.com/photo-1695479315311-d3e8fb693390",
+  "Alimos Marina":          "https://images.unsplash.com/photo-1613806470308-9a7cf4820063",
   "Lavrion":                "https://images.unsplash.com/photo-1695479315311-d3e8fb693390",
   "Cape Sounion":           "https://images.unsplash.com/photo-1520283451192-c3b05d7db25b",
 
   // ── Saronic Gulf ────────────────────────────────────────────────────────
-  "Aegina":                 "https://images.unsplash.com/photo-1685902099987-229cf85ccba9",
+  "Aegina":                 "https://images.unsplash.com/photo-1566658250122-f325851b112d",
   "Angistri":               "https://images.unsplash.com/photo-1539724491468-b5da9e2e3a87",
   "Poros":                  "https://images.unsplash.com/photo-1661329942813-7520558a2108",
-  "Hydra":                  "https://images.unsplash.com/photo-1677268357206-c6cb0e71d9e3",
+  "Hydra":                  "https://images.unsplash.com/photo-1663868124748-fd3cad63c59b",
   "Spetses":                "https://images.unsplash.com/photo-1539724491468-b5da9e2e3a87",
   "Porto Heli":             "https://images.unsplash.com/photo-1602246731546-a81958471656",
   "Ermioni":                "https://images.unsplash.com/photo-1602246731546-a81958471656",
@@ -79,8 +79,8 @@ window.IMAGE_URLS = {
   "South Evia":             "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
   "Evia Sør":               "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
   "Skyros":                 "https://images.unsplash.com/photo-1631196719498-375bf6622ce5",
-  "Alonissos":              "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",
-  "Marine Park":            "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",
+  "Alonissos":              "https://images.unsplash.com/photo-1710872417249-5e353f45f8e0",
+  "Marine Park":            "https://images.unsplash.com/photo-1710872417249-5e353f45f8e0",
   "Skopelos":               "https://images.unsplash.com/photo-1630926517544-58f45c00804a",
   "Skiathos":               "https://images.unsplash.com/photo-1471085507142-12355181f804",
   "Trikeri":                "https://images.unsplash.com/photo-1631720070979-30d8eb728ce4",

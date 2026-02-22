@@ -677,7 +677,7 @@ window.ROUTES_DATA = [
       no: "Opplev Kykladane slik dei var før turismen tok over. Dei små øyane søraust for Naxos \u2014 Koufonisia, Schinoussa og Amorgos \u2014 byr på Hellas' klaraste vatn, uberørte strender og genuin gresk gjestfridom.",
       en: "Experience the Cyclades the way they were before tourism took over. The small islands southeast of Naxos \u2014 Koufonisia, Schinoussa, and Amorgos \u2014 offer the clearest water in Greece, untouched beaches, and genuine Greek hospitality."
     },
-    distance: 321,
+    distance: 323,
     sailingDays: 12,
     restDays: 2,
     difficulty: { no: "Middels", en: "Medium" },
@@ -1077,7 +1077,7 @@ window.ROUTES_DATA = [
       no: "Dei som trur Lipsi er for langt unna har ikkje prøvd. Ut gjennom Kykladane via Syros og Mykonos, éin lang dag over ope hav til Patmos, og der ligg Lipsi og ventar. Heimturen går via Amorgos og Koufonisia \u2014 heilt andre øyar, heilt anna stemning. Krev éin tidleg morgen og éin god værmelding.",
       en: "Those who think Lipsi is too far away haven't tried. Out through the Cyclades via Syros and Mykonos, one long day across open sea to Patmos, and there lies Lipsi waiting. The return goes via Amorgos and Koufonisia \u2014 completely different islands, a completely different feel. Requires one early morning and one good weather forecast."
     },
-    distance: 377,
+    distance: 375,
     sailingDays: 12,
     restDays: 2,
     difficulty: { no: "Middels-Avansert", en: "Moderate-Advanced" },

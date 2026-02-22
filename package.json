@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "check:distances": "node scripts/check-distances.mjs"
+    "check:distances": "node scripts/check-distances.mjs",
+    "qa:content": "node scripts/check-content-integrity.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0"
